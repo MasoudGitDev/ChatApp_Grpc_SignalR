@@ -1,0 +1,99 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/showcase" @onclick="SelectShowcase">@menuName</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        @if(!isChatsMenuSelected) {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="showcase">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Showcase
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="chats" @onclick="()=> SelectChatsSidebar()">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Chats
+                </NavLink>
+            </div>
+
+        }
+        else {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="bi bi-cloud" aria-hidden="true"></span> Cloud
+                </NavLink>
+            </div>
+            <div class="dropdown-divider"></div>
+            @foreach(var item in _chatAccounts) {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" style="padding:0px;" href="" Match="NavLinkMatch.All"
+                             @onclick="()=> OnItemClicked(item)">
+                        <div class="nav_chat_account">
+                            <div class="nav_chat_logo">
+                                @if(item.UnReadMessages > 0) {
+                                    @WhenOver100(item.UnReadMessages)
+                                }
+                                else {
+                                    <div>img</div>
+                                }
+                                <div class="nav_chat_status"></div>
+                            </div>
+                            <div class="nav_chat_name"> @item.FullName</div> 
+                        </div>                       
+                    </NavLink>
+                </div>
+            }
+        }
+    </nav>
+</div>
+
+@code {
+    private LinkedList<ChatAccountDto> _chatAccounts = new();
+
+    private bool collapseNavMenu = true;
+    private string WhenOver100(int number) => number >= 100 ? "99+" : number.ToString();
+
+    private bool isChatsMenuSelected = false;
+    private string menuName = "ChatApp";
+
+    [Parameter]
+    public EventCallback<ChatAccountDto> OnSelectItem { get; set; }
+
+    private async Task OnItemClicked(ChatAccountDto selectedItem) {
+        await OnSelectItem.InvokeAsync(selectedItem);
+    }
+
+    protected override void OnInitialized() {
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "Masoud" });
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "علی" });
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "Nima" , UnReadMessages = 5000});
+    }
+
+    private void SelectChatsSidebar() {
+        isChatsMenuSelected = true;
+        menuName = "ShowCase";
+    }
+    private void SelectShowcase() {
+        isChatsMenuSelected = false;
+        menuName = "ChapApp";
+    }
+
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

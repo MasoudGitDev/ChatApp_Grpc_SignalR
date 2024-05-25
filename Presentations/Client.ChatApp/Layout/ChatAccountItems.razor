@@ -1,0 +1,52 @@
+﻿
+@inject NavigationManager _navManager
+
+<div class="chat_sidebar">
+    <div class="title" @onclick="GoToShowcase">Showcase</div>
+    <div class="chat_item @(_cloudItem == _selectedItem ? "selected" : "")" @onclick="()=> SelectItem(_cloudItem)">
+        <div class="chat_item_logo">
+            <div>img</div>
+        </div>
+        <div class="chat_item_name">فضای ابری</div>
+    </div>
+    <div class="chat_items">
+        @foreach(var item in _chatAccounts) {
+            <div class="chat_item @(item==_selectedItem ? "selected" : "")" @onclick="()=> SelectItem(item)">
+                <div class="chat_item_logo">
+                    @if(item.UnReadMessages > 0) {
+                        @WhenOver100(item.UnReadMessages)
+                    }
+                    else {
+                        <div>img</div>
+                    }
+                    <div class="chat_item_status"></div>
+                </div>
+                <div class="chat_item_name"> @item.FullName</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    private void GoToShowcase() => _navManager.NavigateTo("/showcase");
+    private ChatAccountDto _cloudItem = new() { FullName = "فضای ابری" };
+    private ChatAccountDto? _selectedItem = null;
+    private async Task SelectItem(ChatAccountDto model) {
+        _selectedItem = model;
+        await OnChangeItemSelected.InvokeAsync(_selectedItem);
+    }
+
+    private LinkedList<ChatAccountDto> _chatAccounts = new();
+    private string WhenOver100(int number) => number >= 100 ? "99+" : number.ToString();
+
+    protected override void OnInitialized() {
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "Masoud" });
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "علی" });
+        _chatAccounts.AddLast(new ChatAccountDto { FullName = "Nima" , UnReadMessages = 5000 });
+
+    }
+
+    [Parameter]
+    public EventCallback<ChatAccountDto> OnChangeItemSelected { get; set; }
+}

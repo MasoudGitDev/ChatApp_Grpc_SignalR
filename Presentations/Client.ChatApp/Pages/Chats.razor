@@ -1,0 +1,77 @@
+﻿@page "/chats"
+@layout EmptyLayout
+
+<div class="chat_page">
+    <div class="chat_sidebar">
+        <ChatAccountItems @ref="_sidebar" OnChangeItemSelected="OnGetSelectedItem" />
+    </div>
+    <div class="page_body">
+        <div class="chat_container">
+            <div class="chat_title">
+                <div class="chat_msg_logo"></div>
+                <div class="chat_info">
+                    <div>@_accountItem.FullName</div>
+                    <div class="type_status">در حال نوشتن ...</div>
+                </div>
+              
+             
+            </div>
+            <div class="chat_messages">
+                @foreach(var item in _messages) {
+                    <div class="chat_msg_row @(item.IsMyMessage ? "" : "left")">
+                        <div class="receive_msg  @(item.IsMyMessage ? "" : "left")">
+                            <div class="chat_msg_body">@item.Message</div>
+                            <div class="chat_msg_logo">@item.LogoUrl</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <EditForm style="width:100%" Model="_currentMessage" Enhance OnValidSubmit="OnSendMessage">
+                <div class="chat_controls">
+                    <div class="chat_msg_col">
+                        <textarea class="chat_text_box" @bind="_currentMessage.Message"></textarea>
+                    </div>
+                    <div class="chat_btns_col">
+                        <button type="submit" class="chat_controls_btn_send btn btn-outline-success">Send</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    private string _model = string.Empty;
+    private LinkedList<ChatMessageDto> _messages = new();
+    private ChatMessageDto _currentMessage = new() { IsMyMessage = true , LogoUrl = "M" };
+
+
+    private ChatAccountItems _sidebar;
+    private ChatAccountDto _accountItem = new();
+    private void OnGetSelectedItem(ChatAccountDto item) {
+        _accountItem = item;
+    }
+
+
+    protected override void OnInitialized() {
+        _messages = new();
+        _messages.AddLast(new ChatMessageDto{ IsMyMessage = false , Message = "Hi" , LogoUrl = "A" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "Hi" , LogoUrl = "M" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "خوبی" , LogoUrl = "A" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "بله ، مرسی" , LogoUrl = "M" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "Hi" , LogoUrl = "A" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "Hi" , LogoUrl = "M" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "خوبی" , LogoUrl = "A" });
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "بله ، مرسی" , LogoUrl = "M" });
+    }
+
+    private void OnSendMessage() {
+        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = _currentMessage.Message , LogoUrl = "M" });
+        _currentMessage.Message = "";
+    }
+   
+
+}

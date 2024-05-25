@@ -21,17 +21,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domains", "Domains", "{3CF7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domains", "Domains", "{340577DE-CBC9-4755-8C5A-89CD5E743256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Auth", "Services\Auth\Domains\Domain.Auth\Domain.Auth.csproj", "{0605E41E-D112-461B-B190-2B6D83B20915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Auth", "Services\Auth\Domains\Domain.Auth\Domain.Auth.csproj", "{0605E41E-D112-461B-B190-2B6D83B20915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apps.Auth", "Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj", "{A4D30A3C-D855-4FE2-824B-98EFC84139D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apps.Auth", "Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj", "{A4D30A3C-D855-4FE2-824B-98EFC84139D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.ChatApp", "Presentations\Server.ChatApp\Server.ChatApp.csproj", "{01627630-7DB1-47E7-834A-5E251C2E8473}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.ChatApp", "Presentations\Server.ChatApp\Server.ChatApp.csproj", "{01627630-7DB1-47E7-834A-5E251C2E8473}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.EFCore", "Infrastructures\Infra.EFCore\Infra.EFCore.csproj", "{23B76DF5-2CD9-45A0-B898-ED7A7463F80C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.EFCore", "Infrastructures\Infra.EFCore\Infra.EFCore.csproj", "{23B76DF5-2CD9-45A0-B898-ED7A7463F80C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{CAB912C0-3752-4E91-91BC-60B1BB6803C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Server", "Shared.Server\Shared.Server.csproj", "{2D009EA1-0285-4E77-8474-FA8BCEF5F498}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Server", "Shared.Server\Shared.Server.csproj", "{2D009EA1-0285-4E77-8474-FA8BCEF5F498}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.ChatApp", "Presentations\Client.ChatApp\Client.ChatApp.csproj", "{D79022A3-4E5B-4699-A99E-662E5244ABAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{2D009EA1-0285-4E77-8474-FA8BCEF5F498}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D009EA1-0285-4E77-8474-FA8BCEF5F498}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D009EA1-0285-4E77-8474-FA8BCEF5F498}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D79022A3-4E5B-4699-A99E-662E5244ABAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79022A3-4E5B-4699-A99E-662E5244ABAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79022A3-4E5B-4699-A99E-662E5244ABAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79022A3-4E5B-4699-A99E-662E5244ABAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{01627630-7DB1-47E7-834A-5E251C2E8473} = {11785145-B5BC-41E9-8A23-B8DF1B65B1BD}
 		{23B76DF5-2CD9-45A0-B898-ED7A7463F80C} = {86440476-4117-4409-8C1D-9C0744C5E567}
 		{2D009EA1-0285-4E77-8474-FA8BCEF5F498} = {CAB912C0-3752-4E91-91BC-60B1BB6803C3}
+		{D79022A3-4E5B-4699-A99E-662E5244ABAB} = {11785145-B5BC-41E9-8A23-B8DF1B65B1BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {805E4084-9882-4630-A7A3-50F31B330B50}
