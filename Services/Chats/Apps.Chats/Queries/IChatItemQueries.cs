@@ -1,10 +1,9 @@
-﻿using Domains.Chat.ChatAggregate;
+﻿using Domains.Chats.Item.Aggregate;
 
-namespace Apps.Chats.Abstractions;
-public interface IChatItemQueries
-{
+namespace Apps.Chats.Queries;
+public interface IChatItemQueries {
     public Task<ChatItem?> FindByIdAsync(Guid chatId);
-    public Task<ChatItem?> GetByIdsAsync(Guid requesterId, Guid receiverId);
+    public Task<ChatItem?> GetByIdsAsync(Guid requesterId , Guid receiverId);
     public Task<LinkedList<ChatItem>> GetByIdAsync(Guid userId);
     public Task<bool> HaveAnyChatItem(Guid requesterId , Guid receiverId);
 }
