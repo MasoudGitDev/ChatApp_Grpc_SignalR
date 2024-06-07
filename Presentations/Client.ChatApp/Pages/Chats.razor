@@ -1,52 +1,67 @@
 ﻿@page "/chats"
+@using Grpc.Net.Client
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@using Server.ChatApp.Protos
 @layout EmptyLayout
 
-<div class="chat_page">
-    <div class="chat_sidebar">
-        <ChatAccountItems @ref="_sidebar" OnChangeItemSelected="OnGetSelectedItem" />
-    </div>
-    <div class="page_body">
-        <div class="chat_container">
-            <div class="chat_title">
-                <div class="chat_msg_logo"></div>
-                <div class="chat_info">
-                    <div>@_accountItem.FullName</div>
-                    <div class="type_status">در حال نوشتن ...</div>
-                </div>
-              
-             
+@implements IAsyncDisposable
+@inject NavigationManager _navManager
+@inject ChatMessageRPCs.ChatMessageRPCsClient _messageHandler
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        <div class="chat_page">
+            <div class="chat_sidebar">
+                <ChatAccountItems @ref="_sidebar" OnChangeItemSelected="OnGetSelectedItem" />
             </div>
-            <div class="chat_messages">
-                @foreach(var item in _messages) {
-                    <div class="chat_msg_row @(item.IsMyMessage ? "" : "left")">
-                        <div class="receive_msg  @(item.IsMyMessage ? "" : "left")">
-                            <div class="chat_msg_body">@item.Message</div>
-                            <div class="chat_msg_logo">@item.LogoUrl</div>
+            <div class="page_body">
+                <div class="chat_container">
+                    <div class="chat_title">
+                        <div class="chat_msg_logo"></div>
+                        <div class="chat_info">
+                            <div>@_accountItem.FullName</div>
+                            <div class="type_status">در حال نوشتن ...</div>
+                        </div>
+
+
+                    </div>
+                    <div class="chat_messages">
+                        @foreach(var item in _messages) {
+                            <div class="chat_msg_row @(item.IsMyMessage ? "" : "left")">
+                                <div class="receive_msg  @(item.IsMyMessage ? "" : "left")">
+                                    <div class="chat_msg_body">@item.Content</div>
+                                    <div class="chat_msg_logo">@item.FileUrl</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div style="width:100%">
+                        <div class="chat_controls">
+                            <div class="chat_msg_col">
+                                <textarea class="chat_text_box" @bind="_currentMessage.Content"></textarea>
+                            </div>
+                            <div class="chat_btns_col">
+                                <button class="chat_controls_btn_send btn btn-outline-success" @onclick="SendMessageAsync">Send</button>
+                            </div>
                         </div>
                     </div>
-                }
-            </div>
-            <EditForm style="width:100%" Model="_currentMessage" Enhance OnValidSubmit="OnSendMessage">
-                <div class="chat_controls">
-                    <div class="chat_msg_col">
-                        <textarea class="chat_text_box" @bind="_currentMessage.Message"></textarea>
-                    </div>
-                    <div class="chat_btns_col">
-                        <button type="submit" class="chat_controls_btn_send btn btn-outline-success">Send</button>
-                    </div>
                 </div>
-            </EditForm>
+            </div>
         </div>
-    </div>
-</div>
-
+    </Authorized>
+    <NotAuthorized>
+        <div>You Are Not Authorized</div>
+    </NotAuthorized>
+</AuthorizeView>
 
 
 
 @code {
+    private Guid _chatId = Guid.Parse("e8d79123-4569-46cd-894d-301cfd336bde");
     private string _model = string.Empty;
-    private LinkedList<ChatMessageDto> _messages = new();
-    private ChatMessageDto _currentMessage = new() { IsMyMessage = true , LogoUrl = "M" };
+    private LinkedList<MessageDto> _messages = new();
+    private MessageDto _currentMessage = new() { IsMyMessage = true , FileUrl = "M" };
 
 
     private ChatAccountItems _sidebar;
@@ -55,23 +70,57 @@
         _accountItem = item;
     }
 
+    private HubConnection? _hubConnection; 
 
-    protected override void OnInitialized() {
-        _messages = new();
-        _messages.AddLast(new ChatMessageDto{ IsMyMessage = false , Message = "Hi" , LogoUrl = "A" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "Hi" , LogoUrl = "M" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "خوبی" , LogoUrl = "A" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "بله ، مرسی" , LogoUrl = "M" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "Hi" , LogoUrl = "A" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "Hi" , LogoUrl = "M" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = false , Message = "خوبی" , LogoUrl = "A" });
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = "بله ، مرسی" , LogoUrl = "M" });
+    protected override async void OnInitialized() {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navManager.ToAbsoluteUri("https://localhost:7001/chatMessageHub")).Build();        
+        _hubConnection.On<MessageDto>("ReceiveMessage" , async (msgModel) => {
+            _messages.AddLast(msgModel);
+            await InvokeAsync(StateHasChanged);
+        });
+        await _hubConnection.StartAsync();
     }
 
-    private void OnSendMessage() {
-        _messages.AddLast(new ChatMessageDto { IsMyMessage = true , Message = _currentMessage.Message , LogoUrl = "M" });
-        _currentMessage.Message = "";
-    }
+    private async Task SendMessageAsync() {
+        if(String.IsNullOrWhiteSpace(_currentMessage.Content)) {
+            return;
+        }
+        if(_hubConnection is not null) {
+            var newMsg = new MessageDto(){
+                    MessageId = Guid.NewGuid(),
+                    ChatId = _chatId,
+                    SenderId = Guid.Parse("3a60cde1-ab8d-46f9-8fc2-328ad63680ec"),
+                    IsMyMessage = true,
+                    Content = _currentMessage.Content,
+                    FileUrl = "M"
+            };
+            if(_hubConnection.State == HubConnectionState.Disconnected) {
+                await _hubConnection.StartAsync();
+            }
+            await _hubConnection.SendAsync("SendMessage" , newMsg , new CancellationToken());           
+            await SaveAsync(newMsg);
+            _currentMessage.Content = "";
+        }
+        else {
+            Console.WriteLine("HubConnection is not connected");
+        }
+    }   
+
+    private async Task SaveAsync(MessageDto model) {
+        var result= await  _messageHandler.SendAsync(new MessageReq {
+            ChatId = "e8d79123-4569-46cd-894d-301cfd336bde" ,
+            MessageId = Guid.NewGuid().ToString() ,
+            SenderId = "3a60cde1-ab8d-46f9-8fc2-328ad63680ec",
+            Content = model.Content           
+        });
+        Console.WriteLine(result);
+    }    
    
+    public async ValueTask DisposeAsync() {
+        if(_hubConnection != null) {
+            await _hubConnection.DisposeAsync();
+        }
+    }
 
 }
