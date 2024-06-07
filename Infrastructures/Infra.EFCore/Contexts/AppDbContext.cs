@@ -1,5 +1,7 @@
 ﻿using Domain.Auth.RoleAggregate;
 using Domain.Auth.UserAggregate;
+using Domains.Chat.ChatAggregate;
+using Domains.Chat.MessageAggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,8 @@ internal class AppDbContext : IdentityDbContext<AppUser , AppRole , Guid> {
     }
 
     public DbSet<AppUser> AppUsers { get; set; }
+    public DbSet<ChatItem> ChatItems { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
 }
