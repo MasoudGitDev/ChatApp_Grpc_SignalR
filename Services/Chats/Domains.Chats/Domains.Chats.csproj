@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared.Server\Shared.Server.csproj" />
-    <ProjectReference Include="..\..\..\Auth\Domains\Domain.Auth\Domain.Auth.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Server\Shared.Server.csproj" />
+    <ProjectReference Include="..\..\Auth\Domains\Domain.Auth\Domain.Auth.csproj" />
   </ItemGroup>
 
 </Project>
