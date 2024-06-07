@@ -1,7 +1,7 @@
 ﻿using Domain.Auth.RoleAggregate;
 using Domain.Auth.UserAggregate;
-using Domains.Chat.ChatAggregate;
-using Domains.Chat.MessageAggregate;
+using Domains.Chats.Item.Aggregate;
+using Domains.Chats.Message.Aggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

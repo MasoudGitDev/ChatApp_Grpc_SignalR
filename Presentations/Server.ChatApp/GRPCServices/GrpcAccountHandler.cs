@@ -1,7 +1,6 @@
 ﻿using Apps.Auth.Accounts;
 using Apps.Auth.Constants;
 using Domain.Auth.UserAggregate;
-using Google.Api;
 using Grpc.Core;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -21,16 +20,16 @@ public class GrpcAccountHandler(IAccountService _accountService , IUserQueries _
 
     [AllowAnonymous]
     public override async Task<AccountResponse> Login(LoginReq request , ServerCallContext context) {
-        return ToAccountResponse(( await _accountService.LoginAsync(request.Adapt<LoginDto>())),context);
+        return ToAccountResponse(( await _accountService.LoginAsync(request.Adapt<LoginDto>()) ) , context);
     }
 
- 
+
 
     [AllowAnonymous]
     public override async Task<AccountResponse> SignUp(RegisterReq request , ServerCallContext context) {
-        return ToAccountResponse(await _accountService.RegisterAsync(request.Adapt<RegisterDto>()),context);
+        return ToAccountResponse(await _accountService.RegisterAsync(request.Adapt<RegisterDto>()) , context);
     }
-  
+
     public override async Task<AccountResponse> LoginByToken(LoginByTokenReq request , ServerCallContext context) {
         var accountResult = ( await _accountService.LoginByTokenAsync(request.AccessToken , (await GetUserAsync(context)).Id.ToString()));
         return ToAccountResponse(accountResult , context);

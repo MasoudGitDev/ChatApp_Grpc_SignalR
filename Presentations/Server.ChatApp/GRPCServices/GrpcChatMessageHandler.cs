@@ -1,6 +1,6 @@
-﻿using Apps.Chats.Commands.Impls;
-using Domains.Chat.MessageAggregate;
-using Domains.Chat.MessageAggregate.ValueObjects;
+﻿using Apps.Chats.Commands;
+using Domains.Chats.Message.Aggregate;
+using Domains.Chats.Message.ValueObjects;
 using Grpc.Core;
 using Server.ChatApp.Protos;
 using Shared.Server.Extensions;

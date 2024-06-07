@@ -40,11 +40,6 @@ builder.Services.AddSwaggerGen(opt => {
     //opt.IncludeGrpcXmlComments(filePath , includeControllerXmlComments: true);
 });
 
-//builder.Services.AddSwaggerGen(c => {
-//    c.SwaggerDoc("v1" ,
-//        new OpenApiInfo { Title = "gRPC transcoding" , Version = "v1" });
-//});
-
 builder.Services.AddResponseCompression(opts => {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
           new[] { "application/octet-stream" });
@@ -89,9 +84,5 @@ app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
 app.MapHub<ChatMessageHub>("/chatMessageHub");
 
 app.MapControllers();
-
-app.UseChatService();
-
-
 
 app.Run();

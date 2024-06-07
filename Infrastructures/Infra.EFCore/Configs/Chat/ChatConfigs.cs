@@ -1,6 +1,6 @@
-﻿using Domains.Chat.ChatAggregate;
-using Domains.Chat.MessageAggregate;
-using Domains.Chat.MessageAggregate.ValueObjects;
+﻿using Domains.Chats.Item.Aggregate;
+using Domains.Chats.Message.Aggregate;
+using Domains.Chats.Message.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
