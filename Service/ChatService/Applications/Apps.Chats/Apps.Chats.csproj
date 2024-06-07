@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
+	  <PackageReference Include="Grpc.AspNetCore.Web" Version="2.63.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.64.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Mapster" Version="7.4.1-pre01" />
+	  <PackageReference Include="Mapster.Core" Version="1.2.2-pre01" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Services\Auth\Domains\Domain.Auth\Domain.Auth.csproj" />
+    <ProjectReference Include="..\..\..\..\Services\ChatService\Domains\Domains.Chat\Domains.Chat.csproj" />
+  </ItemGroup>
+
+</Project>
