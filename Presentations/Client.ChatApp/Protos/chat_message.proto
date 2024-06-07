@@ -1,0 +1,21 @@
+syntax = "proto3";
+option csharp_namespace = "Server.ChatApp.Protos";
+package chat_message_pkg;
+
+
+service ChatMessageRPCs {
+  rpc Send(MessageReq) returns(MessageRes) ;
+}
+
+
+message MessageReq{
+	string MessageId = 1;
+	string ChatId =2;
+	string SenderId = 3;
+	string Content = 4;
+}
+
+message MessageRes{
+	string Code = 1;
+	string Description = 2;
+}
