@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj" />
+    <ProjectReference Include="..\..\Services\ChatService\Domains\Domains.Chat\Domains.Chat.csproj" />
+    <ProjectReference Include="..\..\Service\ChatService\Applications\Apps.Chats\Apps.Chats.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

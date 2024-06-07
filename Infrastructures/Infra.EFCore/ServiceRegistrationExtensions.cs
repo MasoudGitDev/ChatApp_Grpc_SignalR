@@ -1,10 +1,13 @@
 ﻿using Apps.Auth;
 using Apps.Auth.Accounts;
 using Apps.Auth.Constants;
+using Apps.Chats;
+using Apps.Chats.Abstractions;
 using Domain.Auth.RoleAggregate;
 using Domain.Auth.UserAggregate;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Implementations.Accounts;
+using Infra.EFCore.Implementations.Chats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -87,6 +90,11 @@ public static class ServiceRegistrationExtensions {
                 }
             };
         });
+
+        //================ Chat Services
+        services.AddScoped<IChatItemQueries , ChatItemQueries>();
+        services.AddScoped<IMessageQueries , MessageQueries>();
+        services.AddScoped<IChatUOW , ChatUOW>();
 
         return services;
     }
