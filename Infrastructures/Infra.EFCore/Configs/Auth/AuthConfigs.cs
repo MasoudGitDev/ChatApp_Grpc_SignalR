@@ -1,4 +1,4 @@
-﻿using Domain.Auth.UserAggregate;
+﻿using Domains.Auth.User.Aggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,6 +10,6 @@ internal class UserEFConfigs : IEntityTypeConfiguration<AppUser> {
         builder.HasIndex(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
         builder.Property(x => x.Email).IsRequired();
-        builder.Property(x => x.UserName).IsRequired();      
+        builder.Property(x => x.UserName).IsRequired();
     }
 }

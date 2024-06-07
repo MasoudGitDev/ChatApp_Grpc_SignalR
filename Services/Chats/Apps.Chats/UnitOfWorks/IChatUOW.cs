@@ -1,5 +1,5 @@
-﻿using Apps.Chats.Queries;
-using Domain.Auth.UserAggregate;
+﻿using Apps.Auth.Queries;
+using Apps.Chats.Queries;
 
 namespace Apps.Chats.UnitOfWorks;
 public interface IChatUOW {

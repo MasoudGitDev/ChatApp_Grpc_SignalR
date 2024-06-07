@@ -1,5 +1,5 @@
-﻿using Domain.Auth.RoleAggregate;
-using Domain.Auth.UserAggregate;
+﻿using Domains.Auth.Role.Aggregate;
+using Domains.Auth.User.Aggregate;
 using Domains.Chats.Item.Aggregate;
 using Domains.Chats.Message.Aggregate;
 using Microsoft.AspNetCore.Identity;

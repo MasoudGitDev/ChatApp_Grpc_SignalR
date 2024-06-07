@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructures\Infra.EFCore\Infra.EFCore.csproj" />
-    <ProjectReference Include="..\..\Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj" />
     <ProjectReference Include="..\..\Shared.Server\Shared.Server.csproj" />
   </ItemGroup>
 

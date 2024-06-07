@@ -1,4 +1,5 @@
-﻿using Domain.Auth.UserAggregate;
+﻿using Apps.Auth.Queries;
+using Domains.Auth.User.Aggregate;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infra.EFCore.Implementations.Accounts;

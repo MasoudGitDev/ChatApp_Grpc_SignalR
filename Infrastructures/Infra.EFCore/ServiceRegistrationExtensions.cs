@@ -1,10 +1,11 @@
-﻿using Apps.Auth;
-using Apps.Auth.Accounts;
-using Apps.Auth.Constants;
+﻿using Apps.Auth.Constants;
+using Apps.Auth;
+using Apps.Auth.Queries;
+using Apps.Auth.Services;
 using Apps.Chats.Queries;
 using Apps.Chats.UnitOfWorks;
-using Domain.Auth.RoleAggregate;
-using Domain.Auth.UserAggregate;
+using Domains.Auth.Role.Aggregate;
+using Domains.Auth.User.Aggregate;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Implementations.Accounts;
 using Infra.EFCore.Implementations.Chats;
@@ -32,7 +33,7 @@ public static class ServiceRegistrationExtensions {
             ExpireMinuteNumber = jwtSettings.ExpireMinuteNumber ,
             SecureKey = jwtSettings.SecureKey ,
         });
-        services.AddAuthService();
+        services.AddAuthServices();
         services.AddScoped<IAccountService , AccountService>();
         services.AddScoped<IUserQueries , UserQueries>();
         services.AddScoped<IAccountQueries , AccountQueries>();

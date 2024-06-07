@@ -1,6 +1,6 @@
-﻿using Apps.Chats.Queries;
+﻿using Apps.Auth.Queries;
+using Apps.Chats.Queries;
 using Apps.Chats.UnitOfWorks;
-using Domain.Auth.UserAggregate;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Exceptions;
 using Shared.Server.Exceptions;
@@ -11,16 +11,14 @@ internal class ChatUOW(
     IUserQueries _userQueries ,
     IChatItemQueries _chatQueries ,
     IChatMessageQueries _messageQueries) : IChatUOW {
+
     public IChatItemQueries ChatItemQueries => _chatQueries;
-
     public IChatMessageQueries MessageQueries => _messageQueries;
-
     public IUserQueries UserQueries => _userQueries;
 
     public async Task CreateAsync<TEntity>(TEntity entity) where TEntity : class, new() {
         await _dbContext.AddAsync(entity , new CancellationToken());
     }
-
     public async Task DeleteAsync<TEntity>(TEntity entity) where TEntity : class, new() {
         _dbContext.Remove(entity);
         await Task.CompletedTask;

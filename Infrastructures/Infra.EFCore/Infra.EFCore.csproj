@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj" />
-    <ProjectReference Include="..\..\Services\Auth\Domains\Domain.Auth\Domain.Auth.csproj" />
+    <ProjectReference Include="..\..\Services\Auth\Apps.Auth\Apps.Auth.csproj" />
+    <ProjectReference Include="..\..\Services\Auth\Domains.Auth\Domains.Auth.csproj" />
     <ProjectReference Include="..\..\Services\Chats\Apps.Chats\Apps.Chats.csproj" />
     <ProjectReference Include="..\..\Services\Chats\Domains.Chats\Domains.Chats.csproj" />
     <ProjectReference Include="..\..\Service\ChatService\Applications\Apps.Chats\Apps.Chats.csproj" />

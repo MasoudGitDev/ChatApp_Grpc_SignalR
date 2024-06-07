@@ -1,5 +1,4 @@
-﻿using Apps.Auth.Accounts;
-using Domain.Auth.UserAggregate;
+﻿using Apps.Auth.Queries;
 
 namespace Infra.EFCore.Implementations.Accounts;
 internal class AccountQueries(IUserQueries _userQueries) : IAccountQueries {

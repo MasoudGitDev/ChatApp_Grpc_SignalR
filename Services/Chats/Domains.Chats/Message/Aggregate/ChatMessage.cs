@@ -1,4 +1,4 @@
-﻿using Domain.Auth.UserAggregate;
+﻿using Domains.Auth.User.Aggregate;
 using Domains.Chats.Item.Aggregate;
 using Domains.Chats.Message.ValueObjects;
 

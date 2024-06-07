@@ -1,6 +1,5 @@
-﻿using Apps.Auth.Accounts;
-using Apps.Auth.Jwt;
-using Domain.Auth.UserAggregate;
+﻿using Apps.Auth.Services;
+using Domains.Auth.User.Aggregate;
 using Microsoft.AspNetCore.Identity;
 using Shared.Server.Dtos;
 using Shared.Server.Exceptions;
@@ -21,12 +20,12 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
         }
         return await _jwtService.GenerateAsync(user.Id);
     }
-    public async Task<AccountResult> LoginByTokenAsync(string token , string userId) { 
+    public async Task<AccountResult> LoginByTokenAsync(string accessToken , string userId) {
         var user = await _userManager.FindByIdAsync(userId);
         if(user is null) {
             return AccountResult.Error(CodeMessage.Create("Invalid-User" , "The <user-id> is invalid."));
         }
-        return await _jwtService.EvaluateAsync(token , userId);
+        return await _jwtService.EvaluateAsync(accessToken , userId);
     }
     public async Task<AccountResult> RegisterAsync(RegisterDto model) {
         await ThrowIfFoundUserAsync(model.Email! , model.UserName!);

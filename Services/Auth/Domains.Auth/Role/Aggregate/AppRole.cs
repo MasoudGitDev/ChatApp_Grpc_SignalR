@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Domain.Auth.RoleAggregate;
+namespace Domains.Auth.Role.Aggregate;
 public class AppRole : IdentityRole<Guid> {
 }

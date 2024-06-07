@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Shared.Server.Dtos.Chat;
 
-namespace Apps.Chats.Hubs;
+namespace Server.ChatApp.Hubs.Chats;
 
 
 public class ChatMessageHub : Hub {

@@ -1,9 +1,9 @@
 using Apps.Chats;
-using Apps.Chats.Hubs;
 using Infra.EFCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCServices;
+using Server.ChatApp.Hubs.Chats;
 using Server.ChatApp.Protos;
 
 var builder = WebApplication.CreateBuilder(args);
