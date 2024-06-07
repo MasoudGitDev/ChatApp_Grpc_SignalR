@@ -1,10 +1,11 @@
 ﻿using Shared.Server.Dtos;
+using Shared.Server.Models.Results;
 
 namespace Apps.Auth.Accounts;
 
 public interface IAccountService {
-    Task<string> RegisterAsync(RegisterDto model);
-    Task<string> LoginAsync(LoginDto model);
-    Task<string> LoginByTokenAsync(string token , string userId);
+    Task<AccountResult> RegisterAsync(RegisterDto model);
+    Task<AccountResult> LoginAsync(LoginDto model);
+    Task<AccountResult> LoginByTokenAsync(string token , string userId);
 }
 
