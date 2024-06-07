@@ -1,9 +1,9 @@
 ﻿using Domain.Auth.UserAggregate;
-using Domains.Chat.ChatAggregate;
-using Domains.Chat.MessageAggregate.ValueObjects;
+using Domains.Chats.Item.Aggregate;
+using Domains.Chats.Message.ValueObjects;
 
-namespace Domains.Chat.MessageAggregate;
-public partial class ChatMessage{
+namespace Domains.Chats.Message.Aggregate;
+public partial class ChatMessage {
     public Guid Id { get; private set; }
     public Guid ChatId { get; set; }
     public Guid SenderId { get; private set; }
@@ -20,7 +20,7 @@ public partial class ChatMessage{
 
 //Methods
 public partial class ChatMessage {
-   
+
     public static ChatMessage Create(
         Guid chatId ,
         Guid senderId ,

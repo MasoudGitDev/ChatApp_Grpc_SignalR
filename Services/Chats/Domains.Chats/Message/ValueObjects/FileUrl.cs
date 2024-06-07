@@ -1,9 +1,9 @@
-﻿namespace Domains.Chat.MessageAggregate.ValueObjects;
+﻿namespace Domains.Chats.Message.ValueObjects;
 public class FileUrl {
     public string Value { get; set; } = string.Empty;
 
     public FileUrl(string url) {
-        if(String.IsNullOrWhiteSpace(url))
+        if(string.IsNullOrWhiteSpace(url))
             throw new ArgumentNullException(nameof(url));
         Value = url;
     }

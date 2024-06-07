@@ -1,11 +1,11 @@
 ﻿using Shared.Server.Extensions;
 
-namespace Domains.Chat.ChatAggregate.ValueObjects;
+namespace Domains.Chats.Item.ValueObjects;
 internal class ChatId {
     public Guid RequesterId { get; private set; }
     public Guid ReceiverId { get; private set; }
     public (Guid requesterId, Guid receiverId) Value => (RequesterId, ReceiverId);
-   
+
     public ChatId() {
 
     }
@@ -25,7 +25,7 @@ internal class ChatId {
     public static implicit operator string(ChatId chatId) => $"{chatId.RequesterId}:{chatId.ReceiverId}";
     public static implicit operator ChatId(string chatId) {
         string[] ids = chatId.Split(':') ;
-        return new() { RequesterId = (ids[0]).AsGuid() , ReceiverId = ( ids[1].AsGuid()) };
+        return new() { RequesterId = ids[0].AsGuid() , ReceiverId = ids[1].AsGuid() };
     }
 
 }

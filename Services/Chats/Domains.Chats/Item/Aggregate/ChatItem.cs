@@ -1,8 +1,8 @@
 ﻿using Domain.Auth.UserAggregate;
-using Domains.Chat.MessageAggregate;
-using Domains.Chat.MessageAggregate.ValueObjects;
+using Domains.Chats.Message.Aggregate;
+using Domains.Chats.Message.ValueObjects;
 
-namespace Domains.Chat.ChatAggregate;
+namespace Domains.Chats.Item.Aggregate;
 public partial class ChatItem {
     public Guid Id { get; private set; } = Guid.NewGuid();
     public Guid RequesterId { get; private set; }
