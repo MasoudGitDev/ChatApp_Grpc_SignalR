@@ -1,0 +1,88 @@
+﻿@page "/Login"
+
+@using Client.ChatApp.Services
+@using Mapster
+@using Microsoft.AspNetCore.Components.Authorization
+@using Server.ChatApp.Protos
+@using Shared.Server.Models
+@using Shared.Server.Models.Results
+@using System.Net.Http.Headers
+@inject AccountRPCs.AccountRPCsClient _accountService
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navManager
+@inject HttpClient _httpClient
+
+<div class="row">
+    @if(Errors.Count > 0) {
+        <div class="col-8">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var error in Errors) {
+                        <tr>
+                            <td>@error.Code</td>
+                            <td>@error.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    } 
+    <div class="col-4 @(Errors.Count > 0 ? "" : "")">
+        <div class="edit_form">
+            <EditForm Model="_currentModel" Enhance OnValidSubmit="OnSubmitAsync">
+                <AntiforgeryToken />
+                <DataAnnotationsValidator />
+
+                <div class="form-group" style="width:100%;">
+                    <label class="form-label">LoginName</label>
+                    <input class="form-control" style="width:100%;" @bind="_currentModel.LoginName" />
+                </div>
+                <div class="form-group mt-1">
+                    <label class="form-label">Password</label>
+                    <input class="form-control" @bind="_currentModel.Password" />
+                </div>
+                <div class="edit_form_buttons mt-1">
+                    <button class="btn btn-outline-primary">Login</button>
+                    <button type="button" class="btn btn-outline-primary">Home</button>
+                </div>
+            </EditForm>
+        </div>
+    
+
+    </div>
+</div>
+
+@code {
+    private LoginDto _currentModel = new();
+    private List<CodeMessage> Errors = [];
+
+    private async Task OnSubmitAsync() {
+        Errors.Clear();
+        var _authProvider = (AuthStateProvider)_authenticationStateProvider;
+        // remove last state if exist
+        await _authProvider.SetStateAsync();
+        // login validation        
+        var response = (await _accountService.LoginAsync(_currentModel.Adapt<LoginReq>()));
+        Errors.AddRange(response.Errors.Adapt<List<CodeMessage>>());
+
+        Console.WriteLine(new { 
+            isValid = response.IsValid , 
+            token = response.AccessToken ,
+            errors =  string.Join(",",response.Errors) ,
+            convertedErrors = string.Join("," , Errors)
+        });
+        if(Errors.Count <= 0 && response.IsValid) {
+            // set new state
+            await _authProvider.SetStateAsync(response.AccessToken);
+            _navManager.NavigateTo("/");
+            return;
+        }
+     
+    }
+}
