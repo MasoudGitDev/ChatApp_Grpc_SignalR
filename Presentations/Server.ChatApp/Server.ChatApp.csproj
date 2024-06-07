@@ -5,10 +5,21 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9341e462-c6a6-41d6-8b92-b815ea6f4a36</UserSecretsId>
-  </PropertyGroup>
+  </PropertyGroup>	
 
   <ItemGroup>
+    <PackageReference Include="Google.AdWords" Version="24.19.0" />
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.15.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.63.0" />
+    <PackageReference Include="Grpc.Reflection" Version="2.63.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.64.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.8.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -17,5 +28,11 @@
     <ProjectReference Include="..\..\Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj" />
     <ProjectReference Include="..\..\Shared.Server\Shared.Server.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\chat_message.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />
+	</ItemGroup>
+
 
 </Project>
