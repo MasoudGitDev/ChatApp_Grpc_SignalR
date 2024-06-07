@@ -1,8 +1,8 @@
 ﻿using Apps.Auth;
 using Apps.Auth.Accounts;
 using Apps.Auth.Constants;
-using Apps.Chats;
-using Apps.Chats.Abstractions;
+using Apps.Chats.Queries;
+using Apps.Chats.UnitOfWorks;
 using Domain.Auth.RoleAggregate;
 using Domain.Auth.UserAggregate;
 using Infra.EFCore.Contexts;
@@ -93,7 +93,7 @@ public static class ServiceRegistrationExtensions {
 
         //================ Chat Services
         services.AddScoped<IChatItemQueries , ChatItemQueries>();
-        services.AddScoped<IMessageQueries , MessageQueries>();
+        services.AddScoped<IChatMessageQueries , MessageQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();
 
         return services;

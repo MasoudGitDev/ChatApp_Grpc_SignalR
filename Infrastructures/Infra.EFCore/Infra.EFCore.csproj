@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Services\Auth\Applications\Apps.Auth\Apps.Auth.csproj" />
     <ProjectReference Include="..\..\Services\ChatService\Domains\Domains.Chat\Domains.Chat.csproj" />
+    <ProjectReference Include="..\..\Services\Chats\Apps.Chats\Apps.Chats.csproj" />
+    <ProjectReference Include="..\..\Services\Chats\Domains.Chats\Domains.Chats.csproj" />
     <ProjectReference Include="..\..\Service\ChatService\Applications\Apps.Chats\Apps.Chats.csproj" />
   </ItemGroup>
 
