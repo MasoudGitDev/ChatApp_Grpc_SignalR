@@ -1,4 +1,4 @@
 ﻿namespace Apps.Auth.Constants;
 public static class TokenKeys {
-    public const string UserId = "UserId";
+    public const string UserId = "UserIdentifier";
 }
