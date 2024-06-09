@@ -1,32 +1,141 @@
-﻿
-
-.edit_form {
+﻿.center, .account_container {
     position: relative;
+    flex-direction: row;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height :250px;
-    padding: 1px;
-    background-color: #f8f8f8;
-    padding: 1px;
-    border:1px solid rgba(80,80,80,.2);
-    border-radius:10px;
 }
 
-.edit_form_buttons {
+.size-all {
+    width: 100%;
+    height: 100%;
+}
+
+.account_container {
+    width: 100%;
+    height: 100vh;
+    background-color: red;
+}
+
+    .account_container > .section-errors {
+        flex-direction: column;
+        top: 0px;
+        left: 0px;
+        justify-content: flex-start;
+        align-items:flex-end;
+        position: absolute;
+        width: 50%;
+        height: inherit;
+        background-color: floralwhite;
+        z-index: 100;
+        border: 1px solid transparent;        
+        border-right: 1px solid rgba(80,80,80,.2);
+        padding: 5px;
+        gap: 5px;
+        visibility : hidden;
+    }
+
+    .account_container > .section-form {
+        width: 100%;
+        height: inherit;
+        background-color: ghostwhite;
+        padding: 5px;
+        padding: 20px;
+    }
+
+.section-errors > .err {
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    width: 100%;
+    height: 150px;
+    border: 1px solid rgba(80,80,80,.2);
+    flex-direction:column;
+    gap:0px;
+}
+
+.form-errors {
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:flex-start;
+    width: 100%;
+    border: 1px solid rgba(80,80,80,.2);
+    gap:15px;
+    padding:10px;
+    overflow:hidden;
+}
+.form-error {
     position: relative;
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width :100%;
-    padding: 1px;
-    gap:.5rem;
+    width: 100%;
+    height: fit-content;
+    border: 1px solid rgba(80,80,80,.2);
+    border-radius: 10px;
+    flex-direction: column;
+    gap: 0px;
+    overflow: hidden;
 }
 
-input{
-    width:100%;
-    height:40px;
+
+   .form-error > .err-logo {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        top: 0px;
+        right: 2px;
+        color: red;
+        border: 1px solid rgba(80,80,80,.2);
+        background-color: white;
+        border-radius: 50%;
+        z-index:101;
+    }
+    .form-error > .err-title, .err-info {
+        top: 0px;
+        position: relative;
+        border: 1px solid transparent;
+        width: 100%;
+        height: 40px;
+        background-color: whitesmoke;
+        direction: rtl;
+        padding-right: 40px;
+    }
+
+    .form-error > .err-info {
+        top: -24px;
+        background-color: white;
+    }
+
+
+.err-info {
+    background-color: blue;
 }
 
+    .form-container {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        width: 400px;
+        height: fit-content;
+        background-color: #f8f8f8;
+        border: 1px solid rgba(80,80,80,.2);
+        border-radius: 10px;
+        padding: 0.8rem;
+    }
 
+.edit_form {
+    background-color: rebeccapurple;
+    border: 1px solid rgba(80,80,80,.2);
+    gap: 20px;
+}
+
+    .edit_form > .buttons {
+        display: flex;
+        justify-content: space-between;
+    }

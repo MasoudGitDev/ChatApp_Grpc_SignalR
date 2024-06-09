@@ -12,55 +12,53 @@
 @inject NavigationManager _navManager
 @inject HttpClient _httpClient
 
-<div class="row">
+<div class="account_container">
     @if(Errors.Count > 0) {
-        <div class="col-8">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Message</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var error in Errors) {
-                        <tr>
-                            <td>@error.Code</td>
-                            <td>@error.Message</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    } 
-    <div class="col-4 @(Errors.Count > 0 ? "" : "")">
-        <div class="edit_form">
-            <EditForm Model="_currentModel" Enhance OnValidSubmit="OnSubmitAsync">
-                <AntiforgeryToken />
-                <DataAnnotationsValidator />
+        <div class="section-errors center" style="visibility:@(Errors.Count > 0 ? "visible" : "hidden")">
+            <div class="mb-3" style="width:100%;height40px; border-bottom:1px solid rgba(80,80,80,.3);">
+                <button class="btn btn-close" @onclick="CloseFormErrors"></button>
+            </div>
+            @foreach(var err in Errors) {
 
-                <div class="form-group" style="width:100%;">
-                    <label class="form-label">LoginName</label>
-                    <input class="form-control" style="width:100%;" @bind="_currentModel.LoginName" />
+                <div class="form-error center">
+                    <div class="err-logo center"><p>*</p></div>
+                    <div class="err-title center">@err.Code</div><br />
+                    <div class="err-info center">@err.Message</div>
                 </div>
+            }               
+         </div>    
+    }
+    
+    <div class="section-form center">
+        <div class="form-container size-all">
+            <EditForm Model="_currentModel" class="edit_form size-all" OnValidSubmit="OnSubmitAsync">
                 <div class="form-group mt-1">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">ایمیل یا نام کاربری</label>
+                    <input class="form-control" @bind="_currentModel.LoginName" />
+                </div>
+                <div class="form-group  mt-3">
+                    <label class="form-label">رمز عبور</label>
                     <input class="form-control" @bind="_currentModel.Password" />
                 </div>
-                <div class="edit_form_buttons mt-1">
-                    <button class="btn btn-outline-primary">Login</button>
-                    <button type="button" class="btn btn-outline-primary">Home</button>
+                <div class="buttons mt-3">
+                    <button class="btn btn-outline-success">ثبت نام</button>
+                    <button type="button" class="btn btn-outline-info" @onclick="GoToSignUpPage">ورود</button>
                 </div>
             </EditForm>
         </div>
-    
-
     </div>
 </div>
+
 
 @code {
     private LoginDto _currentModel = new();
     private List<CodeMessage> Errors = [];
+
+    private void GoToSignUpPage() => _navManager.NavigateTo("/SignUp");
+    private void CloseFormErrors() {
+        Errors.Clear();
+        _currentModel = new();
+    }
 
     private async Task OnSubmitAsync() {
         Errors.Clear();
