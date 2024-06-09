@@ -1,0 +1,69 @@
+﻿.center, .account_container{
+    position: relative;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.size-all{
+    width:100%;
+    height:100%;
+}
+
+.account_container{   
+    width:100%;
+    height:100vh;
+    background-color:red;
+}
+    .account_container > .section-errors {
+        flex-direction: column;
+        top: 0px;
+        left: 0px;
+        justify-content: flex-start;
+        position: absolute;
+        width: 50%;
+        height: inherit;
+        background-color: floralwhite;
+        z-index: 100;
+        border: 1px solid transparent;
+        border-right: 1px solid rgba(80,80,80,.2);
+        padding: 5px;
+        gap: 5px;
+        visibility:hidden;
+    }
+    .account_container > .section-form {
+        width: 100%;
+        height: inherit;
+        background-color: ghostwhite;
+        padding: 5px;
+        padding: 20px;     
+    }
+
+.section-errors > .err {
+    width: 100%;
+    height: 50px;
+    border: 1px solid rgba(80,80,80,.2);
+}
+
+.form-container {
+    position:relative;
+    top:0px;
+    left:0px;   
+    width: 400px;
+    height:fit-content;
+    background-color: #f8f8f8;
+    border: 1px solid rgba(80,80,80,.2);
+    border-radius: 10px;
+    padding: 0.8rem;
+}
+
+.edit_form {   
+    background-color:rebeccapurple;
+    border:1px solid rgba(80,80,80,.2);   
+    gap:20px;
+}
+    .edit_form > .buttons {
+        display:flex;
+        justify-content:space-between;
+    }

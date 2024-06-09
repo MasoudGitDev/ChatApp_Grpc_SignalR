@@ -1,0 +1,47 @@
+﻿@page "/SignUp"
+
+@inject NavigationManager _navManager
+
+<div class="account_container">
+    <div class="section-errors center">
+        <div class="err center">Control</div>
+        <div class="err center">Error 1</div>
+        <div class="err center">Error 1</div>
+        <div class="err center">Error 1</div>
+        <div class="err center">Error 1</div>
+    </div>
+    <div class="section-form center">
+        <div class="form-container size-all">
+            <EditForm Model="_currentModel" class="edit_form size-all">
+                <div class="form-group mt-1">
+                    <label class="form-label">پست الکترونیک (ایمیل)</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group mt-3">
+                    <label class="form-label">نام کاربری</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group  mt-3">
+                    <label class="form-label">رمز عبور</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group mt-3 mb-3">
+                    <label class="form-label">تایید رمز عبور</label>
+                    <input class="form-control" />
+                </div>
+                <div class="buttons">
+                    <button class="btn btn-outline-success">ثبت نام</button>
+                    <button type="button" class="btn btn-outline-info" @onclick="GoToLoginPage">ورود</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+
+</div>
+
+@code {
+    private RegisterDto _currentModel = new();
+
+    private void GoToLoginPage() => _navManager.NavigateTo("/Login");
+}
