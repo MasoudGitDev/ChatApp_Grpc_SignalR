@@ -3,6 +3,7 @@ using Apps.Chats.Queries;
 
 namespace Apps.Chats.UnitOfWorks;
 public interface IChatUOW {
+    public IChatRequestQueries ChatRequestQueries { get; }
     public IChatItemQueries ChatItemQueries { get; }
     public IChatMessageQueries MessageQueries { get; }
     public IUserQueries UserQueries { get; }
