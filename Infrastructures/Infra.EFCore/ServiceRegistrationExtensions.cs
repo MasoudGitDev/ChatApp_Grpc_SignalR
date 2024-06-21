@@ -95,6 +95,7 @@ public static class ServiceRegistrationExtensions {
         //================ Chat Services
         services.AddScoped<IChatItemQueries , ChatItemQueries>();
         services.AddScoped<IChatMessageQueries , MessageQueries>();
+        services.AddScoped<IChatRequestQueries , ChatRequestQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();
 
         return services;
