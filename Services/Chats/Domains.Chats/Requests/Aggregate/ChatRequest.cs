@@ -5,7 +5,7 @@ namespace Domains.Chats.Requests.Aggregate;
 /// <summary>
 /// The Person-1 must only can send a request to Person-2 , when no one of each them is not a 'contact' member for other!
 /// </summary>
-public class ChatRequest {
+public partial class ChatRequest {
 
     
     public Guid RequesterId { get; private set; }
@@ -26,4 +26,13 @@ public class ChatRequest {
 
 
 
+}
+
+public partial class ChatRequest {
+    public static ChatRequest Create(Guid requesterId , Guid receiverId) => new() {
+        ReceiverId = receiverId ,
+        RequesterId = requesterId ,
+        IsBlockedByReceiver = false ,
+        RequestedAt = DateTime.UtcNow ,
+    };
 }
