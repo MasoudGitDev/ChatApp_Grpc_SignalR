@@ -10,11 +10,14 @@ internal class ChatUOW(
     AppDbContext _dbContext ,
     IUserQueries _userQueries ,
     IChatItemQueries _chatQueries ,
+    IChatRequestQueries _requests ,
     IChatMessageQueries _messageQueries) : IChatUOW {
 
     public IChatItemQueries ChatItemQueries => _chatQueries;
     public IChatMessageQueries MessageQueries => _messageQueries;
     public IUserQueries UserQueries => _userQueries;
+
+    public IChatRequestQueries ChatRequestQueries => _requests;
 
     public async Task CreateAsync<TEntity>(TEntity entity) where TEntity : class, new() {
         await _dbContext.AddAsync(entity , new CancellationToken());
