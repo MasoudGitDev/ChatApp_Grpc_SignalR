@@ -1,33 +1,36 @@
 ﻿@page "/SignUp"
+@using Client.ChatApp.Services
+@using Mapster
+@using Microsoft.AspNetCore.Components.Authorization
+@using Server.ChatApp.Protos
+@using Shared.Server.Models
 
 @inject NavigationManager _navManager
+@inject AuthenticationStateProvider _baseAuthProvider
+@inject AccountRPCs.AccountRPCsClient _accountService
 
 <div class="account_container">
     <div class="section-errors center">
         <div class="err center">Control</div>
-        <div class="err center">Error 1</div>
-        <div class="err center">Error 1</div>
-        <div class="err center">Error 1</div>
-        <div class="err center">Error 1</div>
+        @foreach(var err in Errors) {
+            <div class="err center">@err.Code : @err.Message</div>
+        }
+
     </div>
     <div class="section-form center">
         <div class="form-container size-all">
-            <EditForm Model="_currentModel" class="edit_form size-all">
+            <EditForm Model="_currentModel" class="edit_form size-all" OnValidSubmit="OnFormSubmitAsync">
                 <div class="form-group mt-1">
                     <label class="form-label">پست الکترونیک (ایمیل)</label>
-                    <input class="form-control" />
+                    <input class="form-control" @bind="_currentModel.Email" />
                 </div>
                 <div class="form-group mt-3">
                     <label class="form-label">نام کاربری</label>
-                    <input class="form-control" />
+                    <input class="form-control" @bind="_currentModel.UserName" />
                 </div>
                 <div class="form-group  mt-3">
-                    <label class="form-label">رمز عبور</label>
-                    <input class="form-control" />
-                </div>
-                <div class="form-group mt-3 mb-3">
-                    <label class="form-label">تایید رمز عبور</label>
-                    <input class="form-control" />
+                    <label class="form-label" >رمز عبور</label>
+                    <input class="form-control" @bind="_currentModel.Password" />
                 </div>
                 <div class="buttons">
                     <button class="btn btn-outline-success">ثبت نام</button>
@@ -42,6 +45,27 @@
 
 @code {
     private RegisterDto _currentModel = new();
-
+    private List<CodeMessage> Errors = new();
     private void GoToLoginPage() => _navManager.NavigateTo("/Login");
+
+    private async Task OnFormSubmitAsync() {
+        try {
+            Errors.Clear();
+            var authProvider = (AuthStateProvider)_baseAuthProvider;
+            // remove last state if exist
+            await authProvider.SetStateAsync();
+            // login validation
+            var response = await _accountService.SignUpAsync(_currentModel.Adapt<RegisterReq>());
+            Errors.AddRange(response.Errors.Adapt<List<CodeMessage>>());
+
+            if(Errors.Count <= 0 && response.IsValid) {
+                await authProvider.SetStateAsync(response.AccessToken);
+                _navManager.NavigateTo("/Chats");
+            }
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.InnerException);
+        }
+
+    }
 }
