@@ -1,6 +1,8 @@
 syntax = "proto3";
+import "Protos/common_models.proto";
 option csharp_namespace = "Server.ChatApp.Protos";
 package account_service_pkg;
+
 
 service AccountRPCs{
 	rpc SignUp(RegisterReq) returns(AccountResponse);
@@ -28,10 +30,8 @@ message DeleteReq{
 message AccountResponse{
 	bool IsValid = 1;
 	string AccessToken = 2;
-	repeated Error Errors = 3;
+	repeated common.ErrorInfo Errors = 3;
 }
 
-message Error{
-	string Code = 1;
-	string Message = 2;
-}
+
+
