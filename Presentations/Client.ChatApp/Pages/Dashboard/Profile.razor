@@ -1,0 +1,48 @@
+﻿@page "/Profile/{userName}"
+@using Shared.Server.Models
+
+<div class="container">
+   <div class="profile">
+
+       <div class="info">
+            <div class="logo"></div>
+            <div class="user-data">
+                <div>@UserName</div>
+            </div>        
+       </div>      
+        <div class="dropdown-divider"></div>      
+        <div class="description">
+            <p>Hi There ! </p>
+            <p>I am a web developer.</p>
+            <p>my ... are :</p>
+            <ul>
+                <li>C#</li>
+                <li>Asp.net Core</li>
+            </ul>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="controls">
+            <button class="btn btn-outline-info">@ButtonName</button>
+        </div>
+   </div>
+ 
+</div>
+
+@code {
+
+
+    [Parameter]
+    public string UserName { get; set; } = "Ali";
+
+    private bool isValidUserName = false;
+    private bool ExistInContacts = false;
+    private string ButtonName => ExistInContacts ?  "Dialog" : "Request";
+    
+    private List<CodeMessage> Errors = [];
+
+
+
+
+
+
+}
