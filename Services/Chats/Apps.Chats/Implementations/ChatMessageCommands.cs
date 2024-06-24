@@ -16,7 +16,7 @@ public class ChatMessageCommands(IChatUOW _unitOfWork) : IChatMessageCommands {
     }
 
     public async Task<Result> DeleteAsync(Guid messageId) {
-        var item = await _unitOfWork.MessageQueries.FindByIdAsync(messageId);
+        var item = await _unitOfWork.Queries.ChatMessages.FindByIdAsync(messageId);
         if(item is null) {
             return ChatMessageResult.NotFound($"The {nameof(messageId)} : <{messageId}> is not founded.");
         }

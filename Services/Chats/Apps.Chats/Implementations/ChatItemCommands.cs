@@ -18,11 +18,11 @@ public class ChatItemCommands(IChatUOW _unitOfWork) : IChatItemCommands {
         }
 
         //  The Receiver user must exist in the db.
-        ( await _unitOfWork.UserQueries.FindByIdAsync(receiverId) )
+        ( await _unitOfWork.Queries.Users.FindByIdAsync(receiverId) )
             .ThrowIfNull($"The {nameof(receiverId)} : <{receiverId}> is invalid.");
 
         // ensure each requester-receiver users just have one chatItem row in db that related to each other!
-        var isAnyChat = await _unitOfWork.ChatItemQueries.HaveAnyChatItem(requesterId, receiverId);
+        var isAnyChat = await _unitOfWork.Queries.ChatItems.HaveAnyChatItem(requesterId, receiverId);
         if(isAnyChat) {
             return ChatItemResult.Duplicate;
         }
@@ -33,7 +33,7 @@ public class ChatItemCommands(IChatUOW _unitOfWork) : IChatItemCommands {
     }
 
     public async Task<Result> DeleteAsync(Guid chatId) {
-        var chatItem = await _unitOfWork.ChatItemQueries.FindByIdAsync(chatId);
+        var chatItem = await _unitOfWork.Queries.ChatItems.FindByIdAsync(chatId);
         if(chatItem is null) {
             return ChatItemResult.NotFound($"The {nameof(chatId)} : <{chatId}> not found.");
         }
