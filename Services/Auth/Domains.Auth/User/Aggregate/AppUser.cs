@@ -23,4 +23,6 @@ public partial class AppUser {
             CreatedAt = DateTime.UtcNow ,
         };
     }
+    public static AppUser Empty => new() { Id = Guid.Empty , Email = "<invalid-email" , UserName = "<invalid-username>" };
+
 }
