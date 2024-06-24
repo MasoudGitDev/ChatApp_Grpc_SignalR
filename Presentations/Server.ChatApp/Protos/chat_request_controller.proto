@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "Protos/common_models.proto";
+option csharp_namespace = "Server.ChatApp.Protos";
+package chat_request_pkg;
+
+service ChatRequestRPCs{
+	rpc Request(common.UsersConnection) returns(common.ResultMsg);
+	rpc Accept(ChatRequestMsg)   returns(common.ResultMsg);
+	rpc Block(ChatRequestMsg)    returns(common.ResultMsg);
+	rpc Unblock(ChatRequestMsg)  returns(common.ResultMsg);
+	rpc Delete(ChatRequestMsg)   returns(common.ResultMsg);
+}
+message ChatRequestMsg{
+	string chatRequestId = 1;
+}
