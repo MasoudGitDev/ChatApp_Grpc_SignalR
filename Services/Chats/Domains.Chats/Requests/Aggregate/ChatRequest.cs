@@ -7,7 +7,7 @@ namespace Domains.Chats.Requests.Aggregate;
 /// </summary>
 public partial class ChatRequest {
 
-    
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public Guid RequesterId { get; private set; }
     public Guid ReceiverId { get; private set; }
 
