@@ -1,4 +1,5 @@
 ﻿
+using Domains.Auth.User.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Shared.Server.Dtos;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,7 @@ namespace Domains.Auth.User.Aggregate;
 public partial class AppUser : IdentityUser<Guid> {
 
     public DateTime CreatedAt { get; set; }
+    public ProfileId ProfileId { get; private set; } = string.Empty;
 
 }
 
@@ -24,5 +26,9 @@ public partial class AppUser {
         };
     }
     public static AppUser Empty => new() { Id = Guid.Empty , Email = "<invalid-email" , UserName = "<invalid-username>" };
+
+    public void Update(ProfileId profileId) {
+        ProfileId = profileId;
+    }
 
 }
