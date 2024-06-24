@@ -52,7 +52,7 @@ internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.Contact
     private static ResultMsg SuccessResult => new() { IsSuccessful = true };
     private static ResultMsg FailureResult(string code , string description) {
         ResultMsg result = new() { IsSuccessful = false };
-        result.Message.Add(new ErrorInfo() { Code = code , Description = description });
+        result.Messages.Add(new ErrorInfo() { Code = code , Description = description });
         return result;
     }
 }
