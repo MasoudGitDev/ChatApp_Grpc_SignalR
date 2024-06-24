@@ -1,5 +1,8 @@
-﻿@page "/Profile/{userName}"
-@using Shared.Server.Models
+﻿@page "/Profile/{profileId}"
+
+@inject ContactRPCs.ContactRPCsClient _contactService;
+@inject NavigationManager _navManager;
+
 
 <div class="container">
    <div class="profile">
@@ -7,7 +10,7 @@
        <div class="info">
             <div class="logo"></div>
             <div class="user-data">
-                <div>@UserName</div>
+                <div>@ProfileId</div>
             </div>        
        </div>      
         <div class="dropdown-divider"></div>      
@@ -22,7 +25,7 @@
         </div>
         <div class="dropdown-divider"></div>
         <div class="controls">
-            <button class="btn btn-outline-info">@ButtonName</button>
+            <button class="btn btn-outline-info" hidden="@(!isValidUserName)">@ButtonName</button>
         </div>
    </div>
  
@@ -32,16 +35,31 @@
 
 
     [Parameter]
-    public string UserName { get; set; } = "Ali";
+    public string ProfileId { get; set; } = "ProfileId1";
 
     private bool isValidUserName = false;
     private bool ExistInContacts = false;
     private string ButtonName => ExistInContacts ?  "Dialog" : "Request";
+
+    private List<ErrorInfo> Errors = [];
+
+    protected override async Task OnInitializedAsync() {
+        var result = await _contactService.IsInContactsAsync(new ContactMsg() { ProfileId = ProfileId});
+        Errors.AddRange(result.Messages);
+        foreach(var error in result.Messages) {
+            if(error.Code == "Invalid-ProfileId") {
+
+            }
+        }
+
+        if(result.IsSuccessful) {
+            _navManager.NavigateTo("/");
+            return;
+        }
+
+    }
+
     
-    private List<CodeMessage> Errors = [];
-
-
-
 
 
 
