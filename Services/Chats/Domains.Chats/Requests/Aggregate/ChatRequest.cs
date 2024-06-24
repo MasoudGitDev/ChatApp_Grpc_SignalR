@@ -35,4 +35,14 @@ public partial class ChatRequest {
         IsBlockedByReceiver = false ,
         RequestedAt = DateTime.UtcNow ,
     };
+
+    public Task BlockAsync() {
+        IsBlockedByReceiver = true;
+        return Task.CompletedTask;
+    }
+
+    public Task UnBlockAsync() {
+        IsBlockedByReceiver = false;
+        return Task.CompletedTask;
+    }
 }
