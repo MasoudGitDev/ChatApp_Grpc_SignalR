@@ -1,0 +1,9 @@
+syntax = "proto3";
+import "Protos/common_models.proto";
+option csharp_namespace = "Client.ChatApp.Protos";
+package contacts_pkg;
+
+service ContactRPCs{
+	rpc IsInContacts(common.UserMsg) returns(common.ResultMsg);
+	rpc Remove(common.RowMsg) returns(common.ResultMsg);
+}
