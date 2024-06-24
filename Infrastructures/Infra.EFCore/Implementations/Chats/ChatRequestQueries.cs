@@ -1,15 +1,11 @@
 ﻿using Apps.Chats.Queries;
-using Domains.Auth.User.Aggregate;
 using Domains.Chats.Requests.Aggregate;
+using Infra.EFCore.Contexts;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infra.EFCore.Implementations.Chats {
-    internal sealed class ChatRequestQueries : IChatRequestQueries {
-        public Task<ChatRequest?> BlockAsync(Guid receiverId) {
-            throw new NotImplementedException();
-        }
-
-        public Task<AppUser?> FindAsync(Guid userId) {
-            throw new NotImplementedException();
-        }
+namespace Infra.EFCore.Implementations.Chats;
+internal sealed class ChatRequestQueries(AppDbContext _dbContext) : IChatRequestQueries {
+    public async Task<ChatRequest?> FindByIdAsync(Guid chatRequestId) {
+        return await _dbContext.ChatRequests.FirstOrDefaultAsync(x => x.Id == chatRequestId);
     }
 }
