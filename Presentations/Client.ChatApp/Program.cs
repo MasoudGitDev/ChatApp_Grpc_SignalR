@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Client.ChatApp;
+using Client.ChatApp.Protos;
 using Client.ChatApp.Services;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
@@ -30,6 +31,10 @@ builder.Services.AddScoped(services => {
 
 builder.Services.AddScoped(service => {
     return new AccountRPCs.AccountRPCsClient(gRPCChannel);
+});
+
+builder.Services.AddScoped(service => {
+    return new ContactRPCs.ContactRPCsClient(gRPCChannel);
 });
 
 await builder.Build().RunAsync();
