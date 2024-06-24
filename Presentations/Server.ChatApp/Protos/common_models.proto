@@ -9,7 +9,7 @@ message ErrorInfo{
 
 message ResultMsg{
 	bool IsSuccessful = 1;
-	repeated ErrorInfo message = 2;
+	repeated ErrorInfo messages = 2;
 }
 
 message UsersConnection {
