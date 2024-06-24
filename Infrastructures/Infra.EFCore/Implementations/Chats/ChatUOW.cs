@@ -6,18 +6,11 @@ using Infra.EFCore.Exceptions;
 using Shared.Server.Exceptions;
 
 namespace Infra.EFCore.Implementations.Chats;
-internal class ChatUOW(
-    AppDbContext _dbContext ,
-    IUserQueries _userQueries ,
-    IChatItemQueries _chatQueries ,
-    IChatRequestQueries _requests ,
-    IChatMessageQueries _messageQueries) : IChatUOW {
+internal class ChatUOW(AppDbContext _dbContext ,IAppQueries _queries) : IChatUOW {
 
-    public IChatItemQueries ChatItemQueries => _chatQueries;
-    public IChatMessageQueries MessageQueries => _messageQueries;
-    public IUserQueries UserQueries => _userQueries;
+    public IAppQueries Queries => _queries;
 
-    public IChatRequestQueries ChatRequestQueries => _requests;
+    //=====================
 
     public async Task CreateAsync<TEntity>(TEntity entity) where TEntity : class, new() {
         await _dbContext.AddAsync(entity , new CancellationToken());
