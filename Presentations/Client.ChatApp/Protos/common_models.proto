@@ -6,3 +6,21 @@ message ErrorInfo{
 	string Code = 1;
 	string Description = 2;
 }
+
+message ResultMsg{
+	bool IsSuccessful = 1;
+	repeated ErrorInfo message = 2;
+}
+
+message UsersConnection {
+	string ReceiverId = 1;
+	string RequesterId = 2;
+}
+
+message UserMsg {
+	string UserId = 1;
+}
+
+message RowMsg{
+	string RowId = 1;
+}
