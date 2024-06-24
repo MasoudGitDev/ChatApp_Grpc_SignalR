@@ -7,14 +7,12 @@ using Shared.Server.Extensions;
 
 namespace Server.ChatApp.GRPCHandlers;
 
-public class GrpcChatMessageHandler(IChatMessageCommands _messageHandler) : ChatMessageRPCs.ChatMessageRPCsBase
-{
-    public override async Task<MessageRes> Send(MessageReq request, ServerCallContext context)
-    {
+internal class GrpcChatMessageHandler(IChatMessageCommands _messageHandler) : ChatMessageRPCs.ChatMessageRPCsBase {
+    public override async Task<ResultMsg> Send(MessageReq request , ServerCallContext context) {
         var (chatId, messageId, senderId, content) = (request.ChatId, request.MessageId, request.SenderId, request.Content);
         FileUrl fileUrl = FileUrl.Create("grpcFileUrl");
         var msg = ChatMessage.Create(chatId.AsGuid(), senderId.AsGuid(), content, fileUrl, messageId.AsGuid());
         await _messageHandler.SendAsync(msg);
-        return new MessageRes { Code = "Ok", Description = "The message has been sent successfully." };
+        return new ResultMsg() { IsSuccessful = true };
     }
 }
