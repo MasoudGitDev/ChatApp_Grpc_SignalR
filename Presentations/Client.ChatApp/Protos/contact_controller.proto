@@ -4,6 +4,10 @@ option csharp_namespace = "Client.ChatApp.Protos";
 package contacts_pkg;
 
 service ContactRPCs{
-	rpc IsInContacts(common.UserMsg) returns(common.ResultMsg);
+	rpc IsInContacts(ContactMsg) returns(common.ResultMsg);
 	rpc Remove(common.RowMsg) returns(common.ResultMsg);
+}
+
+message ContactMsg{
+	string ProfileId = 1;
 }
