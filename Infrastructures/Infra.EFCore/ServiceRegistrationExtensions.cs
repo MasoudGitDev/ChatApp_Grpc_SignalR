@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
 using System.Text;
+using Infra.EFCore.Implementations;
 
 namespace Infra.EFCore;
 public static class ServiceRegistrationExtensions {
@@ -96,8 +97,9 @@ public static class ServiceRegistrationExtensions {
         services.AddScoped<IChatItemQueries , ChatItemQueries>();
         services.AddScoped<IChatMessageQueries , MessageQueries>();
         services.AddScoped<IChatRequestQueries , ChatRequestQueries>();
+        services.AddScoped<IContactQueries , ContactQueries>();
+        services.AddScoped<IAppQueries,AppQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();
-
         return services;
     }
 }
