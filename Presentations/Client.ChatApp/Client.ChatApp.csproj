@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <None Remove="Protos\account_controller.proto" />
+    <None Remove="Protos\chat_request_controller.proto" />
+    <None Remove="Protos\common_models.proto" />
+    <None Remove="Protos\contact_controller.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\chat.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +41,10 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\account_controller.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\chat_message.proto" GrpcServices="Client" />     
+    <Protobuf Include="Protos\chat_message.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\chat_request_controller.proto" GrpcServices="Client" />
+	  <Protobuf Include="Protos\common_models.proto" GrpcServices="Client" />
+	  <Protobuf Include="Protos\contact_controller.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>
