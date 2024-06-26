@@ -8,7 +8,7 @@ public class ProfileId {
         }
         Value = profileId;
     }
-
+    public static ProfileId Create(string profileId) => new(profileId);
     public static implicit operator ProfileId(string profileId) => new(profileId);
     public static implicit operator string(ProfileId profileId) => profileId.Value;
 }
