@@ -1,4 +1,5 @@
 ﻿using Domains.Auth.User.Aggregate;
+using Domains.Auth.User.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,5 +12,6 @@ internal class UserEFConfigs : IEntityTypeConfiguration<AppUser> {
         builder.Property(x => x.Id).IsRequired();
         builder.Property(x => x.Email).IsRequired();
         builder.Property(x => x.UserName).IsRequired();
+        builder.Property(x=> x.ProfileId).IsRequired().HasConversion(x=> x.Value , y=>ProfileId.Create(y));
     }
 }
