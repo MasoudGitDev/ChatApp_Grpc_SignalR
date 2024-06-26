@@ -18,14 +18,6 @@ public partial class ChatRequest {
     /// </summary>
     public bool IsBlockedByReceiver { get; set; } = false;
 
-
-
-    //========== relations
-    public AppUser Requester { get; private set; } = null!;
-    public AppUser Receiver { get; private set; } = null!;
-
-
-
 }
 
 public partial class ChatRequest {

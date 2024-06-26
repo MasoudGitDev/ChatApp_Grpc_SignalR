@@ -2,14 +2,11 @@
 
 namespace Domains.Chats.Contacts.Aggregate;
 public partial record class Contact {
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public Guid RequesterId { get; private set; }
     public Guid ReceiverId { get; private set; }
 
     public DateTime ContactedAt { get; private set; } = DateTime.UtcNow;
-
-    //===============relations
-    public AppUser Requester { get; private set; } = null!;
-    public AppUser Receiver { get; private set; } = null!;
 }
 
 
