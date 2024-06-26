@@ -42,15 +42,11 @@ internal class ChatConfigs :
 
     public void Configure(EntityTypeBuilder<ChatRequest> builder) {
         builder.ToTable("ChatRequests");
-        builder.HasKey(x => new { x.RequesterId , x.ReceiverId });
-        builder.HasOne<AppUser>().WithMany().HasForeignKey(x=> new { x.RequesterId })
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasKey(x => x.Id);    
     }
 
     public void Configure(EntityTypeBuilder<Contact> builder) {
         builder.ToTable("Contacts");
-        builder.HasKey(x => new { x.RequesterId , x.ReceiverId });
-        builder.HasOne<AppUser>().WithMany().HasForeignKey(x => new { x.RequesterId })
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasKey(x => x.Id);
     }
 }
