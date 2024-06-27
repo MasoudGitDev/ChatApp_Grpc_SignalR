@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;
 using Server.ChatApp.Hubs.Chats;
-using Server.ChatApp.Protos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +58,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-if(app.Environment.IsDevelopment()) { 
+if(app.Environment.IsDevelopment()) {
     app.UseSwaggerUI(c => {
         c.SwaggerEndpoint("/swagger/v1/swagger.json" , "My API V1");
     });
@@ -78,10 +77,18 @@ app.UseGrpcWeb();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.MapGrpcService<GrpcChatMessageHandler>().EnableGrpcWeb();
+// grpc handlers
+app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
+app.MapGrpcService<GrpcChatMessageHandler>().EnableGrpcWeb();
+app.MapGrpcService<ChatRequestHandler>().EnableGrpcWeb();
+app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
+
+
+
+// signalR hubs
 app.MapHub<ChatMessageHub>("/chatMessageHub");
+
 
 app.MapControllers();
 
