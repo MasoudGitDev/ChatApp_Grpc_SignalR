@@ -35,10 +35,16 @@ public class GrpcAccountHandler(IAccountService _accountService, IUserQueries _u
         return ToAccountResponse(await _accountService.RegisterAsync(request.Adapt<RegisterDto>()), context);
     }
 
+    [AllowAnonymous]
     public override async Task<AccountResponse> LoginByToken(LoginByTokenReq request, ServerCallContext context)
     {
-        var accountResult = await _accountService.LoginByTokenAsync(request.AccessToken, (await GetUserAsync(context)).Id.ToString());
-        return ToAccountResponse(accountResult, context);
+        try {
+            var accountResult = await _accountService.LoginByTokenAsync(request.AccessToken);
+            return ToAccountResponse(accountResult , context);
+        }
+        catch(Exception ex) {
+            throw new RpcException(Status.DefaultCancelled , ex.Message);
+        }
     }
 
     //======================privates
