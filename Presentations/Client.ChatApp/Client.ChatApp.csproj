@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\ChatService\Domains\Domains.Chat\Domains.Chat.csproj" />
+    <ProjectReference Include="..\..\Services\Chats\Domains.Chats\Domains.Chats.csproj" />
     <ProjectReference Include="..\..\Shared.Server\Shared.Server.csproj" />
   </ItemGroup>
 
