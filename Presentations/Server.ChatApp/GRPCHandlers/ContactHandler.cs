@@ -40,12 +40,7 @@ internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.Contact
         if(user is null || user.Identity is null || !user.Identity.IsAuthenticated) {
             throw new RpcException(Status.DefaultCancelled , "You are not authenticated.");
         }
-        var userIdByClaim = user.Claims
-            .Where(x => x.Type == TokenKeys.UserId).FirstOrDefault()?.Value
-            ?? throw new RpcException(Status.DefaultCancelled ,"The value of <userId> claim is invalid");
-
-        _ = Guid.TryParse(userIdByClaim , out Guid userId);
-        return await _unitOfWork.Queries.Users.FindByIdAsync(userId)
+        return await _unitOfWork.Queries.Users.FindByUserNameAsync(user.Identity.Name ?? String.Empty)
             ?? throw new RpcException(Status.DefaultCancelled , "Invalid-User");
     }
     private async Task<Guid> GetUserIdAsync(ServerCallContext ctx) => ( await GetUserAsync(ctx) ).Id;
