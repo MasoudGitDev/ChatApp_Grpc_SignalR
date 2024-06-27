@@ -58,11 +58,11 @@ public static class ServiceRegistrationExtensions {
             options.Password.RequiredUniqueChars = 1;
             options.SignIn.RequireConfirmedEmail = true;
         })
-            .AddRoles<AppRole>()
-            .AddEntityFrameworkStores<AppDbContext>()
             .AddUserManager<UserManager<AppUser>>()
             .AddSignInManager<SignInManager<AppUser>>()
-           ;
+            .AddRoles<AppRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
+          
 
         var jwtSettingModel = configuration.GetSection("JwtSettingsModel").Get<JwtSettingsModel>()
             .ThrowIfNull("The <JwtSettingsModel> can not be null.");
