@@ -1,4 +1,5 @@
-﻿using Apps.Auth.Services;
+﻿using Apps.Auth.Constants;
+using Apps.Auth.Services;
 using Domains.Auth.User.Aggregate;
 using Microsoft.AspNetCore.Identity;
 using Shared.Server.Dtos;
@@ -6,6 +7,8 @@ using Shared.Server.Exceptions;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
 using Shared.Server.Models.Results;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Infra.EFCore.Implementations.Accounts;
 internal class AccountService(UserManager<AppUser> _userManager , IJwtService _jwtService) : IAccountService {
@@ -20,12 +23,17 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
         }
         return await _jwtService.GenerateAsync(user.Id);
     }
-    public async Task<AccountResult> LoginByTokenAsync(string accessToken , string userId) {
-        var user = await _userManager.FindByIdAsync(userId);
-        if(user is null) {
-            return AccountResult.Error(CodeMessage.Create("Invalid-User" , "The <user-id> is invalid."));
+    public async Task<AccountResult> LoginByTokenAsync(string accessToken) {
+        try {
+            // must evaluate the user here
+            var userIdClaim = GetUserIdByClaims(await GetClaimsAsync(accessToken));
+            //...
+            // if every things is ok then :
+            return await _jwtService.EvaluateAsync(accessToken , userIdClaim);
         }
-        return await _jwtService.EvaluateAsync(accessToken , userId);
+        catch(Exception ex) {
+            return AccountResult.Error(CodeMessage.Create("Error" , ex.Message));
+        }
     }
     public async Task<AccountResult> RegisterAsync(RegisterDto model) {
         await ThrowIfFoundUserAsync(model.Email! , model.UserName!);
@@ -43,6 +51,16 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
     }
 
     //============================
+    private static Task<IEnumerable<Claim>> GetClaimsAsync(string token) { 
+        JwtSecurityTokenHandler handler = new();
+        if(!handler.CanReadToken(token)) {
+            throw new Exception("Invalid-Token");
+        }
+       return Task.FromResult(handler.ReadJwtToken(token).Claims);
+    }
+    private static string GetUserIdByClaims(IEnumerable<Claim> claims) {
+        return claims.Where(x=>x.Type == TokenKeys.UserId).FirstOrDefault()?.Value ?? string.Empty;
+    }
     private static string ErrorsToString(IEnumerable<IdentityError> errors) {
         string result = string.Empty;
         foreach(var error in errors) {
