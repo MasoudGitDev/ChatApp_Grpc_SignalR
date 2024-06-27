@@ -12,24 +12,20 @@ namespace Client.ChatApp.Services;
 
 internal sealed class AuthStateProvider(
     HttpClient _httpClient ,
+    AccountRPCs.AccountRPCsClient _accountService ,
     ILocalStorageService _localStorage) : AuthenticationStateProvider {
-
-    private readonly AuthenticationState _invalidUser = new(new ClaimsPrincipal(new ClaimsIdentity()));
-    private readonly string _tokenStorageKey = "chat_app_token_id";
-    private readonly CancellationToken _cancellationToken = new();
-    private readonly string _authenticationType = "Bearer";
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
         try {
             var accessToken = (await _localStorage.GetItemAsStringAsync(_tokenStorageKey , _cancellationToken))
                 .ThrowIfNullOrWhiteSpace("The <access-token> is invalid");
-            var gRPCChannel = GrpcChannel.ForAddress("https://localhost:7001" , new GrpcChannelOptions(){
-                HttpClient = _httpClient,
-            });
-            var accountService = new AccountRPCs.AccountRPCsClient(gRPCChannel);
-            var result = accountService.LoginByTokenAsync(new LoginByTokenReq(){AccessToken =accessToken });
-
-            var claims = GetClaims(accessToken);
+            var result = await _accountService.LoginByTokenAsync(new LoginByTokenReq(){AccessToken =accessToken });
+            if(!result.IsValid) {
+                return _invalidUser;
+            }
+            var claims = GetClaims(result.AccessToken);
+            SetAuthHeader(result.AccessToken);
+            Console.WriteLine("Token by AuthStateProvider : " +result.AccessToken);
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims , _authenticationType)));
         }
         catch(Exception ex) {
@@ -37,7 +33,6 @@ internal sealed class AuthStateProvider(
             return _invalidUser;
         }
     }
-
     public async Task SetStateAsync(string? accessToken = null) {
         var authState = _invalidUser;
         if(accessToken is null) {
@@ -53,21 +48,16 @@ internal sealed class AuthStateProvider(
     }
 
     //===============privates
+    private readonly AuthenticationState _invalidUser = new(new ClaimsPrincipal(new ClaimsIdentity()));
+    private readonly string _tokenStorageKey = "chat_app_token_id";
+    private readonly CancellationToken _cancellationToken = new();
+    private readonly string _authenticationType = "Bearer";
 
-    public void SetAuthHeader(string? token = "<invalid-token") {
+    private void SetAuthHeader(string? token = "<invalid-token") {
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer" , token);
     }
-
     private static List<Claim> GetClaims(string accessToken) {
         var claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToList();
         return claims;
-    }
-    public static CallCredentials FromAccessToken(string token) {
-        return CallCredentials.FromInterceptor((context , metadata) => {
-            if(!string.IsNullOrEmpty(token)) {
-                metadata.Add("Authorization" , $"Bearer {token}");
-            }
-            return Task.CompletedTask;
-        });
-    }
+    } 
 }
