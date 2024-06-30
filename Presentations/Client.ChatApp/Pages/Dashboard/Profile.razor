@@ -1,9 +1,7 @@
 ﻿@page "/Profile/{profileId}"
 
-@inject NavigationManager _navManager;
-@inject ContactRPCs.ContactRPCsClient _contactService
-
-<AuthorizeView Context="authContext">
+@inherits ProfileViewHandler
+<AuthorizeView Context="authContext"> 
 <Authorized>
         <div class="container">            
             <div class="err-card @(IsAnyError)">
@@ -38,49 +36,14 @@
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="controls">
-                    <button class="btn btn-outline-info" >@ButtonName</button>
+                    @if(IsButtonHidden) {
+                        <button class="btn btn-outline-info" @onclick="OnButtonClick">@ButtonName</button>
+                    }
+                    
                 </div>
             </div>
         </div>
 </Authorized>
-<NotAuthorized>Please Login/Signup </NotAuthorized>
+<NotAuthorized><Client.ChatApp.Pages.Accounts.Login /></NotAuthorized>
 
 </AuthorizeView>
-
-@code {
-
-
-    [Parameter]
-    public string ProfileId { get; set; } = null!;
-
-    private List<ErrorInfo> Errors = [];
-    private string IsAnyError = "";
-    private bool IsValidUserName = true;
-    private bool ExistInContacts = false;
-    private string ButtonName => ExistInContacts ?  "Dialog" : "Request";
-
-
-    private void CloseNotification(ErrorInfo model) {
-        Errors.Remove(model);
-        if(Errors.Count <= 0) {
-            IsAnyError = "";
-        }
-    }
-
-    protected override async Task OnInitializedAsync() {
-        try {              
-            var result = await _contactService.IsInContactsAsync(new ContactMsg() { ProfileId = ProfileId });
-            foreach(var message in result.Messages) {
-                if(message.Code == "Invalid-ProfileId") {
-                    IsValidUserName = false;
-                }                
-                Errors.Add(message);
-            }      
-            IsAnyError = Errors.Count() > 0 ? "" : "hidden";
-        }
-        catch(Exception ex) {
-            Console.WriteLine("OnInitializedAsync : " +ex.Message);
-            Errors.Add(new ErrorInfo() { Code = "Loading-Error" , Description = "The page not load Completely." });
-        }
-    }    
-}
