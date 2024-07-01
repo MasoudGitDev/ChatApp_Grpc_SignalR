@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Client.ChatApp;
+using Client.ChatApp.Pages.Dashboard;
 using Client.ChatApp.Protos;
 using Client.ChatApp.Services;
 using Grpc.Net.Client;
@@ -27,15 +28,20 @@ using var gRPCChannel = GrpcChannel.ForAddress("https://localhost:7001" , new Gr
 
 builder.Services.AddScoped(x => gRPCChannel);
 
-builder.Services.AddScoped(services => {
+builder.Services.AddScoped<ChatMessageRPCs.ChatMessageRPCsClient>(services => {
     return new ChatMessageRPCs.ChatMessageRPCsClient(gRPCChannel);
 });
 
-builder.Services.AddScoped(service => {
+builder.Services.AddScoped<ChatRequestRPCs.ChatRequestRPCsClient>(services => {
+    return new ChatRequestRPCs.ChatRequestRPCsClient(gRPCChannel);
+});
+
+
+builder.Services.AddScoped<AccountRPCs.AccountRPCsClient>(service => {
     return new AccountRPCs.AccountRPCsClient(gRPCChannel);
 });
 
-builder.Services.AddScoped(service => {
+builder.Services.AddScoped<ContactRPCs.ContactRPCsClient>(service => {
     return new ContactRPCs.ContactRPCsClient(gRPCChannel);
 });
 
@@ -45,5 +51,7 @@ builder.Services.AddScoped(service => {
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<AuthenticationStateProvider , AuthStateProvider>();
+
+
 
 await builder.Build().RunAsync();
