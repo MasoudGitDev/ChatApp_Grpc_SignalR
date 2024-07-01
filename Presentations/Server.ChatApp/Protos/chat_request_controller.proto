@@ -4,7 +4,7 @@ option csharp_namespace = "Server.ChatApp.Protos";
 package chat_request_pkg;
 
 service ChatRequestRPCs{
-	rpc Request(common.UsersConnection) returns(common.ResultMsg);
+	rpc Request(common.UserMsg) returns(common.ResultMsg);
 	rpc Accept(ChatRequestMsg)   returns(common.ResultMsg);
 	rpc Block(ChatRequestMsg)    returns(common.ResultMsg);
 	rpc Unblock(ChatRequestMsg)  returns(common.ResultMsg);
