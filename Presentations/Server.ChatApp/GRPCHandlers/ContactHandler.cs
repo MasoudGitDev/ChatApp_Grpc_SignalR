@@ -1,9 +1,10 @@
-﻿using Apps.Auth.Constants;
-using Apps.Chats.UnitOfWorks;
+﻿using Apps.Chats.UnitOfWorks;
 using Domains.Auth.User.Aggregate;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
+using Server.ChatApp.GRPCHandlers.Results;
 using Server.ChatApp.Protos;
+using Shared.Server.Constants;
 using Shared.Server.Extensions;
 
 namespace Server.ChatApp.GRPCHandlers;
@@ -11,43 +12,57 @@ namespace Server.ChatApp.GRPCHandlers;
 [Authorize]
 internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.ContactRPCsBase {
 
-    public override async Task<ResultMsg> IsInContacts(ContactMsg request , ServerCallContext context) {
+    public override async Task<ContactResult> IsInContacts(ContactMsg request , ServerCallContext context) {
         var validUser = await FindUserByProfileIdAsync(request.ProfileId);
-        if (validUser is null)
-        {
-            return FailureResult("Invalid-ProfileId" , $"The ProfileId : <{request.ProfileId}> is invalid.");
+        if(validUser is null) {
+            return ContactResults.FailureResult("Invalid-ProfileId" , $"The ProfileId : <{request.ProfileId}> is invalid.");
         }
-        var model = await _unitOfWork.Queries.Contacts.IsInContactAsync(validUser.Id , await GetUserIdAsync(context));
-        return model == null
-            ? FailureResult("NotExist" , $"The user with <profile-id> : <{request.ProfileId}> not exist in your contacts.")
-            : SuccessResult;
+        Guid myId = await SharedMethods.GetUserIdAsync(context,_unitOfWork);
+        ContactInfo contactInfo = new(){
+            UserId = validUser.Id.ToString() ,
+            Description = "test user description" ,
+            ImageUrl = "test image url"
+        };
+        var contactUser = await _unitOfWork.Queries.Contacts.IsInContactAsync(validUser.Id ,myId);
+        if(contactUser is null) {
+            if(myId == validUser.Id) {
+                return ContactResults.FailureResult("MyId" , $"You can not add yourself to your contacts.");
+            }
+            var hasAnyRequest = await HasAnyChatRequestAsync(myId , validUser.Id);
+            if(hasAnyRequest.Code != "Ok") {
+                return ContactResults.FailureResult(hasAnyRequest.Code , hasAnyRequest.Description);
+            }
+            return ContactResults.WarningResult(
+                "NotExist" ,
+                $"The user with <profile-id> : <{request.ProfileId}> not exist in your contacts." ,
+                contactInfo);
+        }
+        return ContactResults.SuccessResult(contactInfo);
     }
 
-    public override async Task<ResultMsg> Remove(RowMsg request , ServerCallContext context) {
+    public override async Task<ContactResult> Remove(RowMsg request , ServerCallContext context) {
         var model = await _unitOfWork.Queries.Contacts.FindAsync(request.RowId.AsGuid());
-        return model == null
-            ? FailureResult("NotExist" , $"The ContactId : <{request.RowId}> not exist")
-            : SuccessResult;
+        if(model is null) {
+            return ContactResults.FailureResult("NotExist" , $"The ContactId : <{request.RowId}> not exist");
+        }
+        return ContactResults.SuccessResult();
     }
 
     //======================privates   
     private async Task<AppUser?> FindUserByProfileIdAsync(string profileId) {
-       return await _unitOfWork.Queries.Users.FindByProfileIdAsync(profileId);
+        return await _unitOfWork.Queries.Users.FindByProfileIdAsync(profileId);
     }
-
-    private async Task<AppUser> GetUserAsync(ServerCallContext context) {
-        var user = context.GetHttpContext().User;
-        if(user is null || user.Identity is null || !user.Identity.IsAuthenticated) {
-            throw new RpcException(Status.DefaultCancelled , "You are not authenticated.");
+    private async Task<MessageInfo> HasAnyChatRequestAsync(Guid myId , Guid otherUserId) {
+        MessageInfo messageInfo = new() { Code = "Ok" , Description = "Ok" , Type = MessageType.Successful};
+        var findSameRequest = await _unitOfWork.Queries.ChatRequests.FindSameRequestAsync(myId, otherUserId);
+        if(findSameRequest is not null) {
+            var msg = "Confirm the Request";
+            if(findSameRequest.RequesterId == myId) {
+                msg = "Your request has not been confirmed yet.";
+                return new() { Code = "Founded" , Description = msg , Type = MessageType.Error };
+            }
+            return new() { Code = "Confirm" , Description = msg , Type = MessageType.Error };
         }
-        return await _unitOfWork.Queries.Users.FindByUserNameAsync(user.Identity.Name ?? String.Empty)
-            ?? throw new RpcException(Status.DefaultCancelled , "Invalid-User");
-    }
-    private async Task<Guid> GetUserIdAsync(ServerCallContext ctx) => ( await GetUserAsync(ctx) ).Id;
-    private static ResultMsg SuccessResult => new() { IsSuccessful = true };
-    private static ResultMsg FailureResult(string code , string description) {
-        ResultMsg result = new() { IsSuccessful = false };
-        result.Messages.Add(new ErrorInfo() { Code = code , Description = description });
-        return result;
+        return messageInfo;
     }
 }
