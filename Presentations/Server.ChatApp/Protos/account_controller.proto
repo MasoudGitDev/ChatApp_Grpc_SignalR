@@ -30,7 +30,7 @@ message DeleteReq{
 message AccountResponse{
 	bool IsValid = 1;
 	string AccessToken = 2;
-	repeated common.ErrorInfo Errors = 3;
+	repeated common.MessageInfo Errors = 3;
 }
 
 
