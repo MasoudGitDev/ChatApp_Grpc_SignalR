@@ -16,6 +16,7 @@ message ContactResult {
 	bool IsSuccessful = 1;
 	repeated common.MessageInfo Messages = 2;
 	ContactInfo ContactInfo = 3;
+	string ChatRequestId = 4;
 }
 message ContactInfo{
 	string UserId = 1;
