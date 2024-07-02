@@ -23,7 +23,6 @@ public class ProfileViewHandler : ComponentBase {
     private ChatRequestRPCs.ChatRequestRPCsClient RequestService { get; set; } = null!;
 
     [CascadingParameter]
-    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     //========================== Use In View
     protected List<MessageInfo> Messages = [];
