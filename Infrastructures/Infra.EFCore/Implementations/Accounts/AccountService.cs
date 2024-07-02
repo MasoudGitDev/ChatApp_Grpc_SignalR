@@ -15,11 +15,11 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
     public async Task<AccountResult> LoginAsync(LoginDto model) {
         var user = (await FindUserAsync(model.LoginName));
         if(user is null) {
-            return AccountResult.Error(CodeMessage.Create("Invalid-User" , "LoginName or Password is wrong."));
+            return AccountResult.Error(MessageDescription.Create("Invalid-User" , "LoginName or Password is wrong."));
         }
         bool isValidUser = await _userManager.CheckPasswordAsync(user, model.Password);
         if(isValidUser is false) {
-            return AccountResult.Error(CodeMessage.Create("Invalid-User" , "LoginName or Password is wrong."));
+            return AccountResult.Error(MessageDescription.Create("Invalid-User" , "LoginName or Password is wrong."));
         }
         return await _jwtService.GenerateAsync(user.Id);
     }
@@ -32,7 +32,7 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
             return await _jwtService.EvaluateAsync(accessToken , userIdClaim);
         }
         catch(Exception ex) {
-            return AccountResult.Error(CodeMessage.Create("Error" , ex.Message));
+            return AccountResult.Error(MessageDescription.Create("Error" , ex.Message));
         }
     }
     public async Task<AccountResult> RegisterAsync(RegisterDto model) {
