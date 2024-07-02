@@ -23,7 +23,7 @@
                 <div class="form-error center">
                     <div class="err-logo center"><p>*</p></div>
                     <div class="err-title center">@err.Code</div><br />
-                    <div class="err-info center">@err.Message</div>
+                    <div class="err-info center">@err.Description</div>
                 </div>
             }               
          </div>    
@@ -52,7 +52,7 @@
 
 @code {
     private LoginDto _currentModel = new();
-    private List<CodeMessage> Errors = [];
+    private List<MessageDescription> Errors = [];
 
     private void GoToSignUpPage() => _navManager.NavigateTo("/SignUp");
     private void CloseFormErrors() {
@@ -67,7 +67,7 @@
         await _authProvider.SetStateAsync();
         // login validation        
         var response = (await _accountService.LoginAsync(_currentModel.Adapt<LoginReq>()));
-        Errors.AddRange(response.Errors.Adapt<List<CodeMessage>>());
+        Errors.AddRange(response.Errors.Adapt<List<MessageDescription>>());
 
         Console.WriteLine(new { 
             isValid = response.IsValid , 

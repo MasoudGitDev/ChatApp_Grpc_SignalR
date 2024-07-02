@@ -9,7 +9,7 @@
     <div class="section-errors center">
         <div class="err center">Control</div>
         @foreach(var err in Errors) {
-            <div class="err center">@err.Code : @err.Message</div>
+            <div class="err center">@err.Code : @err.Description</div>
         }
 
     </div>
@@ -41,7 +41,7 @@
 
 @code {
     private RegisterDto _currentModel = new();
-    private List<CodeMessage> Errors = new();
+    private List<MessageDescription> Errors = new();
     private void GoToLoginPage() => _navManager.NavigateTo("/Login");
 
     private async Task OnFormSubmitAsync() {
@@ -52,7 +52,7 @@
             await authProvider.SetStateAsync();
             // login validation
             var response = await _accountService.SignUpAsync(_currentModel.Adapt<RegisterReq>());
-            Errors.AddRange(response.Errors.Adapt<List<CodeMessage>>());
+            Errors.AddRange(response.Errors.Adapt<List<MessageDescription>>());
 
             if(Errors.Count <= 0 && response.IsValid) {
                 await authProvider.SetStateAsync(response.AccessToken);
