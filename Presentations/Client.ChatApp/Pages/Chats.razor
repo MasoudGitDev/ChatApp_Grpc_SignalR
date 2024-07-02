@@ -60,8 +60,8 @@
 @code {
     private Guid _chatId = Guid.Parse("e8d79123-4569-46cd-894d-301cfd336bde");
     private string _model = string.Empty;
-    private LinkedList<MessageDto> _messages = new();
-    private MessageDto _currentMessage = new() { IsMyMessage = true , FileUrl = "M" };
+    private LinkedList<ChatMessageDto> _messages = new();
+    private ChatMessageDto _currentMessage = new() { IsMyMessage = true , FileUrl = "M" };
 
 
     private ChatAccountItems _sidebar;
@@ -75,7 +75,7 @@
     protected override async void OnInitialized() {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(_navManager.ToAbsoluteUri("https://localhost:7001/chatMessageHub")).Build();        
-        _hubConnection.On<MessageDto>("ReceiveMessage" , async (msgModel) => {
+        _hubConnection.On<ChatMessageDto>("ReceiveMessage" , async (msgModel) => {
             _messages.AddLast(msgModel);
             await InvokeAsync(StateHasChanged);
         });
@@ -87,7 +87,7 @@
             return;
         }
         if(_hubConnection is not null) {
-            var newMsg = new MessageDto(){
+            var newMsg = new ChatMessageDto(){
                     MessageId = Guid.NewGuid(),
                     ChatId = _chatId,
                     SenderId = Guid.Parse("3a60cde1-ab8d-46f9-8fc2-328ad63680ec"),
@@ -107,7 +107,7 @@
         }
     }   
 
-    private async Task SaveAsync(MessageDto model) {
+    private async Task SaveAsync(ChatMessageDto model) {
         var result= await  _messageHandler.SendAsync(new MessageReq {
             ChatId = "e8d79123-4569-46cd-894d-301cfd336bde" ,
             MessageId = Guid.NewGuid().ToString() ,
