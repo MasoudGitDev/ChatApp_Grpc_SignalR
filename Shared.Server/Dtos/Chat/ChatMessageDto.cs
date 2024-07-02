@@ -1,5 +1,5 @@
 ﻿namespace Shared.Server.Dtos.Chat;
-public class MessageDto
+public class ChatMessageDto
 {
     public Guid MessageId { get; set; }
     public Guid ChatId { get; set; }
