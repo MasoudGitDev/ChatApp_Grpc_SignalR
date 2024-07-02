@@ -65,7 +65,7 @@ public class GrpcAccountHandler(IAccountService _accountService, IUserQueries _u
     private static AccountResponse ToAccountResponse(AccountResult accountResult, ServerCallContext context)
     {
         var response = accountResult.Adapt<AccountResponse>();
-        response.Errors.AddRange(accountResult.Errors.Adapt<IEnumerable<ErrorInfo>>());
+        response.Errors.AddRange(accountResult.Errors.Adapt<IEnumerable<MessageInfo>>());
         context.GetHttpContext().Response.Headers.Authorization = $"Bearer {response.AccessToken}";
         return response;
     }
