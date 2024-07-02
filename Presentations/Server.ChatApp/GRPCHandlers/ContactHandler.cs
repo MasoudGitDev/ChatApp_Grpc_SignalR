@@ -1,5 +1,6 @@
 ﻿using Apps.Chats.UnitOfWorks;
 using Domains.Auth.User.Aggregate;
+using Domains.Chats.Requests.Aggregate;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using Server.ChatApp.GRPCHandlers.Results;
@@ -13,56 +14,60 @@ namespace Server.ChatApp.GRPCHandlers;
 internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.ContactRPCsBase {
 
     public override async Task<ContactResult> IsInContacts(ContactMsg request , ServerCallContext context) {
-        var validUser = await FindUserByProfileIdAsync(request.ProfileId);
-        if(validUser is null) {
-            return ContactResults.FailureResult("Invalid-ProfileId" , $"The ProfileId : <{request.ProfileId}> is invalid.");
+        // get profileId and check is valid
+        var userByProfileId = await FindUserByProfileIdAsync(request.ProfileId);
+        if(userByProfileId is null) {
+            return ContactResults.InvalidProfileId(request.ProfileId);
         }
-        Guid myId = await SharedMethods.GetUserIdAsync(context,_unitOfWork);
-        ContactInfo contactInfo = new(){
-            UserId = validUser.Id.ToString() ,
-            Description = "test user description" ,
-            ImageUrl = "test image url"
-        };
-        var contactUser = await _unitOfWork.Queries.Contacts.IsInContactAsync(validUser.Id ,myId);
+        // check is other-user is in my contact 
+        Guid myId = await SharedMethods.GetMyIdAsync(context,_unitOfWork);
+        var contactUser = await _unitOfWork.Queries.Contacts.IsInContactAsync(userByProfileId.Id ,myId);
+
         if(contactUser is null) {
-            if(myId == validUser.Id) {
-                return ContactResults.FailureResult("MyId" , $"You can not add yourself to your contacts.");
+            if(myId == userByProfileId.Id) {
+                return ContactResults.InvalidContact;
             }
-            var hasAnyRequest = await HasAnyChatRequestAsync(myId , validUser.Id);
-            if(hasAnyRequest.Code != "Ok") {
-                return ContactResults.FailureResult(hasAnyRequest.Code , hasAnyRequest.Description);
+            var (requestStatus, chatRequestId) = await GetRequestStatusAsync(myId , userByProfileId.Id);
+            if(requestStatus != ChatRequestStatus.NotFound) {
+                return ContactResults.FoundInRequests(requestStatus , chatRequestId.ToString());
             }
-            return ContactResults.WarningResult(
-                "NotExist" ,
-                $"The user with <profile-id> : <{request.ProfileId}> not exist in your contacts." ,
-                contactInfo);
+            return ContactResults.NotFoundInContacts(request.ProfileId , userByProfileId);
         }
-        return ContactResults.SuccessResult(contactInfo);
+        return ContactResults.FoundInContacts(userByProfileId);
     }
 
     public override async Task<ContactResult> Remove(RowMsg request , ServerCallContext context) {
         var model = await _unitOfWork.Queries.Contacts.FindAsync(request.RowId.AsGuid());
         if(model is null) {
-            return ContactResults.FailureResult("NotExist" , $"The ContactId : <{request.RowId}> not exist");
+            return ContactResults.NotFoundContactId(request.RowId);
         }
-        return ContactResults.SuccessResult();
+        return ContactResults.SuccessfulDeletion;
     }
 
     //======================privates   
     private async Task<AppUser?> FindUserByProfileIdAsync(string profileId) {
         return await _unitOfWork.Queries.Users.FindByProfileIdAsync(profileId);
     }
-    private async Task<MessageInfo> HasAnyChatRequestAsync(Guid myId , Guid otherUserId) {
-        MessageInfo messageInfo = new() { Code = "Ok" , Description = "Ok" , Type = MessageType.Successful};
+    private async Task<(ChatRequestStatus RequestStatus, Guid ChatReqeustId)> GetRequestStatusAsync(Guid myId , Guid otherUserId) {
         var findSameRequest = await _unitOfWork.Queries.ChatRequests.FindSameRequestAsync(myId, otherUserId);
-        if(findSameRequest is not null) {
-            var msg = "Confirm the Request";
-            if(findSameRequest.RequesterId == myId) {
-                msg = "Your request has not been confirmed yet.";
-                return new() { Code = "Founded" , Description = msg , Type = MessageType.Error };
-            }
-            return new() { Code = "Confirm" , Description = msg , Type = MessageType.Error };
+        return (CalcRequestStatus(findSameRequest , myId), findSameRequest?.Id ?? Guid.Empty);
+    }
+    private static ChatRequestStatus CalcRequestStatus(ChatRequest? findSameRequest , Guid myId) {
+        if(findSameRequest is null) {
+            return ChatRequestStatus.NotFound;
         }
-        return messageInfo;
+        if(!findSameRequest.IsBlockedByReceiver && findSameRequest.ReceiverId == myId) {
+            return ChatRequestStatus.Confirm;
+        }
+        if(findSameRequest.IsBlockedByReceiver && findSameRequest.ReceiverId == myId) {
+            return ChatRequestStatus.UnBlock;
+        }
+        if(findSameRequest.IsBlockedByReceiver && findSameRequest.RequesterId == myId) {
+            return ChatRequestStatus.BlockedByReceiver;
+        }
+        if(findSameRequest.RequesterId == myId) {
+            return ChatRequestStatus.WaitForAccept;
+        }
+        return ChatRequestStatus.NotFound;
     }
 }
