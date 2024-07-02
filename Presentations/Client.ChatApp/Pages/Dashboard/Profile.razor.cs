@@ -1,6 +1,7 @@
 ﻿using Client.ChatApp.Protos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Shared.Server.Constants;
 using Shared.Server.Constants.View;
 
@@ -22,8 +23,6 @@ public class ProfileViewHandler : ComponentBase {
     [Inject]
     private ChatRequestRPCs.ChatRequestRPCsClient RequestService { get; set; } = null!;
 
-    [CascadingParameter]
-
     //========================== Use In View
     protected List<MessageInfo> Messages = [];
     protected bool IsAnyError = false;   
@@ -32,6 +31,7 @@ public class ProfileViewHandler : ComponentBase {
     protected string ButtonName = string.Empty;
     //================================ private fields
     private string ReceiverId =  String.Empty;
+    private string ChatRequestId = String.Empty;
     //====================== protected Methods
     protected override async Task OnInitializedAsync() {
         try {
@@ -41,7 +41,7 @@ public class ProfileViewHandler : ComponentBase {
         }
         catch(Exception ex) {
             Console.WriteLine("OnInitializedAsync : " + ex.Message);
-            Messages.Add(new MessageInfo() { Code = "Loading-Error" , Description = "The page not load Completely." , Type = MessageType.Error });
+            Messages.Add(SharedViewCodes.NotCompletedLoading);
         }
     }
     protected async Task OnButtonClick() {
@@ -54,13 +54,15 @@ public class ProfileViewHandler : ComponentBase {
             return;
         }
         if(ButtonName == ProfileViewConstants.RequestBtn) {
-            await SendChatRequestAsync();
+            Messages.AddRange(await DoAsync(Messages , 
+                async () => await RequestService.RequestAsync(new UserMsg() { UserId = ReceiverId })));
             return;
         }
         if(ButtonName == ProfileViewConstants.ConfirmBtn) {
-            
+            Messages.AddRange(await DoAsync(Messages ,
+                async () => await RequestService.AcceptAsync(new() { ChatRequestId = ChatRequestId })));
             return;
-        }
+        }        
     }
     protected void CloseNotification(MessageInfo model) {
         Messages.Remove(model);
@@ -70,23 +72,24 @@ public class ProfileViewHandler : ComponentBase {
     }
 
     //============== private Methods
-    private async Task<string> GetIdByClaimAsync() 
-        => ( await AuthState ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ?? string.Empty;
     private void CheckContactResult(ContactResult result) {
         foreach(var message in result.Messages) {
             Messages.Add(message);
             (ButtonName,CanShowButton) = ProfileViewConstants.ApplyCodeResult(message.Code);
         }
-        IsAnyError = Messages.Count > 0;
+        IsAnyError = SharedViewCodes.GetErrors(Messages).Count > 0;
         ReceiverId = result.ContactInfo.UserId;
+        ChatRequestId = result.ChatRequestId;
     }
-    private async Task SendChatRequestAsync() {
-        if(Errors.Count > 0) {
-            Messages.Add(new MessageInfo() { Code = "NotPossible" , Description = "Because of other errors" , Type = MessageType.Error });
-            return;
+    private static async Task<List<MessageInfo>> DoAsync(List<MessageInfo> messages ,
+        Func<Task<ResultMsg>> action ) {
+        if(SharedViewCodes.GetErrors(messages).Count > 0) {
+            messages.Add(SharedViewCodes.NotPossible);
+            return messages;
         }
-        var result = await RequestService.RequestAsync(new UserMsg() { UserId = ReceiverId });
-        Messages.AddRange(result.Messages);
+        var result = await action.Invoke();
+        messages.AddRange(result.Messages);
+        return messages;
     }
-    private List<MessageInfo> Errors => Messages.Where(x=> x.Type == MessageType.Error).Select(x=>x).ToList(); 
+
 }
