@@ -10,7 +10,7 @@ using Shared.Server.Extensions;
 namespace Server.ChatApp.GRPCHandlers;
 
 [Authorize]
-public class ChatRequestHandler(IChatUOW _unitOfWork) : ChatRequestRPCs.ChatRequestRPCsBase {
+public class ChatRequestCommandsHandler(IChatUOW _unitOfWork) : ChatRequestRPCs.ChatRequestRPCsBase {
 
     public override async Task<ResultMsg> Request(UserMsg request , ServerCallContext context) {
         var myId = await SharedMethods.GetMyIdAsync(context,_unitOfWork);
