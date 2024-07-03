@@ -11,5 +11,6 @@ public partial class AppUser : IdentityUser<Guid> {
 
     public DateTime CreatedAt { get; set; }
     public ProfileId ProfileId { get; private set; } = Guid.NewGuid().ToString().Replace("-" , "");
+    public string DisplayName { get; set; } = "User";
 
 }
