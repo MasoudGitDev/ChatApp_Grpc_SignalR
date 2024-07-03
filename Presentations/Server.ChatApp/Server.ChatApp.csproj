@@ -33,7 +33,8 @@
 	<ItemGroup>
 		<Protobuf Include="Protos\common_models.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\chat_message.proto" GrpcServices="Server" />
-		<Protobuf Include="Protos\chat_request_controller.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\chat_request_commands.proto" GrpcServices="Server" />
+		<protobuf Include="Protos\chat_request_queries.proto" GrpcService="Server" />
 		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Server" />
 	</ItemGroup>
