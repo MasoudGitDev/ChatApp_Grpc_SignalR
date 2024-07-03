@@ -81,8 +81,12 @@ app.UseAuthorization();
 app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcChatMessageHandler>().EnableGrpcWeb();
-app.MapGrpcService<ChatRequestHandler>().EnableGrpcWeb();
+
+app.MapGrpcService<ChatRequestCommandsHandler>().EnableGrpcWeb();
+app.MapGrpcService<ChatRequestQueriesHandler>().EnableGrpcWeb();
+
 app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
+
 
 
 
