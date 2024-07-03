@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "Protos/common_models.proto";
+option csharp_namespace = "Server.ChatApp.Protos";
+package ChatRequestQueriesPkg;
+
+service ChatRequestQueryRPCs{
+	rpc GetReceiveRequests(common.UserMsg) returns(CRQResult);
+	rpc GetSendRequests(common.UserMsg) returns(CRQResult);
+}
+
+message CRQResult{
+	bool IsSuccessful = 1;
+	repeated common.MessageInfo Messages = 2;
+	repeated ChatRequestItemMsg Items = 3;
+}
+
+message ChatRequestItemMsg{
+	string UserId = 1;
+	string ImageUrl = 2;
+	string DisplayName = 3;
+	string SentAt = 4;
+}
