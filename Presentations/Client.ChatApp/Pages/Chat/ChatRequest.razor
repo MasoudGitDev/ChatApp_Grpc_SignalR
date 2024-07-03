@@ -1,6 +1,6 @@
 ﻿@page "/Chats/Requests"
 @using Client.ChatApp.Constants
-@using Shared.Server.Models.Results
+@inherits ChatRequestVewHandler
 
 <div class="chat-requests">
     <div class="header center">
@@ -33,45 +33,3 @@
         }
     </div>
 </div>
-
-
-@code {
-
-    private LinkedList<ChatRequestItem> ReceiveItems = new();
-    private LinkedList<ChatRequestItem> SendItems = new();
-    private ChatRequestTab _currentTab = ChatRequestTab.Received;
-    private LinkedList<ChatRequestItem> GetItems() {
-        if(_currentTab == ChatRequestTab.Sent) {
-            return SendItems;
-        }
-        if(_currentTab == ChatRequestTab.Received) {
-            return ReceiveItems;
-        }
-        return new();
-    }
-
-    private void ChangeTab(ChatRequestTab tab) {
-        _currentTab = tab;
-    }
-    private string IsTabSelected(ChatRequestTab tab) => _currentTab == tab ? "selected" : "";
-
-    protected override void OnInitialized() {
-        CreateReceiveItems();
-        CreateSendItems();
-    }
-
-    private void CreateReceiveItems() {
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid(), "Ali1", DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali2" , DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali2" , DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali3" , DateTime.UtcNow));
-    }
-
-    private void CreateSendItems() {
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud1" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud2" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud3" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud4" , DateTime.UtcNow));
-    }
-
-}
