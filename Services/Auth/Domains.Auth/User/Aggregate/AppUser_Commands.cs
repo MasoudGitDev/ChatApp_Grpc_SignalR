@@ -12,7 +12,11 @@ public partial class AppUser {
             CreatedAt = DateTime.UtcNow ,
         };
     }
-    public static AppUser Empty => new() { Id = Guid.Empty , Email = "<invalid-email" , UserName = "<invalid-username>" };
+    public static AppUser Empty => new() { Id = Guid.Empty ,
+        Email = "<invalid-email>" ,
+        UserName = "<invalid-userName>" ,
+        ProfileId = "<invalid-profileId>"
+    };
 
     public void Update(ProfileId profileId) {
         if(UserName == profileId || Email == profileId) {
