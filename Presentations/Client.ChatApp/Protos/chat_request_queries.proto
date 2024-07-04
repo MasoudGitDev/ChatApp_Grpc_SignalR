@@ -4,8 +4,8 @@ option csharp_namespace = "Client.ChatApp.Protos";
 package ChatRequestQueriesPkg;
 
 service ChatRequestQueryRPCs{
-	rpc GetReceiveRequests(common.UserMsg) returns(CRQResult);
-	rpc GetSendRequests(common.UserMsg) returns(CRQResult);
+	rpc GetReceiveRequests(common.Empty) returns(CRQResult);
+	rpc GetSendRequests(common.Empty) returns(CRQResult);
 }
 
 message CRQResult{
@@ -15,8 +15,9 @@ message CRQResult{
 }
 
 message ChatRequestItemMsg{
-	string UserId = 1;
-	string ImageUrl = 2;
+	string ChatRequestId = 1;
+	string UserId = 2;
 	string DisplayName = 3;
-	string SentAt = 4;
+    string RequestedAt = 4;
+	string ImageUrl = 5;
 }
