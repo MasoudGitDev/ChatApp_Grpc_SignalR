@@ -1,49 +1,51 @@
 ﻿using Client.ChatApp.Constants;
+using Client.ChatApp.Protos;
+using Google.Protobuf.Collections;
 using Microsoft.AspNetCore.Components;
-using Shared.Server.Models.Results;
 
-namespace Client.ChatApp.Pages.Chat;  
-public class ChatRequestVewHandler :ComponentBase {
+namespace Client.ChatApp.Pages.Chat;
+public class ChatRequestVewHandler : ComponentBase {
+
+    //====================== injects
+    [Inject]
+    private ChatRequestQueryRPCs.ChatRequestQueryRPCsClient Queries { get; set; } = null!;
+    //=======================
 
     protected ChatRequestTab _currentTab = ChatRequestTab.Received;
     protected string IsTabSelected(ChatRequestTab tab) => _currentTab == tab ? "selected" : "";
-    protected LinkedList<ChatRequestItem> GetItems() {
+    protected RepeatedField<ChatRequestItemMsg> GetItems() {
         if(_currentTab == ChatRequestTab.Sent) {
             return SendItems;
         }
         if(_currentTab == ChatRequestTab.Received) {
             return ReceiveItems;
         }
-        return new();
+        return [];
     }
     protected void ChangeTab(ChatRequestTab tab) {
         _currentTab = tab;
     }
 
     //======================
-    private readonly LinkedList<ChatRequestItem> ReceiveItems = new();
-    private readonly LinkedList<ChatRequestItem> SendItems = new();
-  
+    private RepeatedField<ChatRequestItemMsg> ReceiveItems = [];
+    private RepeatedField<ChatRequestItemMsg> SendItems = [];
 
- 
 
-    protected override void OnInitialized() {
-        CreateReceiveItems();
-        CreateSendItems();
+
+
+    protected override async void OnInitialized() {
+        await CreateReceiveItemsAsync();
+        await CreateSendItemsAsync();
     }
 
-    private void CreateReceiveItems() {
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali1" , DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali2" , DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali2" , DateTime.UtcNow));
-        ReceiveItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Ali3" , DateTime.UtcNow));
+    private async Task CreateReceiveItemsAsync() {
+        ReceiveItems.Clear();
+        ReceiveItems = ( await Queries.GetReceiveRequestsAsync(new Empty()) ).Items;
     }
 
-    private void CreateSendItems() {
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud1" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud2" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud3" , DateTime.UtcNow));
-        SendItems.AddLast(new ChatRequestItem(Guid.NewGuid() , "Masoud4" , DateTime.UtcNow));
+    private async Task CreateSendItemsAsync() {
+        SendItems.Clear();
+        SendItems = ( await Queries.GetSendRequestsAsync(new Empty()) ).Items;
     }
 
 }

@@ -1,8 +1,10 @@
 ﻿using Apps.Chats.Queries;
+using Domains.Auth.User.Aggregate;
 using Domains.Chats.Requests.Aggregate;
 using Infra.EFCore.Contexts;
+using Infra.EFCore.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Shared.Server.Extensions;
+using Shared.Server.Models.Results;
 
 namespace Infra.EFCore.Implementations.Chats;
 internal sealed class ChatRequestQueries(AppDbContext _dbContext) : IChatRequestQueries {
@@ -17,15 +19,18 @@ internal sealed class ChatRequestQueries(AppDbContext _dbContext) : IChatRequest
             .FirstOrDefaultAsync();
     }
 
-    public async Task<LinkedList<ChatRequest>> GetReceiveRequestsAsync(Guid receiverId) {
+    public async Task<List<ChatRequestItem>> GetSendRequestsAsync(Guid requesterId) {
         return await _dbContext.ChatRequests
-            .Where(x => x.ReceiverId == receiverId)
-            .ToLinkedListAsync();
+          .Where(x => x.RequesterId == requesterId)
+          .ToChatRequestItemsAsync(FindUserByIdAsync , false) ?? [];
+    }
+    public async Task<List<ChatRequestItem>> GetReceiveRequestsAsync(Guid receiverId) {
+        return await _dbContext.ChatRequests
+           .Where(x => x.ReceiverId == receiverId)
+           .ToChatRequestItemsAsync(FindUserByIdAsync , true) ?? [];
+    }
+    private async Task<AppUser> FindUserByIdAsync(Guid userId) {
+        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? AppUser.Empty;
     }
 
-    public async Task<LinkedList<ChatRequest>> GetSendRequestsAsync(Guid requesterId) {
-        return await _dbContext.ChatRequests
-        .Where(x => x.RequesterId == requesterId)
-        .ToLinkedListAsync();
-    }
 }
