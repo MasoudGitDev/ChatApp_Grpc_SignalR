@@ -1,8 +1,9 @@
 ﻿namespace Shared.Server.Models.Results {
-   public record ChatRequestItem(       
+   public record ChatRequestItem( 
+       Guid ChatRequestId,
        Guid UserId ,
        string DisplayName ,       
-       DateTime SentAt,
+       DateTime RequestedAt ,
        string? ImageUrl = null
    );
 }
