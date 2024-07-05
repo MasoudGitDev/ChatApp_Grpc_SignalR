@@ -4,6 +4,6 @@
        Guid UserId ,
        string DisplayName ,       
        DateTime RequestedAt ,
-       string? ImageUrl = null
+       string ImageUrl
    );
 }
