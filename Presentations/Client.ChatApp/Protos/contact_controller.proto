@@ -5,11 +5,23 @@ package contacts_pkg;
 
 service ContactRPCs{
 	rpc IsInContacts(ContactMsg) returns(ContactResult);
+	rpc GetContacts(common.Empty) returns(ContactItems);
 	rpc Remove(common.RowMsg) returns(ContactResult);
 }
 
 message ContactMsg{
 	string ProfileId = 1;
+}
+
+message ContactItems{
+	repeated ContactItem Items = 1;
+}
+message ContactItem{
+	string ContactId = 1;
+    string UserId = 2;
+    string DisplayName =3;    
+    string ContactedAt = 4;
+    string ImageUrl = 5 ;
 }
 
 message ContactResult {
