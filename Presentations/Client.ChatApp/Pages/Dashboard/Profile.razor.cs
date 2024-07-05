@@ -1,7 +1,5 @@
 ﻿using Client.ChatApp.Protos;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Shared.Server.Constants;
 using Shared.Server.Constants.View;
 
@@ -13,7 +11,7 @@ public class ProfileViewHandler : ComponentBase {
     [Parameter]
     public string ProfileId { get; set; } = null!;
 
-     //================== injections
+    //================== injections
     [Inject]
     private NavigationManager NavManager { get; set; } = null!;
 
@@ -25,7 +23,7 @@ public class ProfileViewHandler : ComponentBase {
 
     //========================== Use In View
     protected List<MessageInfo> Messages = [];
-    protected bool IsAnyError = false;   
+    protected bool IsAnyError = false;
     protected BoolType IsMe = BoolType.None;
     protected bool CanShowButton = false;
     protected string ButtonName = string.Empty;
@@ -36,8 +34,8 @@ public class ProfileViewHandler : ComponentBase {
     protected override async Task OnInitializedAsync() {
         try {
             Messages.Clear();
-            var result = await ContactService.IsInContactsAsync(new ContactMsg() { ProfileId = ProfileId });      
-            CheckContactResult(result);            
+            var result = await ContactService.IsInContactsAsync(new ContactMsg() { ProfileId = ProfileId });
+            CheckContactResult(result);
         }
         catch(Exception ex) {
             Console.WriteLine("OnInitializedAsync : " + ex.Message);
@@ -54,7 +52,7 @@ public class ProfileViewHandler : ComponentBase {
             return;
         }
         if(ButtonName == ProfileViewConstants.RequestBtn) {
-            Messages.AddRange(await DoAsync(Messages , 
+            Messages.AddRange(await DoAsync(Messages ,
                 async () => await RequestService.RequestAsync(new UserMsg() { UserId = ReceiverId })));
             return;
         }
@@ -62,7 +60,7 @@ public class ProfileViewHandler : ComponentBase {
             Messages.AddRange(await DoAsync(Messages ,
                 async () => await RequestService.AcceptAsync(new() { ChatRequestId = ChatRequestId })));
             return;
-        }        
+        }
     }
     protected void CloseNotification(MessageInfo model) {
         Messages.Remove(model);
@@ -75,14 +73,14 @@ public class ProfileViewHandler : ComponentBase {
     private void CheckContactResult(ContactResult result) {
         foreach(var message in result.Messages) {
             Messages.Add(message);
-            (ButtonName,CanShowButton) = ProfileViewConstants.ApplyCodeResult(message.Code);
+            (ButtonName, CanShowButton) = ProfileViewConstants.ApplyCodeResult(message.Code);
         }
         IsAnyError = SharedViewCodes.GetErrors(Messages).Count > 0;
         ReceiverId = result.ContactInfo.UserId;
         ChatRequestId = result.ChatRequestId;
     }
     private static async Task<List<MessageInfo>> DoAsync(List<MessageInfo> messages ,
-        Func<Task<ResultMsg>> action ) {
+        Func<Task<ResultMsg>> action) {
         if(SharedViewCodes.GetErrors(messages).Count > 0) {
             messages.Add(SharedViewCodes.NotPossible);
             return messages;
