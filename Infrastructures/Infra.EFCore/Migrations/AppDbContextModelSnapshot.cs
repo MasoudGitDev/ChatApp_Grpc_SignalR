@@ -22,7 +22,7 @@ namespace Infra.EFCore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Auth.RoleAggregate.AppRole", b =>
+            modelBuilder.Entity("Domains.Auth.Role.Aggregate.AppRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace Infra.EFCore.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Domain.Auth.UserAggregate.AppUser", b =>
+            modelBuilder.Entity("Domains.Auth.User.Aggregate.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,12 +57,20 @@ namespace Infra.EFCore.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -85,6 +93,10 @@ namespace Infra.EFCore.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,7 +114,27 @@ namespace Infra.EFCore.Migrations
                     b.ToTable("AppUsers");
                 });
 
-            modelBuilder.Entity("Domains.Chat.ChatAggregate.ChatItem", b =>
+            modelBuilder.Entity("Domains.Chats.Contacts.Aggregate.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ContactedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contacts", (string)null);
+                });
+
+            modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,7 +171,7 @@ namespace Infra.EFCore.Migrations
                     b.ToTable("ChatItems");
                 });
 
-            modelBuilder.Entity("Domains.Chat.MessageAggregate.ChatMessage", b =>
+            modelBuilder.Entity("Domains.Chats.Message.Aggregate.ChatMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,6 +207,29 @@ namespace Infra.EFCore.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("Domains.Chats.Requests.Aggregate.ChatRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsBlockedByReceiver")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatRequests", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -234,15 +289,15 @@ namespace Infra.EFCore.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("Domains.Chat.ChatAggregate.ChatItem", b =>
+            modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
                 {
-                    b.HasOne("Domain.Auth.UserAggregate.AppUser", "Receiver")
+                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Auth.UserAggregate.AppUser", "Requester")
+                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Requester")
                         .WithMany()
                         .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -253,15 +308,15 @@ namespace Infra.EFCore.Migrations
                     b.Navigation("Requester");
                 });
 
-            modelBuilder.Entity("Domains.Chat.MessageAggregate.ChatMessage", b =>
+            modelBuilder.Entity("Domains.Chats.Message.Aggregate.ChatMessage", b =>
                 {
-                    b.HasOne("Domains.Chat.ChatAggregate.ChatItem", "Chat")
+                    b.HasOne("Domains.Chats.Item.Aggregate.ChatItem", "Chat")
                         .WithMany("Messages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Auth.UserAggregate.AppUser", "Sender")
+                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -272,7 +327,7 @@ namespace Infra.EFCore.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Domains.Chat.ChatAggregate.ChatItem", b =>
+            modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
                 {
                     b.Navigation("Messages");
                 });
