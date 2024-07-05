@@ -6,13 +6,16 @@ using Microsoft.AspNetCore.Authorization;
 using Server.ChatApp.GRPCHandlers.Results;
 using Server.ChatApp.Protos;
 using Shared.Server.Constants;
+using Shared.Server.Dtos.Dashboard;
 using Shared.Server.Extensions;
+using Server.ChatApp.Extensions;
 
 namespace Server.ChatApp.GRPCHandlers;
 
 [Authorize]
 internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.ContactRPCsBase {
 
+    //======== Queries
     public override async Task<ContactResult> IsInContacts(ContactMsg request , ServerCallContext context) {
         // get profileId and check is valid
         var userByProfileId = await FindUserByProfileIdAsync(request.ProfileId);
@@ -35,6 +38,17 @@ internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.Contact
         }
         return ContactResults.FoundInContacts(userByProfileId);
     }
+
+    public override async Task<ContactItems> GetContacts(Empty request , ServerCallContext context) {
+        ContactItems result = new();
+        var myId = await SharedMethods.GetMyIdAsync(context , _unitOfWork);
+        var contactItems = ( await _unitOfWork.Queries.Contacts.GetContacts(myId) ).AsRepeatedFields<ContactItem,ContactItemDto>();
+        result.Items.AddRange(contactItems);
+        return result;
+    }
+
+
+    //========= Commands
 
     public override async Task<ContactResult> Remove(RowMsg request , ServerCallContext context) {
         var model = await _unitOfWork.Queries.Contacts.FindAsync(request.RowId.AsGuid());
