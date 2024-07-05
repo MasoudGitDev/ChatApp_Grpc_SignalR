@@ -1,6 +1,9 @@
 ﻿using Domains.Auth.User.Aggregate;
+using Domains.Chats.Contacts.Aggregate;
 using Domains.Chats.Requests.Aggregate;
 using Microsoft.EntityFrameworkCore;
+using Shared.Server.Dtos.Dashboard;
+using Shared.Server.Extensions;
 using Shared.Server.Models.Results;
 
 namespace Infra.EFCore.Extensions;
@@ -25,6 +28,33 @@ internal static class QueriesExtensions {
                     currentUser.ImageUrl));
             }
 
+            return list;
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.ToString());
+            return [];
+        }
+    }
+
+
+    public static async Task<LinkedList<ContactItemDto>> ToContactItemsAsync(this IQueryable<Contact> querySource ,
+      Guid myId ,
+      Func<Guid , Task<AppUser>> findUserAction) {
+        try {
+            var contacts = await querySource.ToLinkedListAsync();
+            var list = new LinkedList<ContactItemDto>();
+
+            foreach(var item in contacts) {
+                var contactId = myId == item.RequesterId ?  item.ReceiverId : item.RequesterId;
+                var currentUser = await findUserAction.Invoke(contactId);
+
+                list.AddLast(new ContactItemDto(
+                    item.Id ,
+                    currentUser.Id ,
+                    currentUser.DisplayName ,
+                    item.ContactedAt ,
+                    currentUser.ImageUrl));
+            }
             return list;
         }
         catch(Exception ex) {
