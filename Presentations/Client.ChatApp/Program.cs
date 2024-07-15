@@ -31,8 +31,8 @@ builder.Services.AddScoped<ChatMessageRPCs.ChatMessageRPCsClient>(services => {
     return new ChatMessageRPCs.ChatMessageRPCsClient(gRPCChannel);
 });
 
-builder.Services.AddScoped<ChatRequestRPCs.ChatRequestRPCsClient>(services => {
-    return new ChatRequestRPCs.ChatRequestRPCsClient(gRPCChannel);
+builder.Services.AddScoped<ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient>(services => {
+    return new ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient(gRPCChannel);
 });
 
 builder.Services.AddScoped<ChatRequestQueryRPCs.ChatRequestQueryRPCsClient>(services => {
