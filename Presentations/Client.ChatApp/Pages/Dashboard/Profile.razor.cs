@@ -19,7 +19,7 @@ public class ProfileViewHandler : ComponentBase {
     private ContactRPCs.ContactRPCsClient ContactService { get; set; } = null!;
 
     [Inject]
-    private ChatRequestRPCs.ChatRequestRPCsClient RequestService { get; set; } = null!;
+    private ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient RequestService { get; set; } = null!;
 
     //========================== Use In View
     protected List<MessageInfo> Messages = [];
