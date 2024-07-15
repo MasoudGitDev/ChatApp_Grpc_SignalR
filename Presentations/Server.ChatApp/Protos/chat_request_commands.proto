@@ -3,7 +3,7 @@ import "Protos/common_models.proto";
 option csharp_namespace = "Server.ChatApp.Protos";
 package chat_request_pkg;
 
-service ChatRequestRPCs{
+service ChatRequestCommandsRPCs{
 	rpc Request(common.UserMsg) returns(common.ResultMsg);
 	rpc Accept(ChatRequestMsg)   returns(common.ResultMsg);
 	rpc Block(ChatRequestMsg)    returns(common.ResultMsg);
