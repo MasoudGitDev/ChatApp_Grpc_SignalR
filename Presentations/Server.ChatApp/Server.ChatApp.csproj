@@ -5,10 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9341e462-c6a6-41d6-8b92-b815ea6f4a36</UserSecretsId>
-  </PropertyGroup>	
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.AdWords" Version="24.19.0" />
+    <None Remove="Protos\chat_item_commands.proto" />
+  </ItemGroup>	
+
+  <ItemGroup>
     <PackageReference Include="Google.Api.CommonProtos" Version="2.15.0" />
     <PackageReference Include="Google.Protobuf" Version="3.27.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
@@ -20,6 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Mapster" Version="7.4.1-pre01" />
+    <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.8.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
@@ -31,10 +35,11 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<Protobuf Include="Protos\ChatItems\chat_item_commands.proto" GrpcServices="Client" />
 		<Protobuf Include="Protos\common_models.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\chat_message.proto" GrpcServices="Server" />
-		<Protobuf Include="Protos\chat_request_commands.proto" GrpcServices="Server" />
-		<protobuf Include="Protos\chat_request_queries.proto" GrpcService="Server" />
+		<Protobuf Include="Protos\ChatRequests\chat_request_commands.proto" GrpcServices="Server" />
+		<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Server" />
 		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Server" />
 	</ItemGroup>
