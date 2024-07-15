@@ -32,3 +32,8 @@ message UserMsg {
 message RowMsg{
 	string RowId = 1;
 }
+
+
+message PersonMsg{
+	string Id = 1;
+}
