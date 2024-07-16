@@ -1,6 +1,6 @@
 syntax = "proto3";
 option csharp_namespace = "Client.ChatApp.Protos";
-package common;
+package Shared;
 
 service SharedRpcs{
 	rpc shared(Empty) returns(Empty);

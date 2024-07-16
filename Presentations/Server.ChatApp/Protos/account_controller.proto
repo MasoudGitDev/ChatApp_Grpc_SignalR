@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "Protos/common_models.proto";
+import "Protos/shared_messages.proto";
 option csharp_namespace = "Server.ChatApp.Protos";
 package account_service_pkg;
 
@@ -30,7 +30,7 @@ message DeleteReq{
 message AccountResponse{
 	bool IsValid = 1;
 	string AccessToken = 2;
-	repeated common.MessageInfo Errors = 3;
+	repeated Shared.MessageInfo Errors = 3;
 }
 
 

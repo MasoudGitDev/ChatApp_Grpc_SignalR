@@ -1,15 +1,15 @@
 syntax = "proto3";
-import "Protos/common_models.proto";
+import "Protos/shared_messages.proto";
 option csharp_namespace = "Client.ChatApp.Protos";
-package chat_request_pkg;
+package ChatRequestCommandsPkg;
 
 service ChatRequestCommandsRPCs{
-	rpc Request(common.UserMsg) returns(common.ResultMsg);
-	rpc Accept(ChatRequestMsg)   returns(common.ResultMsg);
-	rpc Block(ChatRequestMsg)    returns(common.ResultMsg);
-	rpc Unblock(ChatRequestMsg)  returns(common.ResultMsg);
-	rpc Delete(ChatRequestMsg)   returns(common.ResultMsg);
+	rpc Request(Shared.PersonMsg) returns(Shared.ResultMsg);
+	rpc Accept(ChatRequestMsg)   returns(Shared.ResultMsg);
+	rpc Block(ChatRequestMsg)    returns(Shared.ResultMsg);
+	rpc Unblock(ChatRequestMsg)  returns(Shared.ResultMsg);
+	rpc Delete(ChatRequestMsg)   returns(Shared.ResultMsg);
 }
 message ChatRequestMsg{
-	string chatRequestId = 1;
+	string ChatRequestId = 1;
 }

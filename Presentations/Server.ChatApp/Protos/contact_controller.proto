@@ -1,12 +1,12 @@
 syntax = "proto3";
-import "Protos/common_models.proto";
+import "Protos/shared_messages.proto";
 option csharp_namespace = "Server.ChatApp.Protos";
 package contacts_pkg;
 
 service ContactRPCs{
 	rpc IsInContacts(ContactMsg) returns(ContactResult);
-	rpc GetContacts(common.Empty) returns(ContactItems);
-	rpc Remove(common.RowMsg) returns(ContactResult);
+	rpc GetContacts(Shared.Empty) returns(ContactItems);
+	rpc Remove(Shared.RowMsg) returns(ContactResult);
 }
 
 message ContactMsg{
@@ -26,7 +26,7 @@ message ContactItem{
 
 message ContactResult {
 	bool IsSuccessful = 1;
-	repeated common.MessageInfo Messages = 2;
+	repeated Shared.MessageInfo Messages = 2;
 	ContactInfo ContactInfo = 3;
 	string ChatRequestId = 4;
 }

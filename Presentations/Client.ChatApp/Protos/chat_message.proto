@@ -1,11 +1,11 @@
 syntax = "proto3";
-import "Protos/common_models.proto";
+import "Protos/shared_messages.proto";
 option csharp_namespace = "Client.ChatApp.Protos";
 package chat_message_pkg;
 
 
 service ChatMessageRPCs {
-  rpc Send(MessageReq) returns(common.ResultMsg) ;
+  rpc Send(MessageReq) returns(Shared.ResultMsg) ;
 }
 
 
