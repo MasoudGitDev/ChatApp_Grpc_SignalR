@@ -1,5 +1,9 @@
-﻿using Apps.Auth.Queries;
-using Apps.Chats.Queries;
+﻿using Domains.Auth.Queries;
+using Domains.Chats.Contacts.Queries;
+using Domains.Chats.Item.Queries;
+using Domains.Chats.Message.Queries;
+using Domains.Chats.Requests.Queries;
+using Domains.Chats.Shared;
 
 namespace Infra.EFCore.Implementations;
 internal sealed class AppQueries(

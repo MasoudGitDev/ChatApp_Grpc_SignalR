@@ -1,6 +1,6 @@
 ﻿using Apps.Chats.ChatItems.Commands.Model;
-using Apps.Chats.UnitOfWorks;
 using Domains.Chats.Item.Aggregate;
+using Domains.Chats.Shared;
 using MediatR;
 using Shared.Server.Models.Results;
 

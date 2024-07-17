@@ -1,6 +1,6 @@
 ﻿using Apps.Chats.Commands;
-using Apps.Chats.UnitOfWorks;
 using Domains.Chats.Message.Aggregate;
+using Domains.Chats.Shared;
 using Shared.Server.Models.Results;
 
 namespace Apps.Chats.Implementations;

@@ -1,6 +1,6 @@
-﻿using Apps.Chats.Queries;
-using Domains.Auth.User.Aggregate;
+﻿using Domains.Auth.User.Aggregate;
 using Domains.Chats.Requests.Aggregate;
+using Domains.Chats.Requests.Queries;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Extensions;
 using Microsoft.EntityFrameworkCore;

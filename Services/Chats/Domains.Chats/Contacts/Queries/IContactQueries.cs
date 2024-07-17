@@ -1,9 +1,9 @@
 ﻿using Domains.Chats.Contacts.Aggregate;
 using Shared.Server.Dtos.Dashboard;
 
-namespace Apps.Chats.Queries;
+namespace Domains.Chats.Contacts.Queries;
 public interface IContactQueries {
-  
+
     Task<Contact?> FindAsync(Guid contactId);
 
     /// <summary>

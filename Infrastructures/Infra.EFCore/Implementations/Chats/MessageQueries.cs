@@ -1,5 +1,5 @@
-﻿using Apps.Chats.Queries;
-using Domains.Chats.Message.Aggregate;
+﻿using Domains.Chats.Message.Aggregate;
+using Domains.Chats.Message.Queries;
 using Infra.EFCore.Contexts;
 
 namespace Infra.EFCore.Implementations.Chats;

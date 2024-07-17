@@ -1,5 +1,6 @@
 ﻿using Apps.Chats.Shared.Models;
 using Domains.Auth.User.Aggregate;
+using Domains.Chats.Shared;
 using MediatR;
 
 namespace Apps.Chats.Shared.Handlers;

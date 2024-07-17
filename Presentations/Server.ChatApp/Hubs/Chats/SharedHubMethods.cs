@@ -1,5 +1,5 @@
-﻿using Apps.Chats.Shared;
-using Domains.Auth.User.Aggregate;
+﻿using Domains.Auth.User.Aggregate;
+using Domains.Chats.Shared;
 using Grpc.Core;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Server.Extensions;

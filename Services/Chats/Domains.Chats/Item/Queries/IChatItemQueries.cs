@@ -1,6 +1,6 @@
 ﻿using Domains.Chats.Item.Aggregate;
 
-namespace Apps.Chats.Queries;
+namespace Domains.Chats.Item.Queries;
 public interface IChatItemQueries {
     public Task<ChatItem?> FindByIdAsync(Guid chatId);
     public Task<ChatItem?> GetByIdsAsync(Guid requesterId , Guid receiverId);

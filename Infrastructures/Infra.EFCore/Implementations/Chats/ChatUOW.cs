@@ -1,12 +1,10 @@
-﻿using Apps.Auth.Queries;
-using Apps.Chats.Queries;
-using Apps.Chats.UnitOfWorks;
+﻿using Domains.Chats.Shared;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Exceptions;
 using Shared.Server.Exceptions;
 
 namespace Infra.EFCore.Implementations.Chats;
-internal class ChatUOW(AppDbContext _dbContext ,IAppQueries _queries) : IChatUOW {
+internal class ChatUOW(AppDbContext _dbContext , IAppQueries _queries) : IChatUOW {
 
     public IAppQueries Queries => _queries;
 

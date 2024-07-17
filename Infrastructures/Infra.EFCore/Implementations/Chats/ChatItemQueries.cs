@@ -1,5 +1,5 @@
-﻿using Apps.Chats.Queries;
-using Domains.Chats.Item.Aggregate;
+﻿using Domains.Chats.Item.Aggregate;
+using Domains.Chats.Item.Queries;
 using Infra.EFCore.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Shared.Server.Extensions;
