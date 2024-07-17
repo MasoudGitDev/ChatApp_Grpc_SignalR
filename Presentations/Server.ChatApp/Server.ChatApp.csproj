@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\chat_item_commands.proto" />
-  </ItemGroup>	
-
-  <ItemGroup>
     <PackageReference Include="Google.Api.CommonProtos" Version="2.15.0" />
     <PackageReference Include="Google.Protobuf" Version="3.27.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
@@ -35,8 +31,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="Protos\ChatItems\chat_item_commands.proto" GrpcServices="Client" />
-		<Protobuf Include="Protos\common_models.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\ChatItems\chat_item_commands.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\shared_messages.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\chat_message.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\ChatRequests\chat_request_commands.proto" GrpcServices="Server" />
 		<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Server" />
