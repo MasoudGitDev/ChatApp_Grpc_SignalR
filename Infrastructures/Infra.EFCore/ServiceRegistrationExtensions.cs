@@ -3,7 +3,6 @@ using Apps.Auth;
 using Apps.Auth.Queries;
 using Apps.Auth.Services;
 using Apps.Chats.Queries;
-using Apps.Chats.UnitOfWorks;
 using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
 using Infra.EFCore.Contexts;
@@ -19,6 +18,7 @@ using Shared.Server.Extensions;
 using Shared.Server.Models;
 using System.Text;
 using Infra.EFCore.Implementations;
+using Apps.Chats.Shared;
 
 namespace Infra.EFCore;
 public static class ServiceRegistrationExtensions {
