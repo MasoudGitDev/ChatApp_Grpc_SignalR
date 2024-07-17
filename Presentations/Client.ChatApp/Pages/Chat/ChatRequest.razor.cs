@@ -4,6 +4,7 @@ using Google.Protobuf.Collections;
 using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Server.ChatApp.Protos;
 using Shared.Server.Models.Results;
 
 namespace Client.ChatApp.Pages.Chat;
@@ -14,35 +15,64 @@ public class ChatRequestVewHandler : ComponentBase {
     private ChatRequestQueryRPCs.ChatRequestQueryRPCsClient Queries { get; set; } = null!;
 
     [Inject]
+    private ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient Commands { get; set; } =null!;
+
+    [Inject]
     private NavigationManager NavManager { get; set; } = null!;
     //=======================
-
-    protected ChatRequestTab _currentTab = ChatRequestTab.Received;
-    protected string IsTabSelected(ChatRequestTab tab) => _currentTab == tab ? "selected" : "";
+    protected LinkedList<MessageInfo> Errors = new();
+    protected ChatRequestTab CurrentTab = ChatRequestTab.Received;
+    protected string IsTabSelected(ChatRequestTab tab) => CurrentTab == tab ? "selected" : "";
     protected RepeatedField<ChatRequestItemMsg> GetItems() {
-        if(_currentTab == ChatRequestTab.Sent) {
+        if(CurrentTab == ChatRequestTab.Sent) {
             return SendItems;
         }
-        if(_currentTab == ChatRequestTab.Received) {
+        else {
             return ReceiveItems;
         }
-        return [];
     }
     protected void ChangeTab(ChatRequestTab tab) {
-        _currentTab = tab;
+        CurrentTab = tab;
     }
 
     //======================
     private RepeatedField<ChatRequestItemMsg> ReceiveItems = [];
     private RepeatedField<ChatRequestItemMsg> SendItems = [];
 
+    
+
     private HubConnection? _hubConnection;
 
     //=======================
 
+    protected async Task OnDeleteAsync(ChatRequestItemMsg item , ChatRequestTab tab) {
+        if(tab == ChatRequestTab.Received) {
+            ReceiveItems.Remove(item);
+        }
+        else {
+            SendItems.Remove(item);
+        }      
+        await Commands.DeleteAsync(new ChatRequestMsg() { ChatRequestId = item.ChatRequestId });
+    }
+
+    /// <summary>
+    ///  Only receivers can block the requests.
+    /// </summary>
+    protected async Task OnBlockAsync(ChatRequestItemMsg item) {
+        ReceiveItems.Remove(item);
+        await Commands.BlockAsync(new ChatRequestMsg(){ ChatRequestId = item.ChatRequestId });        
+    }
+
+    /// <summary>
+    ///  Only receivers can accept the requests.
+    /// </summary>
+    protected async void OnAcceptAsync(ChatRequestItemMsg item) {
+        ReceiveItems.Remove(item);
+        await Commands.AcceptAsync(new ChatRequestMsg() { ChatRequestId = item.ChatRequestId });
+    }
 
 
-    protected override async void OnInitialized() {    
+    protected override async Task OnInitializedAsync() {
         await CreateReceiveItemsAsync();
         await CreateSendItemsAsync();
         await SetHubConfigAsync();
