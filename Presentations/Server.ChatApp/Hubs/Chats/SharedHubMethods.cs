@@ -1,4 +1,4 @@
-﻿using Apps.Chats.UnitOfWorks;
+﻿using Apps.Chats.Shared;
 using Domains.Auth.User.Aggregate;
 using Grpc.Core;
 using Microsoft.AspNetCore.SignalR;
