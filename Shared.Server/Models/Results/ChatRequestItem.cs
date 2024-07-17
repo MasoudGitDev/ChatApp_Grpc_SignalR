@@ -5,5 +5,10 @@
        string DisplayName ,       
        DateTime RequestedAt ,
        string ImageUrl
-   );
+   ) {
+        public ChatRequestItem():this(Guid.Empty,Guid.Empty,"<invalid-name>" , DateTime.UtcNow,"<invalid-image>")    
+        {
+            
+        }
+    }
 }
