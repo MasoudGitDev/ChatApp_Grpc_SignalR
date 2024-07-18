@@ -1,12 +1,16 @@
-﻿using Apps.Chats.ChatItems.Commands.Model;
-using Domains.Chats.Item.Aggregate;
-using Domains.Chats.Shared;
+﻿using Domains.Chats.Item.Aggregate;
 using MediatR;
 using Shared.Server.Models.Results;
+using UnitOfWorks.Abstractions;
 
-namespace Apps.Chats.ChatItems.Commands.Handlers;
-internal sealed class CreateHandler(IChatUOW _unitOfWork) : IRequestHandler<CreateRequest , ResultStatus> {
-    public async Task<ResultStatus> Handle(CreateRequest request , CancellationToken cancellationToken) {
+namespace Apps.Chats.ChatItems.Commands;
+
+public sealed record Create(Guid RequesterId , Guid ReceiverId) : IRequest<ResultStatus> {
+    public static Create New(Guid RequesterId , Guid ReceiverId) => new(RequesterId , ReceiverId);
+}
+
+internal sealed class CreateHandler(IChatUOW _unitOfWork) : IRequestHandler<Create , ResultStatus> {
+    public async Task<ResultStatus> Handle(Create request , CancellationToken cancellationToken) {
         var (requesterId, receiverId) = request;
 
         // same id can not have chat!
