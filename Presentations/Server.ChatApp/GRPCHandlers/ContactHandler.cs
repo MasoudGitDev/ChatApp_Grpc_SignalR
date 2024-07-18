@@ -1,14 +1,15 @@
-﻿using Apps.Chats.UnitOfWorks;
-using Domains.Auth.User.Aggregate;
+﻿using Domains.Auth.User.Aggregate;
 using Domains.Chats.Requests.Aggregate;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
+using Server.ChatApp.Extensions;
 using Server.ChatApp.GRPCHandlers.Results;
 using Server.ChatApp.Protos;
+using Server.ChatApp.ServiceHandlers;
 using Shared.Server.Constants;
 using Shared.Server.Dtos.Dashboard;
 using Shared.Server.Extensions;
-using Server.ChatApp.Extensions;
+using UnitOfWorks.Abstractions;
 
 namespace Server.ChatApp.GRPCHandlers;
 
@@ -42,7 +43,7 @@ internal sealed class ContactHandler(IChatUOW _unitOfWork) : ContactRPCs.Contact
     public override async Task<ContactItems> GetContacts(Empty request , ServerCallContext context) {
         ContactItems result = new();
         var myId = await SharedMethods.GetMyIdAsync(context , _unitOfWork);
-        var contactItems = ( await _unitOfWork.Queries.Contacts.GetContacts(myId) ).AsRepeatedFields<ContactItem,ContactItemDto>();
+        var contactItems = ( await _unitOfWork.Queries.Contacts.GetContacts(myId) ).ToRepeatedFields<ContactItemDto,ContactItem>();
         result.Items.AddRange(contactItems);
         return result;
     }
