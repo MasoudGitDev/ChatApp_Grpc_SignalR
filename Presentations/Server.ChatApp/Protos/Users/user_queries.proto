@@ -1,0 +1,8 @@
+syntax = "proto3";
+import "Protos/shared_messages.proto";
+option csharp_namespace = "Server.ChatApp.Protos.Users";
+package UserQueriesPkg;
+
+service UserQeriesRPCs{
+	rpc GetUsers(Shared.Empty) returns(stream Shared.UserMemberMsg);
+}
