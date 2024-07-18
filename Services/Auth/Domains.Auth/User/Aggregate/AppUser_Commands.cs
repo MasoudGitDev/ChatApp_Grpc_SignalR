@@ -7,6 +7,8 @@ public partial class AppUser {
         return new AppUser() {
             Id = userId ?? Guid.NewGuid() ,
             UserName = model.UserName ,
+            DisplayName = model.DisplayName ,
+            ProfileId = model.ProfileId ,
             Email = model.Email ,
             EmailConfirmed = false ,
             CreatedAt = DateTime.UtcNow ,
