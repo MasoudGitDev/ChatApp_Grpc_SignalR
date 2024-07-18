@@ -1,7 +1,20 @@
 ﻿@page "/"
+@using Client.ChatApp.Pages.Features
+@inherits HomeViewHandler
 
 <PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<div class="users_container">
+    <Pagination Title="کاربران جدید">
+        <div class="users">
+            @foreach(var user in Users) {
+                <div class="user center" @onclick="()=> GoUserProfile(user.ProfileId)">
+                    <div class="status online"></div>
+                    <div class="logo center">
+                        <div class="img center">Img</div>
+                    </div>
+                    <div class="name">@user.DisplayName</div>
+                </div>
+            }
+        </div>
+    </Pagination>  
+</div>
