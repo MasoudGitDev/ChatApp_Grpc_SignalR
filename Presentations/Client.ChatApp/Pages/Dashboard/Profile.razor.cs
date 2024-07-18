@@ -53,7 +53,7 @@ public class ProfileViewHandler : ComponentBase {
         }
         if(ButtonName == ProfileViewConstants.RequestBtn) {
             Messages.AddRange(await DoAsync(Messages ,
-                async () => await RequestService.RequestAsync(new UserMsg() { UserId = ReceiverId })));
+                async () => await RequestService.RequestAsync(new PersonMsg() { Id = ReceiverId })));
             return;
         }
         if(ButtonName == ProfileViewConstants.ConfirmBtn) {
