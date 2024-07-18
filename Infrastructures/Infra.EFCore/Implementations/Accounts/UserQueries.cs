@@ -18,4 +18,8 @@ internal class UserQueries(UserManager<AppUser> _userManager) : IUserQueries {
     public async Task<AppUser?> FindByUserNameAsync(string username) {
         return await _userManager.FindByNameAsync(username);
     }
+
+    public async Task<List<AppUser>> GetUsersAsync() {
+        return await _userManager.Users.ToListAsync();
+    }
 }
