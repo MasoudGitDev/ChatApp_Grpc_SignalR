@@ -1,6 +1,6 @@
 ﻿using Apps.Auth.Constants;
-using Apps.Auth.Queries;
 using Apps.Auth.Services;
+using Domains.Auth.Queries;
 using Domains.Auth.User.Aggregate;
 using Grpc.Core;
 using Mapster;
@@ -14,30 +14,25 @@ using Shared.Server.Models.Results;
 namespace Server.ChatApp.GRPCHandlers;
 
 [Authorize]
-public class GrpcAccountHandler(IAccountService _accountService, IUserQueries _userQueries) : AccountRPCs.AccountRPCsBase
-{
-    public override Task<AccountResponse> Delete(DeleteReq request, ServerCallContext context)
-    {
-        return base.Delete(request, context);
+public class GrpcAccountHandler(IAccountService _accountService , IUserQueries _userQueries) : AccountRPCs.AccountRPCsBase {
+    public override Task<AccountResponse> Delete(DeleteReq request , ServerCallContext context) {
+        return base.Delete(request , context);
     }
 
     [AllowAnonymous]
-    public override async Task<AccountResponse> Login(LoginReq request, ServerCallContext context)
-    {
-        return ToAccountResponse(await _accountService.LoginAsync(request.Adapt<LoginDto>()), context);
+    public override async Task<AccountResponse> Login(LoginReq request , ServerCallContext context) {
+        return ToAccountResponse(await _accountService.LoginAsync(request.Adapt<LoginDto>()) , context);
     }
 
 
 
     [AllowAnonymous]
-    public override async Task<AccountResponse> SignUp(RegisterReq request, ServerCallContext context)
-    {
-        return ToAccountResponse(await _accountService.RegisterAsync(request.Adapt<RegisterDto>()), context);
+    public override async Task<AccountResponse> SignUp(RegisterReq request , ServerCallContext context) {
+        return ToAccountResponse(await _accountService.RegisterAsync(request.Adapt<RegisterDto>()) , context);
     }
 
     [AllowAnonymous]
-    public override async Task<AccountResponse> LoginByToken(LoginByTokenReq request, ServerCallContext context)
-    {
+    public override async Task<AccountResponse> LoginByToken(LoginByTokenReq request , ServerCallContext context) {
         try {
             var accountResult = await _accountService.LoginByTokenAsync(request.AccessToken);
             return ToAccountResponse(accountResult , context);
@@ -48,22 +43,19 @@ public class GrpcAccountHandler(IAccountService _accountService, IUserQueries _u
     }
 
     //======================privates
-    private async Task<AppUser> GetUserAsync(ServerCallContext context)
-    {
+    private async Task<AppUser> GetUserAsync(ServerCallContext context) {
         var user = context.GetHttpContext().User;
-        if (user is null || user.Identity is null || !user.Identity.IsAuthenticated)
-        {
-            throw new AppException("InvalidUser", "You are not authenticated.");
+        if(user is null || user.Identity is null || !user.Identity.IsAuthenticated) {
+            throw new AppException("InvalidUser" , "You are not authenticated.");
         }
         var userIdByClaim = user.Claims
             .Where(x => x.Type == TokenKeys.UserId).FirstOrDefault()?.Value
             .ThrowIfNullOrWhiteSpace("The value of <userId> claim is invalid");
-        _ = Guid.TryParse(userIdByClaim, out Guid userId);
-        return (await _userQueries.FindByIdAsync(userId)).ThrowIfNull("Invalid-User");
+        _ = Guid.TryParse(userIdByClaim , out Guid userId);
+        return ( await _userQueries.FindByIdAsync(userId) ).ThrowIfNull("Invalid-User");
     }
 
-    private static AccountResponse ToAccountResponse(AccountResult accountResult, ServerCallContext context)
-    {
+    private static AccountResponse ToAccountResponse(AccountResult accountResult , ServerCallContext context) {
         var response = accountResult.Adapt<AccountResponse>();
         response.Errors.AddRange(accountResult.Errors.Adapt<IEnumerable<MessageInfo>>());
         context.GetHttpContext().Response.Headers.Authorization = $"Bearer {response.AccessToken}";
