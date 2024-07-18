@@ -17,6 +17,10 @@
         <div class="form-container size-all">
             <EditForm Model="_currentModel" class="edit_form size-all" OnValidSubmit="OnFormSubmitAsync">
                 <div class="form-group mt-1">
+                    <label class="form-label">نام نمایشی</label>
+                    <input class="form-control" @bind="_currentModel.DisplayName" />
+                </div>
+                <div class="form-group mt-1">
                     <label class="form-label">پست الکترونیک (ایمیل)</label>
                     <input class="form-control" @bind="_currentModel.Email" />
                 </div>
@@ -44,6 +48,15 @@
     private List<MessageDescription> Errors = new();
     private void GoToLoginPage() => _navManager.NavigateTo("/Login");
 
+    private HubConnection? _hubConnection;
+
+
+    protected override async Task OnInitializedAsync() {
+        _hubConnection = new HubConnectionBuilder().WithUrl(_navManager.ToAbsoluteUri("https://localhost:7001/SignUpHub")).Build();
+        await _hubConnection.StartAsync();
+    }
+
+
     private async Task OnFormSubmitAsync() {
         try {
             Errors.Clear();
@@ -56,12 +69,19 @@
 
             if(Errors.Count <= 0 && response.IsValid) {
                 await authProvider.SetStateAsync(response.AccessToken);
-                _navManager.NavigateTo("/Chats");
+                await NotifyOnCreation(_currentModel.ProfileId, _currentModel.DisplayName);
+                _navManager.NavigateTo("/");
             }
         }
         catch(Exception ex) {
             Console.WriteLine(ex.InnerException);
         }
 
+    }
+
+    private async Task NotifyOnCreation(string profileId, string displayName) {
+        if(_hubConnection != null) {
+            await _hubConnection.SendAsync("SendNewUser" , new UserHomeDto(profileId , displayName , ""));
+        }
     }
 }
