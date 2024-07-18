@@ -1,9 +1,12 @@
+using Apps.Auth.Users.Queries;
 using Apps.Chats;
 using Infra.EFCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;
+using Server.ChatApp.Hubs.Accounts;
 using Server.ChatApp.Hubs.Chats;
+using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +54,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddChatServices();
 builder.Services.AddSignalR();
 
+builder.Services.AddMediatR((config) => {
+    config.RegisterServicesFromAssemblies(
+        AppsChatsAssembly.Assembly , typeof(GetHomeUsers).Assembly
+    );
+});
 
 //builder.Services.AddGrpcClient<AdService.AdServiceClient>(o => o.Address = new Uri("https://localhost:7223"));
 
@@ -82,8 +90,8 @@ app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcChatMessageHandler>().EnableGrpcWeb();
 
-app.MapGrpcService<ChatRequestCommandsHandler>().EnableGrpcWeb();
-app.MapGrpcService<ChatRequestQueriesHandler>().EnableGrpcWeb();
+app.MapGrpcService<ChatRequests.CommandsHandler>().EnableGrpcWeb();
+app.MapGrpcService<ChatRequests.QueriesHandler>().EnableGrpcWeb();
 
 app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
 
@@ -92,6 +100,7 @@ app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
 
 // signalR hubs
 app.MapHub<ChatMessageHub>("/chatMessageHub");
+app.MapHub<SignUpHub>("/SignUpHub");
 
 
 app.MapControllers();
