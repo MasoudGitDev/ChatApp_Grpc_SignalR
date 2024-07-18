@@ -1,4 +1,4 @@
-﻿using Apps.Chats.ChatRequests.Commands.Models;
+﻿using Commands = Apps.Chats.ChatRequests.Commands;
 using Grpc.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,27 +17,27 @@ internal class CommandsHandler(IMediator _mediator) : ChatRequestCommandsRPCs.Ch
     private readonly CancellationToken _cancellationToken = new();
 
     public override async Task<ResultMsg> Accept(ChatRequestMsg request , ServerCallContext context)
-        => ( await _mediator.Send(new AcceptRequest(
-            request.ChatRequestId.AsGuid() , await GetMyIdAsync(context)) , _cancellationToken) )
+        => ( await _mediator.Send(Commands.Accept.New(request.ChatRequestId.AsGuid() ,
+            await GetMyIdAsync(context)) , _cancellationToken) )
         .AsCommonResult();
 
     public override async Task<ResultMsg> Block(ChatRequestMsg request , ServerCallContext context)
-        => ( await _mediator.Send(new BlockRequest(
+        => ( await _mediator.Send(Commands.Block.New(
             request.ChatRequestId.AsGuid() , await GetMyIdAsync(context)) , _cancellationToken) )
         .AsCommonResult();
 
     public override async Task<ResultMsg> Delete(ChatRequestMsg request , ServerCallContext context)
-        => ( await _mediator.Send(new BlockRequest(
-            request.ChatRequestId.AsGuid() , await GetMyIdAsync(context)) , _cancellationToken) )
+        => ( await _mediator.Send(Commands.Remove.New(request.ChatRequestId.AsGuid()) ,
+            _cancellationToken) )
         .AsCommonResult();
 
     public override async Task<ResultMsg> Request(PersonMsg request , ServerCallContext context)
-        => ( await _mediator.Send(new CreateRequest(
+        => ( await _mediator.Send(Commands.Create.New(
             await GetMyIdAsync(context) , request.Id.AsGuid()) , _cancellationToken) )
         .AsCommonResult();
 
     public override async Task<ResultMsg> Unblock(ChatRequestMsg request , ServerCallContext context)
-        => ( await _mediator.Send(new UnblockRequest(
+        => ( await _mediator.Send(Commands.Unblock.New(
              request.ChatRequestId.AsGuid() , await GetMyIdAsync(context)) , _cancellationToken) )
         .AsCommonResult();
 
