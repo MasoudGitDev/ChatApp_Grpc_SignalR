@@ -3,21 +3,35 @@
 @inherits ContactsViewHandler
 
 <div class="page-container">
-    <div class="user-items">
-        @foreach(var item in _contacts) {
-            <div class="user-item center" @onclick="()=> GoToDialog(item)">
-                <div class="item-logo center">@item.ImageUrl</div>
-                <div class="item-info center">
-                    <div class="item-name">@item.DisplayName</div>
-                    <div class="item-footer">
-                        <div class="item-history center-end">@item.ContactedAt</div>
-                        <div class="item-controls">
-                            <button class="item-btn" @onclick="()=> OnRemoveItem(item)">-</button>
+
+    <Pagination TotalItems="TotalItems" PageSize="PageSize"
+                PageCallBack="NotifyOnChangePage"
+    >
+
+        <div class="user-items">
+            @foreach(var item in _contacts) {
+                <div class="user-item center" @onclick="()=> GoToDialog(item)">
+                    <div class="item-logo center">@item.ImageUrl</div>
+                    <div class="item-info center">
+                        <div class="item-name">@item.DisplayName</div>
+                        <div class="item-footer">
+                            <div class="item-history center-end">@item.ContactedAt</div>
+                            <div class="item-controls">
+                                <button class="item-btn" @onclick="()=> OnRemoveItem(item)">D</button>
+                                <button class="item-btn" @onclick="()=> GoToChat(item)">Ch</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+
+
+
+    </Pagination>
+
+
+   
+
 </div>
 
