@@ -6,5 +6,5 @@ public interface IResultStatus {
 }
 
 public record class ResultStatus(bool IsSuccessful , List<MessageDescription> Messages):IResultStatus;
-public record class ResultStatus<T>(bool IsSuccessful , List<MessageDescription> Messages, T? Model):IResultStatus;
+public record class ResultStatus<T>(bool IsSuccessful , List<MessageDescription> Messages, T? Model) : IResultStatus;
 
