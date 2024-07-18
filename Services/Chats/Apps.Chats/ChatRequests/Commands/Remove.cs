@@ -3,7 +3,7 @@ using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
 using UnitOfWorks.Extensions;
 
-namespace Apps.Chats.ChatRequests.Commands.Handlers;
+namespace Apps.Chats.ChatRequests.Commands;
 
 // ChatRequests Block Model
 public sealed record Remove(Guid ChatRequestId) : IRequest<ResultStatus> {
