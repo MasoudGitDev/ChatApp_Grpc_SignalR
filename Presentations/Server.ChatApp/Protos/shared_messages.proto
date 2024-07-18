@@ -37,3 +37,9 @@ message RowMsg{
 message PersonMsg{
 	string Id = 1;
 }
+
+message UserMemberMsg{
+	string ProfileId = 1;
+	string DisplayName = 2;
+	string ImageUrl = 3;
+}
