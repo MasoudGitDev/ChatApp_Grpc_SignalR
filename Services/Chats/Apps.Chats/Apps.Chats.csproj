@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\UnitOfWorks\UnitOfWorks.csproj" />
     <ProjectReference Include="..\..\Auth\Apps.Auth\Apps.Auth.csproj" />
     <ProjectReference Include="..\Domains.Chats\Domains.Chats.csproj" />
   </ItemGroup>

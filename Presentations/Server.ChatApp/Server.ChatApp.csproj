@@ -38,6 +38,7 @@
 		<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Server" />
 		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\Users\user_queries.proto" GrpcServices="Server" />
 	</ItemGroup>
 
 
