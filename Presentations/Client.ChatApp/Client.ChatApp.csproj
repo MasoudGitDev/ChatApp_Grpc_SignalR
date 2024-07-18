@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\Users\user_queries.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\chat.css" />
   </ItemGroup>
 
@@ -37,9 +41,10 @@
     <Protobuf Include="Protos\chat_message.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\ChatRequests\chat_request_commands.proto" GrpcServices="Client" />
 	<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Client" />
-	<Protobuf Include="Protos\common_models.proto" GrpcServices="Client" />
+	<Protobuf Include="Protos\shared_messages.proto" GrpcServices="Client" />
 	<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Client" />
 	<Protobuf Include="Protos\ChatItems\chat_item_commands.proto" GrpcServices="Client" />
+	<Protobuf Include="Protos\Users\user_queries.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>
