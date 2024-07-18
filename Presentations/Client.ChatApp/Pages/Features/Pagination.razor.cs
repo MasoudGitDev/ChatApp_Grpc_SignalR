@@ -7,6 +7,8 @@ public class PaginationViewHandler : ComponentBase {
     [Parameter]
     public uint PageSize { get; set; } = 10;
 
+    [Parameter]
+    public string Title { get; set; } = String.Empty;
  
     [Parameter]
     public uint TotalItems { get; set; } = 1;
@@ -16,6 +18,9 @@ public class PaginationViewHandler : ComponentBase {
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool ShowSearchBar { get; set; } = true;
 
 
     protected uint CurrentPage = 1;

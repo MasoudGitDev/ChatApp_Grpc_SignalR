@@ -4,32 +4,62 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     background-color: #f8f8f8;
+}
+
+.title{
+    position:relative;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    padding:5px;
 }
 
 .pg-header {
     width: 100%;
     height: 42px;
     background-color: whitesmoke;
-    border-bottom: 1px solid rgba(80,80,80,.2);
 }
 .pg-body {
+    position:relative;
+    display:flex;
+    flex-direction:row;
+
     width: 100%;
     flex-grow: 1;
+
     background-color: white;
     padding: 5px;
+
+    border-top: 1px solid rgba(80,80,80,.2);
+    border-bottom: 1px solid rgba(80,80,80,.2);
+    border-start-end-radius: 10px;
+    border-start-start-radius: 10px;
+    border-end-end-radius: 10px;
+    border-end-start-radius: 10px;
 }
 
-.pg-footer {
-    position:relative;
+    .pg-body > .body_content{
+        position:relative;
+        display:flex;
+        flex-direction:row;
+        justify-content:flex-start;
+        align-items:center;
+        width:100%;
+        height:100%;
+        background-color:yellow;
+    }
 
-    width: 100%;
-    height: 50px;
-    background-color: whitesmoke;
-    border-top:1px solid rgba(80,80,80,.2);
-}
+    .pg-footer {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        background-color: whitesmoke;
+        
+    }
 
     .pg-footer  > .pg-controls {
         position:relative;

@@ -4,19 +4,24 @@
 
 <div class="pg-container">
 
-
-    <div class="pg-header center">
-        <div class="search-bar center">
-            <div class="search-col-btn center">
-                <button class="search-btn center">S</button>
-            </div>
-            <div class="search-col-txt center">
-                <input class="search-input " />
+    @if(!string.IsNullOrWhiteSpace(Title)) {
+        <div class="title">@Title</div>
+    }    
+    @if(ShowSearchBar) {
+        <div class="pg-header center">
+            <div class="search-bar center">
+                <div class="search-col-btn center">
+                    <button class="search-btn center">S</button>
+                </div>
+                <div class="search-col-txt center">
+                    <input class="search-input " />
+                </div>
             </div>
         </div>
-    </div>
+    }
+  
 
-    <div class="pg-body center">      <div style="width:100%;height:100%;">@ChildContent </div>  </div>
+    <div class="pg-body"> @ChildContent</div>
     <div class="pg-footer center">
 
 
