@@ -3,7 +3,7 @@ using Domains.Chats.Contacts.Queries;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
 using Domains.Chats.Requests.Queries;
-using Domains.Chats.Shared;
+using UnitOfWorks.Abstractions;
 
 namespace Infra.EFCore.Implementations;
 internal sealed class AppQueries(

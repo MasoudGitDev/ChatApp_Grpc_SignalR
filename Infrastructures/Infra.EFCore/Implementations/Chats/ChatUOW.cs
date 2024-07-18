@@ -1,7 +1,7 @@
-﻿using Domains.Chats.Shared;
-using Infra.EFCore.Contexts;
+﻿using Infra.EFCore.Contexts;
 using Infra.EFCore.Exceptions;
 using Shared.Server.Exceptions;
+using UnitOfWorks.Abstractions;
 
 namespace Infra.EFCore.Implementations.Chats;
 internal class ChatUOW(AppDbContext _dbContext , IAppQueries _queries) : IChatUOW {

@@ -1,11 +1,15 @@
-﻿using Apps.Auth.Constants;
-using Apps.Auth;
-using Apps.Auth.Queries;
+﻿using Apps.Auth;
+using Apps.Auth.Constants;
 using Apps.Auth.Services;
-using Apps.Chats.Queries;
+using Domains.Auth.Queries;
 using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
+using Domains.Chats.Contacts.Queries;
+using Domains.Chats.Item.Queries;
+using Domains.Chats.Message.Queries;
+using Domains.Chats.Requests.Queries;
 using Infra.EFCore.Contexts;
+using Infra.EFCore.Implementations;
 using Infra.EFCore.Implementations.Accounts;
 using Infra.EFCore.Implementations.Chats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,8 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
 using System.Text;
-using Infra.EFCore.Implementations;
-using Apps.Chats.Shared;
+using UnitOfWorks.Abstractions;
 
 namespace Infra.EFCore;
 public static class ServiceRegistrationExtensions {
@@ -37,7 +40,6 @@ public static class ServiceRegistrationExtensions {
         services.AddAuthServices();
         services.AddScoped<IAccountService , AccountService>();
         services.AddScoped<IUserQueries , UserQueries>();
-        services.AddScoped<IAccountQueries , AccountQueries>();
 
         //========================
 
@@ -62,7 +64,7 @@ public static class ServiceRegistrationExtensions {
             .AddSignInManager<SignInManager<AppUser>>()
             .AddRoles<AppRole>()
             .AddEntityFrameworkStores<AppDbContext>();
-          
+
 
         var jwtSettingModel = configuration.GetSection("JwtSettingsModel").Get<JwtSettingsModel>()
             .ThrowIfNull("The <JwtSettingsModel> can not be null.");
@@ -98,7 +100,7 @@ public static class ServiceRegistrationExtensions {
         services.AddScoped<IChatMessageQueries , MessageQueries>();
         services.AddScoped<IChatRequestQueries , ChatRequestQueries>();
         services.AddScoped<IContactQueries , ContactQueries>();
-        services.AddScoped<IAppQueries,AppQueries>();
+        services.AddScoped<IAppQueries , AppQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();
         return services;
     }
