@@ -4,7 +4,7 @@ using Shared.Server.Dtos.User;
 namespace Server.ChatApp.Hubs.Accounts;
 
 public class SignUpHub :Hub{
-    public async Task SendNewUser(UserHomeDto user) {
+    public async Task SendNewUser(UserBasicInfoDto user) {
         await Clients.All.SendAsync("GetNewUser" , user);
     }
 }

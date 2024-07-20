@@ -18,7 +18,7 @@ public class QueriesHandler(IMediator _mediator) : UserQeriesRPCs.UserQeriesRPCs
     ///  usage in home page
     /// </summary>
     public override async Task GetUsers(Empty request , IServerStreamWriter<UserBasicInfoMsg> responseStream , ServerCallContext context) {
-        ResultStatus<List<UserHomeDto>> result = await _mediator.Send(GetHomeUsers.New());
+        ResultStatus<List<UserBasicInfoDto>> result = await _mediator.Send(GetHomeUsers.New());
         if(!result.IsSuccessful) {
             throw new RpcException(Status.DefaultCancelled);
         }
