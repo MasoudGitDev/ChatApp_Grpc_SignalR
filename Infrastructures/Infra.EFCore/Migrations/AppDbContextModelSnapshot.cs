@@ -22,6 +22,19 @@ namespace Infra.EFCore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domains.Auth.Online.Aggregate.OnlineUser", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OnlineAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("OnlineUser");
+                });
+
             modelBuilder.Entity("Domains.Auth.Role.Aggregate.AppRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -289,6 +302,17 @@ namespace Infra.EFCore.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Domains.Auth.Online.Aggregate.OnlineUser", b =>
+                {
+                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "User")
+                        .WithOne("OnlineUser")
+                        .HasForeignKey("Domains.Auth.Online.Aggregate.OnlineUser", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
                 {
                     b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Receiver")
@@ -325,6 +349,12 @@ namespace Infra.EFCore.Migrations
                     b.Navigation("Chat");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Domains.Auth.User.Aggregate.AppUser", b =>
+                {
+                    b.Navigation("OnlineUser")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
