@@ -57,7 +57,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddMediatR((config) => {
     config.RegisterServicesFromAssemblies(
-        AppsChatsAssembly.Assembly , typeof(GetHomeUsers).Assembly
+        AppsChatsAssembly.Assembly , typeof(GetUsersBasicInfo).Assembly
     );
 });
 
