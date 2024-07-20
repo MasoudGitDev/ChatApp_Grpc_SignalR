@@ -81,7 +81,7 @@
 
     private async Task NotifyOnCreation(string profileId, string displayName) {
         if(_hubConnection != null) {
-            await _hubConnection.SendAsync("SendNewUser" , new UserHomeDto(profileId , displayName , ""));
+            await _hubConnection.SendAsync("SendNewUser" , new UserBasicInfoDto(profileId , displayName , ""));
         }
     }
 }
