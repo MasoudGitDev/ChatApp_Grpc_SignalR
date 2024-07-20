@@ -7,6 +7,7 @@ using Server.ChatApp.GRPCHandlers;
 using Server.ChatApp.Hubs.Accounts;
 using Server.ChatApp.Hubs.Chats;
 using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
+using Users = Server.ChatApp.ServiceHandlers.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +95,7 @@ app.MapGrpcService<ChatRequests.CommandsHandler>().EnableGrpcWeb();
 app.MapGrpcService<ChatRequests.QueriesHandler>().EnableGrpcWeb();
 
 app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
+app.MapGrpcService<Users.QueriesHandler>().EnableGrpcWeb();
 
 
 
