@@ -4,5 +4,5 @@ option csharp_namespace = "Client.ChatApp.Protos.Users";
 package UserQueriesPkg;
 
 service UserQeriesRPCs{
-	rpc GetUsers(Shared.Empty) returns(stream Shared.UserMemberMsg);
+	rpc GetUsers(Shared.Empty) returns(stream Shared.UserBasicInfoMsg);
 }

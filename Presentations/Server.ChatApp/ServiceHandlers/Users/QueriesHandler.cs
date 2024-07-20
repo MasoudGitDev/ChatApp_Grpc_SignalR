@@ -17,13 +17,13 @@ public class QueriesHandler(IMediator _mediator) : UserQeriesRPCs.UserQeriesRPCs
     /// <summary>
     ///  usage in home page
     /// </summary>
-    public override async Task GetUsers(Empty request , IServerStreamWriter<UserMemberMsg> responseStream , ServerCallContext context) {
+    public override async Task GetUsers(Empty request , IServerStreamWriter<UserBasicInfoMsg> responseStream , ServerCallContext context) {
         ResultStatus<List<UserHomeDto>> result = await _mediator.Send(GetHomeUsers.New());
         if(!result.IsSuccessful) {
             throw new RpcException(Status.DefaultCancelled);
         }
         foreach(var user in result.Model!) {
-            await responseStream.WriteAsync(user.Adapt<UserMemberMsg>());
+            await responseStream.WriteAsync(user.Adapt<UserBasicInfoMsg>());
         }        
     }
 }
