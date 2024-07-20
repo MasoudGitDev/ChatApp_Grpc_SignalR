@@ -19,8 +19,7 @@ internal sealed class GetHomeUsersHandler(IUserQueries _userQueries)
     : IRequestHandler<GetUsersBasicInfo , ResultStatus<List<UserBasicInfoDto>>> {
     public async Task<ResultStatus<List<UserBasicInfoDto>>> Handle(GetUsersBasicInfo request , CancellationToken cancellationToken) {
         var homeUsers = await _userQueries.GetUsersAsync();
-        TypeAdapterConfig<ProfileId,string>.NewConfig().MapWith(x=> x.Value);
-
+        TypeAdapterConfig<ProfileId , string>.NewConfig().MapWith(x => x.Value);
         return SuccessResults.Ok(homeUsers.Adapt<List<UserBasicInfoDto>>());
     }
 }
