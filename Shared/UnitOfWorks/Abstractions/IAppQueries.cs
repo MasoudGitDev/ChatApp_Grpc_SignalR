@@ -1,4 +1,5 @@
-﻿using Domains.Auth.Queries;
+﻿using Domains.Auth.Online.Queries;
+using Domains.Auth.Queries;
 using Domains.Chats.Contacts.Queries;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
@@ -12,5 +13,6 @@ public interface IAppQueries {
     IChatItemQueries ChatItems { get; }
     IChatMessageQueries ChatMessages { get; }
     IContactQueries Contacts { get; }
+    IOnlineUserQueries OnlineUsers { get; }
 }
 
