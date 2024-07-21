@@ -1,6 +1,7 @@
 ﻿using Apps.Auth;
 using Apps.Auth.Constants;
 using Apps.Auth.Services;
+using Domains.Auth.Online.Queries;
 using Domains.Auth.Queries;
 using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
@@ -11,6 +12,7 @@ using Domains.Chats.Requests.Queries;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Implementations;
 using Infra.EFCore.Implementations.Accounts;
+using Infra.EFCore.Implementations.Auth;
 using Infra.EFCore.Implementations.Chats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -101,6 +103,7 @@ public static class ServiceRegistrationExtensions {
         services.AddScoped<IChatRequestQueries , ChatRequestQueries>();
         services.AddScoped<IContactQueries , ContactQueries>();
         services.AddScoped<IAppQueries , AppQueries>();
+        services.AddScoped<IOnlineUserQueries , OnlineUserQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();
         return services;
     }
