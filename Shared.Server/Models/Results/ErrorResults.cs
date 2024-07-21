@@ -15,12 +15,8 @@ public record class ErrorResults(string Code , string Message) {
 
     public static ResultStatus Created
         => new(false , [MessageDescription.Create(nameof(Created) , "System can not create the new record.")]);
-}
 
-public record class ErrorResults<T>(string Code , string Message) {
-    public static ResultStatus<T> Founded(string message , T? model =default)
-        => new(false , [MessageDescription.Create(nameof(Founded) , message)],model);
-
-    public static ResultStatus<T> NotFound(string message ,T? model=default)
-        => new(false , [MessageDescription.Create(nameof(NotFound) , message)],model);
+    //===================== generic
+    public static ResultStatus<T> NotFound<T>(string message , T? model = default)
+    => new(false , [MessageDescription.Create(nameof(NotFound) , message)] , model);
 }
