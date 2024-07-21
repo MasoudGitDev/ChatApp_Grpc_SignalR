@@ -1,4 +1,5 @@
-﻿using Domains.Auth.Role.Aggregate;
+﻿using Domains.Auth.Online.Aggregate;
+using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
 using Domains.Chats.Contacts.Aggregate;
 using Domains.Chats.Item.Aggregate;
@@ -27,6 +28,7 @@ internal class AppDbContext : IdentityDbContext<AppUser , AppRole , Guid> {
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<ChatRequest> ChatRequests { get; set; }
+    public DbSet<OnlineUser> OnlineUsers { get; set; }
 
 
 }
