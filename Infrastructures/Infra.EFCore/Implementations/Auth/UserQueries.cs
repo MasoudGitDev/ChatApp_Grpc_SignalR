@@ -3,6 +3,7 @@ using Domains.Auth.User.Aggregate;
 using Domains.Auth.User.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared.Server.DataStructures;
 
 namespace Infra.EFCore.Implementations.Auth;
 
@@ -23,8 +24,12 @@ internal class UserQueries(UserManager<AppUser> _userManager) : IUserQueries
         return await _userManager.FindByNameAsync(username);
     }
 
-    public async Task<List<AppUser>> GetUsersAsync()
-    {
-        return await _userManager.Users.ToListAsync();
+    public async Task<List<AppUser>> GetUsersAsync(int pageNumber = 1 , int size = 20) {
+        
+        return await _userManager.Users
+            .OrderBy(x => x.CreatedAt)
+            .Skip(( pageNumber - 1) * size)
+            .Take(size)
+            .ToListAsync();
     }
 }
