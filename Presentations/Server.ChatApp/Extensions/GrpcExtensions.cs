@@ -8,9 +8,9 @@ namespace Server.ChatApp.Extensions;
 
 public static class GrpcExtensions {
 
-    public static RepeatedField<TDestination> ToRepeatedFields<TFrom,TDestination>(this LinkedList<TFrom> items)
-        where TDestination : class, new()
-        where TFrom : class, new() {
+    public static RepeatedField<TDestination> ToRepeatedFields<TFrom, TDestination>(this ICollection<TFrom> items)
+    where TDestination : class, new()
+    where TFrom : class, new() {
         RepeatedField<TDestination> result = [];
         if(items != null && items.Count != 0) {
             foreach(var item in items) {
@@ -20,19 +20,7 @@ public static class GrpcExtensions {
         return result;
     }
 
-    public static RepeatedField<TDestination> ToRepeatedFields<TFrom,TDestination>(this List<TFrom>? items)
-        where TDestination : class, new()
-        where TFrom : class, new() {
-        RepeatedField<TDestination> result = [];
-        if(items != null && items.Count != 0) {
-            foreach(var item in items) {
-                result.Add(item.Adapt<TDestination>());
-            }
-        }
-        return result;
-    }
-
-    public static ResultMsg AsCommonResult(this ResultStatus result) {
+    public static ResultMsg AsCommonResult(this IResultStatus result) {
         var resultMsg = new ResultMsg(){ IsSuccessful = result.IsSuccessful };
         resultMsg.Messages.AddRange(result.Messages.ToRepeatedFields<MessageDescription , MessageInfo>());
         return resultMsg;
