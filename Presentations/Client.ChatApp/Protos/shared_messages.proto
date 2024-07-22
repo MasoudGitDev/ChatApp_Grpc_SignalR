@@ -42,3 +42,10 @@ message UserBasicInfoMsg{
 	string DisplayName = 2;
 	string ImageUrl = 3;
 }
+
+message OnlineUserMsg{
+	string ProfileId = 1;
+	string DisplayName = 2;
+	string ImageUrl = 3;
+	bool IsOnline = 4;
+}
