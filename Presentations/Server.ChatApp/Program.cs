@@ -86,16 +86,18 @@ app.UseGrpcWeb();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// grpc handlers
+//============================================================ grpc handlers
 app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
 app.MapGrpcService<GrpcChatMessageHandler>().EnableGrpcWeb();
-
+//==============ChatRequests
 app.MapGrpcService<ChatRequests.CommandsHandler>().EnableGrpcWeb();
 app.MapGrpcService<ChatRequests.QueriesHandler>().EnableGrpcWeb();
-
+//============== Contacts
 app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
+//========users
 app.MapGrpcService<Users.QueriesHandler>().EnableGrpcWeb();
+app.MapGrpcService<Users.CommandsHandler>().EnableGrpcWeb();
 
 
 
