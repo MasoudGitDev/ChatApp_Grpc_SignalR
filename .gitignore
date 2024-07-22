@@ -4,7 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 ## ignore migrations
-Infrastructures/Infra.EFCore/Migrations
+AppDbContextModelSnapshot.cs
+Infrastructures/Infra.EFCore/Migrations/
 Migrations/
 
 # User-specific files
