@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Server.Dtos.User;
 
 namespace Client.ChatApp.Pages;
-
+/// <summary>
+/// The purpose of this class is to handle those user are new and get them online status
+/// </summary>
 public class HomeViewHandler : ComponentBase , IAsyncDisposable {
 
     // =============================== init by DI
@@ -23,7 +25,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private HubConnection _hubConnection = null!;
 
     //======================================= Visible fields or props in razor
-    protected LinkedList<UserBasicInfoDto> Users = new();
+    protected LinkedList<OnlineUserDto> Users = new();
     protected void GoUserProfile(string profileId) => NavManager.NavigateTo("/Profile/" +  profileId);
 
     //============================
@@ -38,16 +40,15 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private async Task SignUpHubConfigAsync() {
         var absoluteUri = "https://localhost:7001/SignUpHub";
         _hubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(absoluteUri)).Build();
-        _hubConnection.On<UserBasicInfoDto>("GetNewUser" , async (user) => {
+        _hubConnection.On<OnlineUserDto>("GetNewUser" , async (user) => {
             Users.AddFirst(user);
             await InvokeAsync(StateHasChanged);
         });
         await _hubConnection.StartAsync();
     }
 
-    private async Task<LinkedList<UserBasicInfoDto>> GetUsers()
-        => await (Queries.GetUsers(new Protos.Empty()))
-        .ToLinkedListAsync<UserBasicInfoMsg,UserBasicInfoDto>();
+    private async Task<LinkedList<OnlineUserDto>> GetUsers()
+        => await (Queries.GetUsersWithOnlineStatus(new Protos.Empty())).ToLinkedListAsync<OnlineUserMsg , OnlineUserDto>();
 
 
     //============================== Disposable
