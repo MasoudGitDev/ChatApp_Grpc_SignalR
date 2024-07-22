@@ -5,4 +5,7 @@ package UserQueriesPkg;
 
 service UserQeriesRPCs{
 	rpc GetUsers(Shared.Empty) returns(stream Shared.UserBasicInfoMsg);
+	rpc GetOnlineUsers(Shared.Empty) returns(stream Shared.OnlineUserMsg);	
+	rpc GetUsersWithOnlineStatus(Shared.Empty) returns(stream Shared.OnlineUserMsg);
+	rpc IsOnline(Shared.PersonMsg) returns (Shared.ResultMsg);
 }
