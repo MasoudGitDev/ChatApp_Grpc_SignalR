@@ -45,6 +45,7 @@
 	<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Client" />
 	<Protobuf Include="Protos\ChatItems\chat_item_commands.proto" GrpcServices="Client" />
 	<Protobuf Include="Protos\Users\user_queries.proto" GrpcServices="Client" />
+	  <Protobuf Include="Protos\Users\user_commands.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>
