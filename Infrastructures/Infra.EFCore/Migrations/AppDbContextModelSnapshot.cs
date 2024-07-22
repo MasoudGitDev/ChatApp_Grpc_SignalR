@@ -32,7 +32,7 @@ namespace Infra.EFCore.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("OnlineUser");
+                    b.ToTable("OnlineUsers");
                 });
 
             modelBuilder.Entity("Domains.Auth.Role.Aggregate.AppRole", b =>
