@@ -20,6 +20,7 @@ internal class UserEFConfigs :
     }
 
     public void Configure(EntityTypeBuilder<OnlineUser> builder) {
+        builder.ToTable("OnlineUsers");
         builder.HasKey(x => x.UserId);
         builder.HasOne(x => x.User)
             .WithOne(x => x.OnlineUser)
