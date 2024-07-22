@@ -9,7 +9,7 @@ namespace Apps.Auth.Users.Queries;
 /// <summary>
 /// HomeUsers means The Users that have simple info to show in home page
 /// </summary>
-public record GetUsersBasicInfo() : IRequest<ResultStatus<List<UserBasicInfoDto>>> {
+public sealed record GetUsersBasicInfo() : IRequest<ResultStatus<List<UserBasicInfoDto>>> {
     public static GetUsersBasicInfo New() => new();
 }
 
