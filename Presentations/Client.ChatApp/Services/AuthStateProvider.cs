@@ -1,4 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using Client.ChatApp.Protos;
+using Client.ChatApp.Protos.Users;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -13,6 +15,7 @@ namespace Client.ChatApp.Services;
 internal sealed class AuthStateProvider(
     HttpClient _httpClient ,
     AccountRPCs.AccountRPCsClient _accountService ,
+    UserCommandsRPCs.UserCommandsRPCsClient _onlineUserCommands,
     ILocalStorageService _localStorage) : AuthenticationStateProvider {
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
@@ -26,6 +29,7 @@ internal sealed class AuthStateProvider(
             var claims = GetClaims(result.AccessToken);
             SetAuthHeader(result.AccessToken);
             Console.WriteLine("Token by AuthStateProvider : " +result.AccessToken);
+            await CreateOnlineUserAsync();
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims , _authenticationType)));
         }
         catch(Exception ex) {
@@ -60,4 +64,14 @@ internal sealed class AuthStateProvider(
         var claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToList();
         return claims;
     } 
+
+    private async Task CreateOnlineUserAsync() {
+        var result = await _onlineUserCommands.CreateOrUpdateAsync(new Empty());
+        if(result.IsSuccessful) {
+            Console.WriteLine("OnlineUser - CreateOrUpdate : " + result.Messages.FirstOrDefault());
+        }
+        else {
+            Console.WriteLine("OnlineUser - CreateOrUpdate : BadRequest");
+        }
+    }
 }
