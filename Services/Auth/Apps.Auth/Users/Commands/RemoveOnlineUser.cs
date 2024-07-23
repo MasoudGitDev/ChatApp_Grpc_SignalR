@@ -1,25 +1,24 @@
-﻿using Domains.Auth.Online.Aggregate;
-using MediatR;
+﻿using MediatR;
 using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
 
 namespace Apps.Auth.Users.Commands;
-public sealed record RemoveOnlineUser(Guid MyId) : IRequest<ResultStatus> {
+public sealed record RemoveOnlineUser(Guid MyId) : IRequest<ResultStatus<Guid>> {
     public static RemoveOnlineUser New(Guid myId) => new(myId);
 }
 
 
 
 //======================= Handler
-internal sealed class RemoveOnlineUserHandler(IChatUOW _unitOfWork) : IRequestHandler<RemoveOnlineUser , ResultStatus> {
-    public async Task<ResultStatus> Handle(RemoveOnlineUser request , CancellationToken cancellationToken) {
-        string message = "You has not been in OnlineUsers!";
+internal sealed class RemoveOnlineUserHandler(IChatUOW _unitOfWork) : IRequestHandler<RemoveOnlineUser , ResultStatus<Guid>> {
+    public async Task<ResultStatus<Guid>> Handle(RemoveOnlineUser request , CancellationToken cancellationToken) {
+        string message = "You have not been in OnlineUsers!";
         var onlineUser = await _unitOfWork.Queries.OnlineUsers.GetByIdAsync(request.MyId);
         if(onlineUser is not null) {
-            message = "You has been removed from OnlineUsers successfully.";
+            message = "You have been removed from OnlineUsers successfully.";
             await _unitOfWork.DeleteAsync(onlineUser);
             await _unitOfWork.SaveChangeAsync();
-        }       
-        return SuccessResults.Ok(message);
+        }
+        return SuccessResults.Ok(message , request.MyId);
     }
 }
