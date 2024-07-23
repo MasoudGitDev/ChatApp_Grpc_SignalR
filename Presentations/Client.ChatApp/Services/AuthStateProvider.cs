@@ -13,7 +13,7 @@ namespace Client.ChatApp.Services;
 internal sealed class AuthStateProvider(
     HttpClient _httpClient ,
     AccountRPCs.AccountRPCsClient _accountService ,
-    UserCommandsRPCs.UserCommandsRPCsClient _onlineUserCommands ,
+    OnlineUserCommandsRPCs.OnlineUserCommandsRPCsClient _onlineUserCommands ,
     ILocalStorageService _localStorage) : AuthenticationStateProvider{
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
