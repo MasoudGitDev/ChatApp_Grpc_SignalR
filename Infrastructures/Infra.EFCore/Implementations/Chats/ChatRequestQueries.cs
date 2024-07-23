@@ -30,7 +30,7 @@ internal sealed class ChatRequestQueries(AppDbContext _dbContext) : IChatRequest
            .ToChatRequestItemsAsync(FindUserByIdAsync , true) ?? [];
     }
     private async Task<AppUser> FindUserByIdAsync(Guid userId) {
-        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? AppUser.Empty;
+        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? AppUser.InvalidUser;
     }
 
 }

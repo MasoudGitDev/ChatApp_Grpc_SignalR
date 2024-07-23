@@ -30,5 +30,5 @@ internal sealed class ContactQueries(AppDbContext _dbContext) : IContactQueries 
     }
 
     private async Task<AppUser> FindUserByIdAsync(Guid userId)
-        => await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? AppUser.Empty;
+        => await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? AppUser.InvalidUser;
 }

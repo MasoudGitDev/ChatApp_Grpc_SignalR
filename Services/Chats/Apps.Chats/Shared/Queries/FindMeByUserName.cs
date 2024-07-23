@@ -11,7 +11,7 @@ public sealed record FindMeByUserName(string UserName) : IRequest<AppUser> {
 //=================== Handler
 internal sealed class FindMeByUserNameHandler(IChatUOW _unitOfWork) : IRequestHandler<FindMeByUserName , AppUser> {
     public async Task<AppUser> Handle(FindMeByUserName request , CancellationToken cancellationToken) {
-        return await _unitOfWork.Queries.Users.FindByUserNameAsync(request.UserName) ?? AppUser.Empty;
+        return await _unitOfWork.Queries.Users.FindByUserNameAsync(request.UserName) ?? AppUser.InvalidUser;
     }
 }
 

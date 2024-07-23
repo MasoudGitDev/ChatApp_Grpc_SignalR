@@ -3,9 +3,9 @@ using Shared.Server.Dtos;
 
 namespace Domains.Auth.User.Aggregate;
 public partial class AppUser {
-    public static AppUser Create(RegisterDto model , Guid? userId = null) {
-        return new AppUser() {
-            Id = userId ?? Guid.NewGuid() ,
+    public static AppUser Create(RegisterDto model) {
+        return new() {
+            Id = model.Id ,
             UserName = model.UserName ,
             DisplayName = model.DisplayName ,
             ProfileId = model.ProfileId ,
@@ -14,7 +14,8 @@ public partial class AppUser {
             CreatedAt = DateTime.UtcNow ,
         };
     }
-    public static AppUser Empty => new() { Id = Guid.Empty ,
+    public static AppUser InvalidUser => new() {
+        Id = Guid.Empty ,
         Email = "<invalid-email>" ,
         UserName = "<invalid-userName>" ,
         ProfileId = "<invalid-profileId>"
