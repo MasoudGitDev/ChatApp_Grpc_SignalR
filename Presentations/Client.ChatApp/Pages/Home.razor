@@ -7,12 +7,12 @@
     <Pagination Title="کاربران جدید">
         <div class="users">
             @foreach(var user in Users) {
-                <div class="user center" @onclick="()=> GoUserProfile(user.ProfileId)">
+                <div class="user center" @onclick="()=> GoUserProfile(user.BasicInfo.ProfileId)">
                     <div class="status @(user.IsOnline ? "online" : "" )"></div>
                     <div class="logo center">
                         <div class="img center">Img</div>
                     </div>
-                    <div class="name">@user.DisplayName</div>
+                    <div class="name">@user.BasicInfo.DisplayName</div>
                 </div>
             }
         </div>
