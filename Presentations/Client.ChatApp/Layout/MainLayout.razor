@@ -1,7 +1,7 @@
-﻿@inherits LayoutComponentBase
-@inject NavigationManager _navManager
+﻿@inherits MainLayoutViewHandler
 <div class="page">
     <div class="sidebar">
+        <div>Online : @IsOnline</div>
         <NavMenu />
     </div>
 
@@ -11,7 +11,3 @@
         </div>
     </main>
 </div>
-
-@code{
-
-}
