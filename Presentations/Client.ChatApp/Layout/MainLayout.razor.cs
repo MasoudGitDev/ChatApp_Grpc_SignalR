@@ -1,6 +1,7 @@
 ﻿using Client.ChatApp.Protos.Users;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 
@@ -18,9 +19,12 @@ public class MainLayoutViewHandler : LayoutComponentBase, IAsyncDisposable {
 
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = null!;
-    //=====================================================
 
-    private UserCommandsRPCs.UserCommandsRPCsClient OnlineCommands => new(GrpcChannel);
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
+    //=====================================================
+    
+    private OnlineUserCommandsRPCs.OnlineUserCommandsRPCsClient OnlineUserCommands => new(GrpcChannel);
 
     //====================
     protected bool IsOnline = true;
@@ -41,27 +45,33 @@ public class MainLayoutViewHandler : LayoutComponentBase, IAsyncDisposable {
     private async Task HubConnectionSetupAsync() {
         var absUri = "https://localhost:7001/OnlineStatusHub";
         _hubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(absUri)).Build();
-        _hubConnection.On<bool>("GetOnlineStatus" , async (isActive) => {
+        _hubConnection.On<string,bool>("GetOnlineStatus" , async (_ , isActive) => {
             IsOnline = isActive;
             await InvokeAsync(StateHasChanged);
         });       
         await _hubConnection.StartAsync();
-        //====== create online at first load
-        await _hubConnection!.InvokeAsync("SetOnlineStatus" , true);
-        await OnlineCommands.CreateOrUpdateAsync(new Protos.Empty());
+        //====== make user online at first loading
+        var userId = await GetUserIdAsync();
+        await _hubConnection!.InvokeAsync("SetOnlineStatus" , userId , true);
+        await OnlineUserCommands.CreateOrUpdateAsync(new Protos.Empty());
+    }
+
+    private async Task<string> GetUserIdAsync() {
+        return (await AuthState).User.Claims.Where(x=>x.Type == "UserIdentifier").FirstOrDefault()?.Value ?? String.Empty;
     }
 
     //============================ js controller
     [JSInvokable]
     public async Task OnTabVisibilityChanged(bool isVisible) {
         if(isVisible) {
-            await OnlineCommands.CreateOrUpdateAsync(new Protos.Empty());
+            await OnlineUserCommands.CreateOrUpdateAsync(new Protos.Empty());
             IsOnline = true;
         }
         else {
-            await OnlineCommands.RemoveAsync(new Protos.Empty());
+            await OnlineUserCommands.RemoveAsync(new Protos.Empty());
             IsOnline = false;
         }
+        await _hubConnection!.InvokeAsync("SetOnlineStatus" , await GetUserIdAsync() , isVisible);
     }
     private async Task TabVisibilityListener() {
         await JSRuntime.InvokeVoidAsync("AddTabVisibilityListener" , DotNetObjectReference.Create(this));
@@ -74,7 +84,7 @@ public class MainLayoutViewHandler : LayoutComponentBase, IAsyncDisposable {
         }
         GrpcChannel.Dispose();
         await GrpcChannel.ShutdownAsync();
-        await OnlineCommands.RemoveAsync(new Protos.Empty());
+        await OnlineUserCommands.RemoveAsync(new Protos.Empty());
         IsOnline = false;
     }
 }
