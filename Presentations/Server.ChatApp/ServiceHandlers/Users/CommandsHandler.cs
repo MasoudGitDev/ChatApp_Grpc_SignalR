@@ -9,14 +9,14 @@ using Server.ChatApp.Protos.Users;
 namespace Server.ChatApp.ServiceHandlers.Users;
 
 [Authorize]
-public class CommandsHandler(IMediator _mediator) : UserCommandsRPCs.UserCommandsRPCsBase {
-    public override async Task<ResultMsg> CreateOrUpdate(Empty request , ServerCallContext context) {
+public class CommandsHandler(IMediator _mediator) : OnlineUserCommandsRPCs.OnlineUserCommandsRPCsBase {
+    public override async Task<OnlineUserResultMsg> CreateOrUpdate(Empty request , ServerCallContext context) {
         return ( await _mediator.Send(CreateOrUpdateOnlineUser.New(await SharedMethods.GetMyIdAsync(context , _mediator))) )
-            .AsCommonResult();
+            .AsOnlineUserResult();
     }
 
-    public override async Task<ResultMsg> Remove(Empty request , ServerCallContext context) {
+    public override async Task<OnlineUserResultMsg> Remove(Empty request , ServerCallContext context) {
         return ( await _mediator.Send(RemoveOnlineUser.New(await SharedMethods.GetMyIdAsync(context , _mediator))) )
-           .AsCommonResult();
+           .AsOnlineUserResult();
     }
 }
