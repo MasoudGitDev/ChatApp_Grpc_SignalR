@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;
 using Server.ChatApp.Hubs;
-using Server.ChatApp.Hubs.Accounts;
 using Server.ChatApp.Hubs.Chats;
 using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
 using Users = Server.ChatApp.ServiceHandlers.Users;
