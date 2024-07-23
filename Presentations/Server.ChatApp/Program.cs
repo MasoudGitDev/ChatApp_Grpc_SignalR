@@ -105,7 +105,6 @@ app.MapGrpcService<Users.CommandsHandler>().EnableGrpcWeb();
 
 // signalR hubs
 app.MapHub<ChatMessageHub>("/chatMessageHub");
-app.MapHub<SignUpHub>("/SignUpHub");
 app.MapHub<OnlineStatusHub>("/OnlineStatusHub");
 
 
