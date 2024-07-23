@@ -39,14 +39,15 @@ message PersonMsg{
 }
 
 message UserBasicInfoMsg{
-	string ProfileId = 1;
-	string DisplayName = 2;
-	string ImageUrl = 3;
+	string Id = 1;
+	string ProfileId = 2;
+	string DisplayName = 3;
+	string ImageUrl = 4;
+    bool IsOpenToChat = 5;
 }
 
 message OnlineUserMsg{
-	string ProfileId = 1;
-	string DisplayName = 2;
-	string ImageUrl = 3;
-	bool IsOnline = 4;
+	UserBasicInfoMsg BasicInfo = 1;
+	bool IsOnline = 2;
+	bool IsInContacts = 3;
 }
