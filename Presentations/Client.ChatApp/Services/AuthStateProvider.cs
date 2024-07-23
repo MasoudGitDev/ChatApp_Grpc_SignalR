@@ -1,8 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Client.ChatApp.Protos;
 using Client.ChatApp.Protos.Users;
-using Grpc.Core;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Authorization;
 using Server.ChatApp.Protos;
 using Shared.Server.Extensions;
@@ -15,8 +13,8 @@ namespace Client.ChatApp.Services;
 internal sealed class AuthStateProvider(
     HttpClient _httpClient ,
     AccountRPCs.AccountRPCsClient _accountService ,
-    UserCommandsRPCs.UserCommandsRPCsClient _onlineUserCommands,
-    ILocalStorageService _localStorage) : AuthenticationStateProvider {
+    UserCommandsRPCs.UserCommandsRPCsClient _onlineUserCommands ,
+    ILocalStorageService _localStorage) : AuthenticationStateProvider{
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
         try {
@@ -28,7 +26,7 @@ internal sealed class AuthStateProvider(
             }
             var claims = GetClaims(result.AccessToken);
             SetAuthHeader(result.AccessToken);
-            Console.WriteLine("Token by AuthStateProvider : " +result.AccessToken);
+            Console.WriteLine("Token by AuthStateProvider : " + result.AccessToken);
             await CreateOnlineUserAsync();
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims , _authenticationType)));
         }
@@ -63,7 +61,7 @@ internal sealed class AuthStateProvider(
     private static List<Claim> GetClaims(string accessToken) {
         var claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToList();
         return claims;
-    } 
+    }
 
     private async Task CreateOnlineUserAsync() {
         var result = await _onlineUserCommands.CreateOrUpdateAsync(new Empty());
