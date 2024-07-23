@@ -37,8 +37,7 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
     }
     public async Task<AccountResult> RegisterAsync(RegisterDto model) {
         await ThrowIfFoundUserAsync(model.Email! , model.UserName!);
-        Guid userId = Guid.NewGuid();
-        var user = AppUser.Create(model ,userId);
+        var user = AppUser.Create(model);
         var result =  await _userManager.CreateAsync(user);
         if(!result.Succeeded) {
             throw AccountException.Create(ErrorsToString(result.Errors));
@@ -47,7 +46,7 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
         if(!result.Succeeded) {
             throw AccountException.Create(ErrorsToString(result.Errors));
         }
-        return await _jwtService.GenerateAsync(userId);
+        return await _jwtService.GenerateAsync(model.Id);
     }
 
     //============================
