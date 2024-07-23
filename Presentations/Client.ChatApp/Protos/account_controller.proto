@@ -17,6 +17,7 @@ message RegisterReq{
 	string Password = 3;
 	string DisplayName = 4;
 	string ProfileId = 5;
+	string Id = 6;
 }
 message LoginReq{
 	string LoginName = 1;
