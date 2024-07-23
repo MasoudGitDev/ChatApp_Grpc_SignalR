@@ -2,19 +2,23 @@
 @using Client.ChatApp.Pages.Features
 @inherits HomeViewHandler
 
-<PageTitle>Home</PageTitle>
-<div class="users_container">
-    <Pagination Title="کاربران جدید">
-        <div class="users">
-            @foreach(var user in Users) {
-                <div class="user center" @onclick="()=> GoUserProfile(user.BasicInfo.ProfileId)">
-                    <div class="status @(user.IsOnline ? "online" : "" )"></div>
-                    <div class="logo center">
-                        <div class="img center">Img</div>
-                    </div>
-                    <div class="name">@user.BasicInfo.DisplayName</div>
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <PageTitle>Home</PageTitle>
+        <div class="users_container">
+            <Pagination Title="کاربران جدید">
+                <div class="users">
+                    @foreach(var user in Users) {
+                        <div class="user center" @onclick="()=> GoUserProfile(user.BasicInfo.ProfileId)">
+                            <div class="status @(user.IsOnline ? "online" : "" )"></div>
+                            <div class="logo center">
+                                <div class="img center">Img</div>
+                            </div>
+                            <div class="name">@user.BasicInfo.DisplayName</div>
+                        </div>
+                    }
                 </div>
-            }
+            </Pagination>
         </div>
-    </Pagination>  
-</div>
+    </AuthorizeView>
+</CascadingAuthenticationState>
