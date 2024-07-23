@@ -4,6 +4,7 @@ using Infra.EFCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;
+using Server.ChatApp.Hubs;
 using Server.ChatApp.Hubs.Accounts;
 using Server.ChatApp.Hubs.Chats;
 using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
@@ -105,6 +106,7 @@ app.MapGrpcService<Users.CommandsHandler>().EnableGrpcWeb();
 // signalR hubs
 app.MapHub<ChatMessageHub>("/chatMessageHub");
 app.MapHub<SignUpHub>("/SignUpHub");
+app.MapHub<OnlineStatusHub>("/OnlineStatusHub");
 
 
 app.MapControllers();
