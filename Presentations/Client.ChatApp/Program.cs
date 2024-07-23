@@ -33,7 +33,7 @@ builder.Services.AddScoped(services =>new ChatRequestQueryRPCs.ChatRequestQueryR
 builder.Services.AddScoped(service => new AccountRPCs.AccountRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new ContactRPCs.ContactRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new SharedRpcs.SharedRpcsClient(gRPCChannel));
-builder.Services.AddScoped(service => new UserCommandsRPCs.UserCommandsRPCsClient(gRPCChannel));
+builder.Services.AddScoped(service => new OnlineUserCommandsRPCs.OnlineUserCommandsRPCsClient(gRPCChannel));
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
