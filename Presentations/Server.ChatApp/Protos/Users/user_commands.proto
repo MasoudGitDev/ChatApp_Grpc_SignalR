@@ -1,9 +1,0 @@
-syntax = "proto3";
-import "Protos/shared_messages.proto";
-option csharp_namespace = "Server.ChatApp.Protos.Users";
-package UserCommandsPkg;
-
-service UserCommandsRPCs{
-	rpc CreateOrUpdate(Shared.Empty) returns(Shared.ResultMsg);
-	rpc Remove(Shared.Empty) returns(Shared.ResultMsg);
-}
