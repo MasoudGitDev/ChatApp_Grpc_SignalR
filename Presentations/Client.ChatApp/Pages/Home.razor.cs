@@ -3,6 +3,7 @@ using Client.ChatApp.Protos;
 using Client.ChatApp.Protos.Users;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Server.Dtos.User;
 
@@ -17,8 +18,13 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private NavigationManager NavManager { get; set; } = null!;
 
     [Inject]
-    private GrpcChannel GrpcChannel { get; set; } = null!;  
+    private GrpcChannel GrpcChannel { get; set; } = null!;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    private async Task<string> GetUserIdAsync() {
+        return ( await AuthenticationState ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ?? String.Empty;
+    }
     //==================================== private fields and props
     private UserQeriesRPCs.UserQeriesRPCsClient Queries => new(GrpcChannel);
 
@@ -32,6 +38,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     protected override async Task OnInitializedAsync() {
         Users.Clear();
         Users = await GetUsers();
+        ChangeOnlineUserStatus(await GetUserIdAsync() , true);
         await OnlineStatusHubConfigAsync();
     }
 
@@ -50,6 +57,8 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
         });
         await _onlineStatusHub.StartAsync();
     }
+
+
 
     private async Task<LinkedList<OnlineUserDto>> GetUsers()
         => await (Queries.GetUsersWithOnlineStatus(new Empty())).ToLinkedListAsync<OnlineUserMsg , OnlineUserDto>();
