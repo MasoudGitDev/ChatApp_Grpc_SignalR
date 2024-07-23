@@ -17,7 +17,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private NavigationManager NavManager { get; set; } = null!;
 
     [Inject]
-    private GrpcChannel GrpcChannel { get; set; } = null!;
+    private GrpcChannel GrpcChannel { get; set; } = null!;  
 
     //==================================== private fields and props
     private UserQeriesRPCs.UserQeriesRPCsClient Queries => new(GrpcChannel);
@@ -28,7 +28,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     protected LinkedList<OnlineUserDto> Users = new();
     protected void GoUserProfile(string profileId) => NavManager.NavigateTo("/Profile/" +  profileId);
 
-    //============================
+    //============================ basic blazor methods
     protected override async Task OnInitializedAsync() {
         Users.Clear();
         Users = await GetUsers();
