@@ -48,4 +48,12 @@
 	  <Protobuf Include="Protos\Users\user_commands.proto" GrpcServices="Client" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\browserClose.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
 </Project>
