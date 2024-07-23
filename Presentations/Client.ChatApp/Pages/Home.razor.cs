@@ -22,8 +22,8 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     //==================================== private fields and props
     private UserQeriesRPCs.UserQeriesRPCsClient Queries => new(GrpcChannel);
 
-    private HubConnection _hubConnection = null!;
-
+    //private HubConnection _hubConnection = null!;
+    private HubConnection _onlineStatusHub = null!;
     //======================================= Visible fields or props in razor
     protected LinkedList<OnlineUserDto> Users = new();
     protected void GoUserProfile(string profileId) => NavManager.NavigateTo("/Profile/" +  profileId);
@@ -32,29 +32,39 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     protected override async Task OnInitializedAsync() {
         Users.Clear();
         Users = await GetUsers();
-        await SignUpHubConfigAsync();
+        await OnlineStatusHubConfigAsync();
     }
 
 
     //==================================== private methods
-    private async Task SignUpHubConfigAsync() {
-        var absoluteUri = "https://localhost:7001/SignUpHub";
-        _hubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(absoluteUri)).Build();
-        _hubConnection.On<OnlineUserDto>("GetNewUser" , async (user) => {
+    private async Task OnlineStatusHubConfigAsync() {
+        var absUri = "https://localhost:7001/OnlineStatusHub";
+        _onlineStatusHub = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(absUri)).Build();
+        _onlineStatusHub.On<string , bool>("GetOnlineStatus" , async (userId , isActive) => {
+            ChangeOnlineUserStatus(userId, isActive);
+            await InvokeAsync(StateHasChanged);
+        });
+        _onlineStatusHub.On<OnlineUserDto>("GetOnlineUserInfo" , async (user) => {
             Users.AddFirst(user);
             await InvokeAsync(StateHasChanged);
         });
-        await _hubConnection.StartAsync();
+        await _onlineStatusHub.StartAsync();
     }
 
     private async Task<LinkedList<OnlineUserDto>> GetUsers()
-        => await (Queries.GetUsersWithOnlineStatus(new Protos.Empty())).ToLinkedListAsync<OnlineUserMsg , OnlineUserDto>();
+        => await (Queries.GetUsersWithOnlineStatus(new Empty())).ToLinkedListAsync<OnlineUserMsg , OnlineUserDto>();
 
+    private void ChangeOnlineUserStatus(string userId , bool isActive) {
+        var onlineUser =  (Users.Where(x => x.BasicInfo.Id == userId).FirstOrDefault());
+        if(onlineUser is not null) {
+            Users.Find(onlineUser)!.Value = onlineUser with { IsOnline = isActive };
+        }
+    }
 
     //============================== Disposable
     public async ValueTask DisposeAsync() {
-       await  _hubConnection.StopAsync();
-       await _hubConnection.DisposeAsync();
+       await  _onlineStatusHub.StopAsync();
+       await _onlineStatusHub.DisposeAsync();
        await GrpcChannel.ShutdownAsync();
     }
 }
