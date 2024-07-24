@@ -1,6 +1,7 @@
 ﻿using Client.ChatApp.Extensions;
 using Client.ChatApp.Protos;
 using Client.ChatApp.Protos.Users;
+using Client.ChatApp.Services;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -20,6 +21,9 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     [Inject]
     private GrpcChannel GrpcChannel { get; set; } = null!;
 
+    [Inject]
+    private UserSelectionObserver UserSelectionObserver { get; set; } = null!;
+
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
     private async Task<string> GetUserIdAsync() {
@@ -32,7 +36,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private HubConnection _onlineStatusHub = null!;
     //======================================= Visible fields or props in razor
     protected LinkedList<OnlineUserDto> Users = new();
-    protected void GoUserProfile(string profileId) => NavManager.NavigateTo("/Profile/" +  profileId);
+    protected void GoToChatPage(string userId) => NavManager.NavigateTo("/Chats/" +  userId);
 
     //============================ basic blazor methods
     protected override async Task OnInitializedAsync() {
@@ -42,6 +46,10 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
         await OnlineStatusHubConfigAsync();
     }
 
+    protected void OnChatItemSelected(UserBasicInfoDto item) {
+        UserSelectionObserver.OnSelectedItem(item);
+        NavManager.NavigateTo("/Chats");
+    }
 
     //==================================== private methods
     private async Task OnlineStatusHubConfigAsync() {
