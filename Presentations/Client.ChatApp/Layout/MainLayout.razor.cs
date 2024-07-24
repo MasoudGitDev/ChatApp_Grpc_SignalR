@@ -82,7 +82,6 @@ public class MainLayoutViewHandler : LayoutComponentBase, IAsyncDisposable {
             await _hubConnection.StopAsync();
             await _hubConnection.DisposeAsync();
         }
-        GrpcChannel.Dispose();
         await GrpcChannel.ShutdownAsync();
         await OnlineUserCommands.RemoveAsync(new Protos.Empty());
         IsOnline = false;
