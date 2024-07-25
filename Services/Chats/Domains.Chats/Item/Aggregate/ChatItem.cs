@@ -1,6 +1,5 @@
 ﻿using Domains.Auth.User.Aggregate;
 using Domains.Chats.Message.Aggregate;
-using Domains.Chats.Message.ValueObjects;
 
 namespace Domains.Chats.Item.Aggregate;
 public partial class ChatItem {
@@ -50,9 +49,15 @@ public partial class ChatItem {
         }
     }
 
-
-    public void SendMessage(Guid senderId , string content , FileUrl? fileUrl = null) {
-        Messages.AddLast(ChatMessage.Create(Guid.NewGuid() , senderId , content , fileUrl));
+    public Task<(bool CanSendMessage , bool IsBlockedByRequester)> CreateMessageAsync(ChatMessage message) {
+        if(IsBlockedByRequester || IsBlockedByReceiver) {
+            return Task.FromResult((false,true));
+        }
+        if(IsBlockedByReceiver) {
+            return Task.FromResult((false,false));
+        }
+        Messages.AddLast(message);
+        return Task.FromResult((true , false));
     }
 
 }
