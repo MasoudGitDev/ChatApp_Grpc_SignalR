@@ -16,8 +16,8 @@ internal class ChatConfigs :
     public void Configure(EntityTypeBuilder<ChatItem> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => new { x.RequesterId , x.ReceiverId }).IsUnique();
-        builder.HasMany(x => x.Messages).WithOne(x => x.Chat).IsRequired()
-            .HasForeignKey(x => x.ChatId).IsRequired()
+        builder.HasMany(x => x.Messages).WithOne(x => x.ChatItem).IsRequired()
+            .HasForeignKey(x => x.ChatItemId).IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Receiver).WithMany().IsRequired()
@@ -33,7 +33,7 @@ internal class ChatConfigs :
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Id).IsUnique();
         builder.Property(x => x.FileUrl).HasConversion(model => model.Value , value => FileUrl.Create(value));
-        builder.Property(x => x.ChatId);
+        builder.Property(x => x.ChatItemId);
 
         builder.HasOne(x => x.Sender).WithMany().IsRequired()
            .HasForeignKey(x => x.SenderId).IsRequired()
