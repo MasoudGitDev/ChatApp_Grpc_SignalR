@@ -5,16 +5,19 @@ using Domains.Chats.Message.ValueObjects;
 namespace Domains.Chats.Message.Aggregate;
 public partial class ChatMessage {
     public Guid Id { get; private set; }
-    public Guid ChatId { get; set; }
+    public Guid ChatItemId { get; private set; }
     public Guid SenderId { get; private set; }
 
-    public FileUrl FileUrl { get; private set; }
+    public FileUrl FileUrl { get; private set; } = FileUrl.Empty;
     public string Content { get; private set; } = null!;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime? ModifiedAt { get; private set; } = null;
 
+    public bool IsSent { get; private set; } = false;
+    public bool IsSeen { get; private set; } = false;
+
     //=========================relations
-    public ChatItem Chat { get; private set; } = null!;
+    public ChatItem ChatItem { get; private set; } = null!;
     public AppUser Sender { get; private set; } = null!;
 }
 
@@ -22,17 +25,17 @@ public partial class ChatMessage {
 public partial class ChatMessage {
 
     public static ChatMessage Create(
-        Guid chatId ,
-        Guid senderId ,
-        string content ,
-        FileUrl? fileUrl = null ,
-        Guid? messageId = null) => new() {
-            ChatId = chatId ,
-            SenderId = senderId ,
-            Id = messageId ?? Guid.NewGuid() ,
-            Content = content ,
-            FileUrl = fileUrl ?? FileUrl.Empty
-        };
+    Guid chatItemId ,
+    Guid senderId ,
+    string content ,
+    string fileUrl = "" ,
+    Guid? messageId = null) => new() {
+        Id = messageId ?? Guid.NewGuid() ,
+        ChatItemId = chatItemId ,
+        SenderId = senderId ,        
+        Content = content ,
+        FileUrl = fileUrl
+    };
 
     public void Update(FileUrl fileUrl) {
         FileUrl = fileUrl;
