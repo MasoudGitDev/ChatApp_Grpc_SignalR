@@ -32,10 +32,13 @@
                     <div style="width:100%">
                         <div class="chat_controls">
                             <div class="chat_msg_col">
-                                <textarea class="chat_text_box" ></textarea>
+                                <textarea class="chat_text_box" @bind="MessageContent" ></textarea>
                             </div>
                             <div class="chat_btns_col">
-                                <button class="chat_controls_btn_send btn btn-outline-success" >Send</button>
+                                <button 
+                                    class="chat_controls_btn_send btn btn-outline-success"
+                                    @onclick="SendMessageAsync"
+                                >Send</button>
                             </div>
                         </div>
                     </div>
