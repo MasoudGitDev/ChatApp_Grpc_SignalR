@@ -32,7 +32,7 @@ namespace Infra.EFCore.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("OnlineUsers");
+                    b.ToTable("OnlineUsers", (string)null);
                 });
 
             modelBuilder.Entity("Domains.Auth.Role.Aggregate.AppRole", b =>
@@ -190,7 +190,7 @@ namespace Infra.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ChatId")
+                    b.Property<Guid>("ChatItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
@@ -204,6 +204,12 @@ namespace Infra.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
@@ -212,7 +218,7 @@ namespace Infra.EFCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("ChatItemId");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -336,7 +342,7 @@ namespace Infra.EFCore.Migrations
                 {
                     b.HasOne("Domains.Chats.Item.Aggregate.ChatItem", "Chat")
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
+                        .HasForeignKey("ChatItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
