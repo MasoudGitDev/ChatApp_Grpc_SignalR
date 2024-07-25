@@ -1,5 +1,7 @@
 ﻿using Client.ChatApp.Layout;
+using Client.ChatApp.Protos.ChatMessages;
 using Client.ChatApp.Services;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Server.Dtos;
@@ -10,8 +12,8 @@ namespace Client.ChatApp.Pages;
 public class ChatsViewHandler : ComponentBase, IDisposable {
 
     //======================== injections
-    //[Inject]
-    //private GrpcChannel grpcChannel { get; set; } = null!;
+    [Inject]
+    private GrpcChannel GrpcChannel { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavManager { get; set; } = null!;
@@ -22,15 +24,21 @@ public class ChatsViewHandler : ComponentBase, IDisposable {
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateAsync { get; set; } = null!;
 
+
+
     //====================== route param
 
 
-    //======================== visible props
+    //======================== visible
     protected ChatAccountItems Sidebar { get; set; } = null!;
     protected LinkedList<ChatMessageDto> Messages { get; set; } = new();
     protected ChatAccountDto SelectedItem = null!;
 
-    //======================= private props
+    protected string MessageContent  = String.Empty;
+
+
+    //======================= privates
+    private ChatMessageCommandRPCs.ChatMessageCommandRPCsClient MessageCommands => new(GrpcChannel);
 
     private async Task<string> GetMyIdAsync()
         => ( await AuthStateAsync ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ?? "";
@@ -58,6 +66,18 @@ public class ChatsViewHandler : ComponentBase, IDisposable {
 
         StateHasChanged();
     }
+
+    protected async Task SendMessageAsync() {
+        await MessageCommands.SendAsync(new() {
+            Id = Guid.NewGuid().ToString(),
+            ChatItemId = SelectedItem.ChatItemId.ToString() ,
+            ReceiverId = SelectedItem.UserId.ToString() ,
+            SenderId = await GetMyIdAsync(),            
+            Content = MessageContent,
+            FileUrl = "",  
+        });
+    }
+
     //=================
     private async Task CheckSelectItemAsync(UserBasicInfoDto? item) {
 
