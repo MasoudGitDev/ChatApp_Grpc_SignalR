@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Client.ChatApp;
 using Client.ChatApp.Protos;
+using Client.ChatApp.Protos.ChatMessages;
 using Client.ChatApp.Protos.Users;
 using Client.ChatApp.Services;
 using Grpc.Net.Client;
@@ -27,7 +28,7 @@ using var gRPCChannel = GrpcChannel.ForAddress("https://localhost:7001" , new Gr
 });
 
 builder.Services.AddScoped(x => gRPCChannel);
-builder.Services.AddScoped(services => new ChatMessageRPCs.ChatMessageRPCsClient(gRPCChannel));
+builder.Services.AddScoped(services => new ChatMessageCommandRPCs.ChatMessageCommandRPCsClient(gRPCChannel));
 builder.Services.AddScoped(services => new ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient(gRPCChannel));
 builder.Services.AddScoped(services =>new ChatRequestQueryRPCs.ChatRequestQueryRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new AccountRPCs.AccountRPCsClient(gRPCChannel));
