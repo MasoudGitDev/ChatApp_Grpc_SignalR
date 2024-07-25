@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\ChatMessages\chat_message_commands.proto" />
     <None Remove="Protos\Users\user_queries.proto" />
   </ItemGroup>
 
@@ -38,7 +39,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\account_controller.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\chat_message.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\ChatMessages\chat_message_commands.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\ChatRequests\chat_request_commands.proto" GrpcServices="Client" />
 	<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Client" />
 	<Protobuf Include="Protos\shared_messages.proto" GrpcServices="Client" />
