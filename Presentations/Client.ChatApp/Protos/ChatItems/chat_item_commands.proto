@@ -1,9 +1,0 @@
-syntax = "proto3";
-import "Protos/shared_messages.proto";
-option csharp_namespace = "Client.ChatApp.Protos";
-package ChatItemCommandsPkg;
-
-service ChatItemCommandsRPCs{
-	rpc Create(Shared.PersonMsg) returns(Shared.ResultMsg);
-	rpc Remove(Shared.RowMsg) returns(Shared.ResultMsg);
-}
