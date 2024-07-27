@@ -1,8 +1,9 @@
 ﻿using Google.Protobuf.Collections;
 using Mapster;
 using Server.ChatApp.Protos;
+using Server.ChatApp.Protos.ChatMessages;
 using Server.ChatApp.Protos.Users;
-using Shared.Server.Dtos.User;
+using Shared.Server.Dtos.Chat;
 using Shared.Server.Models;
 using Shared.Server.Models.Results;
 
@@ -37,10 +38,26 @@ public static class GrpcExtensions {
         return resultMsg;
     }
 
+    public static ChatMessageResult AsChatMessageResult(this ResultStatus<List<GetMessageDto>> result) {
+        var resultMsg = new ChatMessageResult(){ IsSuccessful = result.IsSuccessful };
+        if(result.Model != null && result.Model.Count >= 0) {
+            resultMsg.Messages.AddRange(result.Model?.ToRepeatedFields<GetMessageDto , GetChatMessageMsg>());
+        }      
+        return resultMsg;
+    }
+
+    public static ChatItemResultMsg AsChatItemResult(this ResultStatus<List<ChatItemDto>> result) {
+        var resultMsg = new ChatItemResultMsg(){ IsSuccessful = result.IsSuccessful };
+        if(result.Model != null && result.Model.Count >= 0) {
+            resultMsg.Items.AddRange(result.Model?.ToRepeatedFields<ChatItemDto , ChatItemMsg>());
+        }
+        return resultMsg;
+    }
+
     public static CRQResult AsChatRequestQueriesResult(this ResultStatus<List<ChatRequestItem>> result) {
         CRQResult grpcResult = new(){ IsSuccessful = result.IsSuccessful };
         grpcResult.Messages.AddRange(result.Messages.ToRepeatedFields<MessageDescription , MessageInfo>());
-        grpcResult.Items.AddRange(result.Model.ToRepeatedFields<ChatRequestItem , ChatRequestItemMsg>());
+        grpcResult.Items.AddRange(result.Model?.ToRepeatedFields<ChatRequestItem , ChatRequestItemMsg>());
         return grpcResult;
     }
 
