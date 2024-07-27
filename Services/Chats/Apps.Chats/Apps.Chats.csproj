@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Domains.Chats\Domains.Chats.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ChatItems\Queries\" />
-  </ItemGroup>
-
 </Project>

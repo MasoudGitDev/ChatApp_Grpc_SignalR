@@ -28,12 +28,17 @@ using var gRPCChannel = GrpcChannel.ForAddress("https://localhost:7001" , new Gr
 });
 
 builder.Services.AddScoped(x => gRPCChannel);
+
 builder.Services.AddScoped(services => new ChatMessageCommandRPCs.ChatMessageCommandRPCsClient(gRPCChannel));
+builder.Services.AddScoped(services => new ChatMessageQueryRPCs.ChatMessageQueryRPCsClient(gRPCChannel));
+
 builder.Services.AddScoped(services => new ChatRequestCommandsRPCs.ChatRequestCommandsRPCsClient(gRPCChannel));
 builder.Services.AddScoped(services =>new ChatRequestQueryRPCs.ChatRequestQueryRPCsClient(gRPCChannel));
+
 builder.Services.AddScoped(service => new AccountRPCs.AccountRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new ContactRPCs.ContactRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new SharedRpcs.SharedRpcsClient(gRPCChannel));
+
 builder.Services.AddScoped(service => new OnlineUserCommandsRPCs.OnlineUserCommandsRPCsClient(gRPCChannel));
 
 builder.Services.AddAuthorizationCore();
