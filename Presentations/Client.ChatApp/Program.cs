@@ -45,6 +45,6 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<AuthenticationStateProvider , AuthStateProvider>();
 
-builder.Services.AddSingleton(_ => new UserSelectionObserver());
+builder.Services.AddScoped(_ => new UserSelectionObserver());
 
 await builder.Build().RunAsync();
