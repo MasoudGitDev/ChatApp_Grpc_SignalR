@@ -10,7 +10,7 @@
                 <Pagination Title="کاربران جدید">
                     <div class="users">
                         @foreach(var user in Users) {
-                            <div class="user center" @onclick="()=>OnChatItemSelected(user.BasicInfo)">
+                            <div class="user center" >
                                 <div class="status @(user.IsOnline ? "online" : "" )"></div>
                                 <div class="logo center">
                                     <div class="img center">Img</div>
