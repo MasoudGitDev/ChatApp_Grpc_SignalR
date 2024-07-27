@@ -1,11 +1,11 @@
-﻿using Shared.Server.Dtos.User;
+﻿using Shared.Server.Dtos.Chat;
 
-namespace Client.ChatApp.Services;  
+namespace Client.ChatApp.Services;
 internal class UserSelectionObserver {
 
     public event Action? OnChangeSelection;
-    public UserBasicInfoDto? Item { get; private set; }
-    public void OnSelectedItem(UserBasicInfoDto item) {
+    public ChatItemDto? Item { get; private set; }
+    public void OnSelectedItem(ChatItemDto item) {
         Item = item;
         NotifyOnChangeItem();
     }
