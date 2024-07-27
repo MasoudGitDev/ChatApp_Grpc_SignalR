@@ -2,7 +2,6 @@
 using Domains.Chats.Item.Queries;
 using Infra.EFCore.Contexts;
 using Microsoft.EntityFrameworkCore;
-using Shared.Server.Extensions;
 
 namespace Infra.EFCore.Implementations.Chats;
 internal class ChatItemQueries(AppDbContext _dbContext) : IChatItemQueries {
@@ -12,8 +11,12 @@ internal class ChatItemQueries(AppDbContext _dbContext) : IChatItemQueries {
     public async Task<ChatItem?> GetByIdsAsync(Guid requesterId , Guid receiverId)
          => await _dbContext.ChatItems.FirstOrDefaultAsync(x => x.RequesterId == requesterId && x.ReceiverId == receiverId);
 
-    public async Task<LinkedList<ChatItem>> GetByIdAsync(Guid userId)
-          => await _dbContext.ChatItems.Where(x => x.ReceiverId == userId || x.RequesterId == userId).ToLinkedListAsync();
+    public async Task<List<ChatItem>> GetByIdAsync(Guid userId , int pageNumber = 1 , int pageSize = 20)
+        => await _dbContext.ChatItems
+        .Where(x => x.ReceiverId == userId || x.RequesterId == userId)
+        .Skip(( pageNumber - 1 ) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
 
     public async Task<bool> HaveAnyChatItem(Guid requesterId , Guid receiverId)
         => await _dbContext.ChatItems.AnyAsync(item =>
