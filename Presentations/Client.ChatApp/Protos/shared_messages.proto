@@ -33,6 +33,9 @@ message RowMsg{
 	string RowId = 1;
 }
 
+message TableMsg{
+	string Id = 1;
+}
 message PersonMsg{
 	string Id = 1;
 }
