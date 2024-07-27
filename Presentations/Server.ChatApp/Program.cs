@@ -8,6 +8,7 @@ using Server.ChatApp.Hubs;
 using Server.ChatApp.Hubs.Chats;
 using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
 using ChatMessages = Server.ChatApp.ServiceHandlers.ChatMessages;
+using ChatItems = Server.ChatApp.ServiceHandlers.ChatItems;
 using Users = Server.ChatApp.ServiceHandlers.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,7 +54,6 @@ builder.Services.AddEFCoreService();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddChatServices();
 builder.Services.AddSignalR();
 
 builder.Services.AddMediatR((config) => {
@@ -88,16 +88,26 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //============================================================ grpc handlers
-app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
+
 app.MapGrpcService<GrpcAccountHandler>().EnableGrpcWeb();
+
+
+//============= ChatItems
+app.MapGrpcService<ChatItems.CommandsHandler>().EnableGrpcWeb();
+app.MapGrpcService<ChatItems.QueriesHandler>().EnableGrpcWeb();
 
 //==============ChatMessages
 app.MapGrpcService<ChatMessages.CommandsHandler>().EnableGrpcWeb();
-//==============ChatRequests
+app.MapGrpcService<ChatMessages.QueriesHandler>().EnableGrpcWeb();
+
+
+
+//==============must be remove for simplicity
 app.MapGrpcService<ChatRequests.CommandsHandler>().EnableGrpcWeb();
 app.MapGrpcService<ChatRequests.QueriesHandler>().EnableGrpcWeb();
-//============== Contacts
 app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
+app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
+
 //========users
 app.MapGrpcService<Users.QueriesHandler>().EnableGrpcWeb();
 app.MapGrpcService<Users.CommandsHandler>().EnableGrpcWeb();
