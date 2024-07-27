@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "Protos/shared_messages.proto";
+option csharp_namespace = "Client.ChatApp.Protos";
+package ChatItemCommandsPkg;
+
+service ChatItemCommandRPCs{
+	rpc Create(Shared.PersonMsg) returns(Shared.ResultMsg);
+	rpc Remove(Shared.RowMsg) returns(Shared.ResultMsg);
+}
+
+service ChatItemQueryRPCs{
+	rpc GetAll(Shared.Empty) returns(ChatItemResultMsg);
+}
+
+message ChatItemResultMsg{
+	bool IsSuccessful = 1;
+	repeated ChatItemMsg Items = 2;
+}
+message ChatItemMsg{
+	string Id = 1 ;
+	string ReceiverId = 2;
+	string DisplayName = 3;
+	string LogoUrl = 4;
+	int32 UnReadMessages = 5;
+}
