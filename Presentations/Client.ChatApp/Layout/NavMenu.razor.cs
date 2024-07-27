@@ -2,6 +2,7 @@
 using Client.ChatApp.Protos;
 using Client.ChatApp.Services;
 using Grpc.Net.Client;
+using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Server.Dtos.Chat;
@@ -9,15 +10,15 @@ using Shared.Server.Extensions;
 
 namespace Client.ChatApp.Layout;
 
-public class NavMenuViewHandler : ComponentBase {
+public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
 
     //========================================
 
     [Inject]
-    private GrpcChannel GrpcChannel { get; set; } = null!;
+    private GrpcChannel? GrpcChannel { get; set; }
 
     [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
+    public Task<AuthenticationState>? AuthState { get; set; }
 
     [Inject]
     private UserSelectionObserver UserSelectionObserver { get; set; } = new();
@@ -59,7 +60,7 @@ public class NavMenuViewHandler : ComponentBase {
                     LogoUrl = "" ,
                     ReceiverId = ( await GetMyIdAsync() ).AsGuid()
                 };
-                ChatAccounts = FakeData(); //( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
+                ChatAccounts = ( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
                 CurrentItem = Cloud;
             }
         }
@@ -98,4 +99,14 @@ public class NavMenuViewHandler : ComponentBase {
         return list;
     }
 
+    public async ValueTask DisposeAsync() {
+        try {
+            if(GrpcChannel is not null) {
+                await GrpcChannel.ShutdownAsync();
+            }
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.Message);
+        }
+    }
 }
