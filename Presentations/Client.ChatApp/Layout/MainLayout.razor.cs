@@ -80,7 +80,6 @@ public class MainLayoutViewHandler : LayoutComponentBase, IAsyncDisposable {
     public async ValueTask DisposeAsync() {
         if(_hubConnection is not null) {
             await _hubConnection.StopAsync();
-            await _hubConnection.DisposeAsync();
         }
         await GrpcChannel.ShutdownAsync();
         await OnlineUserCommands.RemoveAsync(new Protos.Empty());

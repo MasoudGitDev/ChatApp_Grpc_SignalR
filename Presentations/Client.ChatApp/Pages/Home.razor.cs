@@ -6,6 +6,7 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
+using Shared.Server.Dtos.Chat;
 using Shared.Server.Dtos.User;
 
 namespace Client.ChatApp.Pages;
@@ -40,13 +41,19 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
 
     //============================ basic blazor methods
     protected override async Task OnInitializedAsync() {
-        Users.Clear();
-        Users = await GetUsers();
-        ChangeOnlineUserStatus(await GetUserIdAsync() , true);
-        await OnlineStatusHubConfigAsync();
+        try {
+            Users.Clear();
+            Users = await GetUsers();
+            ChangeOnlineUserStatus(await GetUserIdAsync() , true);
+            await OnlineStatusHubConfigAsync();
+        }
+        catch(Exception ex) { 
+            Console.WriteLine("Home : init : " + ex.Message);
+        }
+
     }
 
-    protected void OnChatItemSelected(UserBasicInfoDto item) {
+    protected void OnChatItemSelected(ChatItemDto item) {
         UserSelectionObserver.OnSelectedItem(item);
         NavManager.NavigateTo("/Chats");
     }
@@ -80,8 +87,9 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
 
     //============================== Disposable
     public async ValueTask DisposeAsync() {
-       await  _onlineStatusHub.StopAsync();
-       await _onlineStatusHub.DisposeAsync();
+        if(_onlineStatusHub != null) {
+            await _onlineStatusHub.StopAsync();
+        }      
        await GrpcChannel.ShutdownAsync();
     }
 }
