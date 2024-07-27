@@ -1,0 +1,45 @@
+﻿@page "/Chats"
+@inherits ChatMessagesViewHandler
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        <div class="chat_container">
+            <div class="chat_title">
+                <div class="chat_msg_logo"></div>
+                <div class="chat_info">
+                    <div>@SelectedItem.DisplayName</div>
+                    <div class="type_status">در حال نوشتن ...</div>
+                </div>
+
+
+            </div>
+            <div class="chat_messages">                
+                @foreach(var item in Messages) {
+                    <div class="chat_msg_row @(item.IsMyMessage ? "" : "left")">
+                        <div class="receive_msg  @(item.IsMyMessage ? "" : "left")">
+                            <div class="chat_msg_body">@item.Content</div>
+                            <div class="chat_msg_logo">@item.FileUrl</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div style="width:100%">
+                <div class="chat_controls">
+                    <div class="chat_msg_col">
+                        <textarea class="chat_text_box" @bind="MessageContent"></textarea>
+                    </div>
+                    <div class="chat_btns_col">
+                        <button class="chat_controls_btn_send btn btn-outline-success"
+                        @onclick="SendMessageAsync"
+                        >
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div>You Are Not Authorized</div>
+    </NotAuthorized>
+</AuthorizeView>
