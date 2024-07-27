@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "Protos/shared_messages.proto";
+option csharp_namespace = "Server.ChatApp.Protos.ChatMessages";
+package ChatMessagesPkg;
+
+service ChatMessageCommandRPCs{
+	rpc Send(SendMessageMsg) returns(Shared.ResultMsg);
+}
+
+service ChatMessageQueryRPCs{
+	rpc GetMessage(Shared.TableMsg) returns(GetChatMessageMsg);
+	rpc GetMessages(Shared.TableMsg) returns(ChatMessageResult);
+}
+
+message SendMessageMsg{
+	string Id = 1;
+	string ChatItemId = 2;
+	string SenderId = 3;
+	string ReceiverId = 4;
+	string Content = 5;
+	string FileUrl = 6;
+}
+
+message ChatMessageResult{
+	bool IsSuccessful = 1;
+	repeated GetChatMessageMsg Messages = 2;
+
+}
+
+message GetChatMessageMsg{
+	string Id  = 1;
+	string SenderId = 2;
+	string Content = 3;
+	string FileUrl = 4;
+	bool IsSent = 5;
+	bool IsSeen = 6;
+}
