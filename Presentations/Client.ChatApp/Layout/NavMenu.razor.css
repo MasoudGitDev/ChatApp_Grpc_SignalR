@@ -126,7 +126,7 @@
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    height:calc(100vh - 3.5rem);
+    height: calc(100vh - 3.5rem);
     overflow-y: auto;
     background-color: #f8f8f8;
 }
