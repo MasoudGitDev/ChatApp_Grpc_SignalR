@@ -40,40 +40,30 @@ public class ChatMessagesViewHandler : ComponentBase , IAsyncDisposable {
                 LogoUrl = "" ,
                 ReceiverId = ( await GetMyIdAsync() ).AsGuid()
             };
+
             UserSelection.OnChangeSelection += OnChangeSelectedItem;
 
             if(UserSelection.Item == null) {
                 SelectedItem = Cloud;
-            }
-            //else {
-            //    SelectedItem = UserSelection.Item;
-            //}
-
+            }        
+            await GetMessagesAsync();
 
         }
         catch(Exception ex) { 
             Console.WriteLine("chatMessages : init : " + ex.Message);
         }
-
-
-       // await GetMessagesAsync();
     }
 
-
-    protected string DisplayName = "Cloud1";
-
-    public async Task RefreshAsync(ChatItemDto selectedItem) {
-        SelectedItem = selectedItem;
-        // await GetMessagesAsync();
-     
-        await Task.CompletedTask;
-    }
     //=========================== 
-    protected ChatItemDto SelectedItem { get; set; } = null!;
+    protected ChatItemDto? SelectedItem { get; set; }
     protected SendMessageDto MessageItem = new();
     protected string MessageContent = String.Empty;
     protected LinkedList<GetMessageDto> Messages { get; private set; } = new();
     protected async Task SendMessageAsync() {
+        if(SelectedItem is null) {
+            Console.WriteLine("ChatMessages : SendMessageAsync : " + SelectedItem);
+            return;
+        }
         MessageItem = new() {
             Id = Guid.NewGuid().ToString() ,
             ChatItemId = SelectedItem.Id.ToString() ,
@@ -97,6 +87,10 @@ public class ChatMessagesViewHandler : ComponentBase , IAsyncDisposable {
  
     private async Task GetMessagesAsync() {
         Messages.Clear();
+        if(SelectedItem is null) {
+            SelectedItem = UserSelection.Item ?? Cloud;
+            Console.WriteLine("ChatMessages : GetMessagesAsync : " + SelectedItem);
+        }    
         var result = (await Queries.GetMessagesAsync(new() { Id = SelectedItem.Id.ToString() }));
         foreach(var item in result.Messages) {
             Messages.AddLast(item.Adapt<GetMessageDto>());
@@ -104,12 +98,28 @@ public class ChatMessagesViewHandler : ComponentBase , IAsyncDisposable {
     }
    
     private void OnChangeSelectedItem() {
-        SelectedItem = UserSelection.Item ?? Cloud ;
-        StateHasChanged();
+        try {
+            if(SelectedItem is null) {
+                Console.WriteLine("ChatMessages : OnChangeSelectedItem : " + SelectedItem);
+                return;
+            }
+            SelectedItem = UserSelection.Item;
+            StateHasChanged();
+        }
+        catch(Exception ex) { 
+            Console.WriteLine(ex.Message);
+        }
     }
 
     public async ValueTask DisposeAsync() {
-        UserSelection.OnChangeSelection -= OnChangeSelectedItem;
-        await Task.CompletedTask;
+        try {
+            UserSelection.OnChangeSelection -= OnChangeSelectedItem;
+            if(GrpcChannel is not null) {
+                await GrpcChannel.ShutdownAsync();
+            }
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.Message);
+        }
     }
 }
