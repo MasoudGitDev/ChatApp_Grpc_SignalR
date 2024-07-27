@@ -22,4 +22,7 @@ public record class ErrorResults(string Code , string Message) {
     //===================== generic
     public static ResultStatus<T> NotFound<T>(string message , T? model = default)
     => new(false , [MessageDescription.Create(nameof(NotFound) , message)] , model);
+
+    public static ResultStatus<T> Canceled<T>(string message , T? model = default)
+      => new(false , [MessageDescription.Create(nameof(Canceled) , message)] , model);
 }
