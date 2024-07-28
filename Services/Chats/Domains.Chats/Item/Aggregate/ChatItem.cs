@@ -49,15 +49,4 @@ public partial class ChatItem {
         }
     }
 
-    public Task<(bool CanSendMessage , bool IsBlockedByRequester)> CreateMessageAsync(ChatMessage message) {
-        if(IsBlockedByRequester || IsBlockedByReceiver) {
-            return Task.FromResult((false,true));
-        }
-        if(IsBlockedByReceiver) {
-            return Task.FromResult((false,false));
-        }
-        Messages.AddLast(message);
-        return Task.FromResult((true , false));
-    }
-
 }
