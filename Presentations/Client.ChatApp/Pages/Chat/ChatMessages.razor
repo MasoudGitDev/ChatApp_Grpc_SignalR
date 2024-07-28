@@ -15,10 +15,10 @@
             </div>
             <div class="chat_messages">                
                 @foreach(var item in Messages) {
-                    <div class="chat_msg_row @(item.IsMyMessage ? "" : "left")">
-                        <div class="receive_msg  @(item.IsMyMessage ? "" : "left")">
+                    <div class="chat_msg_row @(item.SenderId == MyId ? "" : "left")">
+                        <div class="receive_msg  @(item.SenderId == MyId ? "" : "left")">
                             <div class="chat_msg_body">@item.Content</div>
-                            <div class="chat_msg_logo">@item.FileUrl</div>
+                            <div class="chat_msg_logo">Img</div>
                         </div>
                     </div>
                 }
