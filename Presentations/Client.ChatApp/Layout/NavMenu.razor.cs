@@ -97,9 +97,8 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
             menuName = "Home";
         }
         if(UserSelectionObserver.WasUserAtHomePage) {
-            var findUser = ChatAccounts.FirstOrDefault(x=> x.ReceiverId == UserSelectionObserver.Item.ReceiverId);
-            CurrentItem = findUser;
-          
+            var findUser = ChatAccounts.FirstOrDefault(x=> x.ReceiverId == UserSelectionObserver.Item?.ReceiverId);
+            CurrentItem = findUser;          
         }
         StateHasChanged();
     }
