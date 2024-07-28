@@ -29,7 +29,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
     //=========================================
 
     private readonly ChatMessages ChatMessagePage = new();
-    protected ChatItemDto CurrentItem { get; private set; } = null!;
+    protected ChatItemDto? CurrentItem { get; private set; }
     protected ChatItemDto Cloud { get; private set; } = null!;
     protected LinkedList<ChatItemDto> ChatAccounts = new();
 
@@ -41,7 +41,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
 
     protected void OnItemClicked(ChatItemDto selectedItem) {
         if(isChatsMenuSelected) {
-            UserSelectionObserver.OnSelectedItem(selectedItem);
+            UserSelectionObserver.SelectedItem(selectedItem);
             CurrentItem = selectedItem;
         }
     }
@@ -49,7 +49,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
     private async Task<string> GetMyIdAsync()
         => ( await AuthState ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ??
         Guid.Empty.ToString();
-
+    //=========================== basic blazor methods
     protected override async Task OnInitializedAsync() {
         try {
             var identity = (await AuthState).User.Identity;
@@ -61,29 +61,48 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
                     ReceiverId = ( await GetMyIdAsync() ).AsGuid()
                 };
                 ChatAccounts = ( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
-                CurrentItem = Cloud;
+                //CurrentItem = Cloud;
             }
+            UserSelectionObserver.OnChangeSelection += ChangeNavbar;
         }
         catch(Exception ex) {
             Console.WriteLine("NavMenu:OnInitializedAsync : " + ex.Message);
         }
     }
 
-    protected void SelectChatsSidebar() {
+
+    //========================== visible 
+    protected void GoToChatsPage() {
         isChatsMenuSelected = true;
         menuName = "Home";
+        CurrentItem = Cloud;
+        UserSelectionObserver.SelectedItem(CurrentItem , true, false);
     }
     protected void GoToHomePage() {
         menuName = "ChapApp";
         isChatsMenuSelected = false;
+        UserSelectionObserver.SelectedItem(null , true , false);
     }
 
     protected string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
     protected void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
     }
 
+    //==========================
+
+    private void ChangeNavbar() {
+        if(UserSelectionObserver.IsGoingToHome is false) {
+            isChatsMenuSelected = true;
+            menuName = "Home";
+        }
+        if(UserSelectionObserver.WasUserAtHomePage) {
+            var findUser = ChatAccounts.FirstOrDefault(x=> x.ReceiverId == UserSelectionObserver.Item.ReceiverId);
+            CurrentItem = findUser;
+          
+        }
+        StateHasChanged();
+    }
 
     private LinkedList<ChatItemDto> FakeData() {
         var list = new LinkedList<ChatItemDto>();
@@ -101,6 +120,9 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
 
     public async ValueTask DisposeAsync() {
         try {
+            UserSelectionObserver.OnChangeSelection -= ChangeNavbar;
+            CurrentItem = Cloud;
+            UserSelectionObserver.SelectedItem(CurrentItem,true, false);
             if(GrpcChannel is not null) {
                 await GrpcChannel.ShutdownAsync();
             }
