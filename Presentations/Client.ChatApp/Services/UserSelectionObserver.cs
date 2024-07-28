@@ -5,8 +5,12 @@ internal class UserSelectionObserver {
 
     public event Action? OnChangeSelection;
     public ChatItemDto? Item { get; private set; }
-    public void OnSelectedItem(ChatItemDto item) {
-        Item = item;
+    public bool IsGoingToHome { get; private set; } = false;
+    public bool WasUserAtHomePage { get; set; } = false;
+    public void SelectedItem(ChatItemDto? item , bool isGoingToHome = true , bool wasUserAtHomePage = true) {
+        Item = item ?? new();
+        IsGoingToHome = isGoingToHome;
+        WasUserAtHomePage = wasUserAtHomePage;
         NotifyOnChangeItem();
     }
 
