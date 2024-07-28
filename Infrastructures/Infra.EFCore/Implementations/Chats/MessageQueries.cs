@@ -9,7 +9,12 @@ internal class MessageQueries(AppDbContext _dbContext) : IChatMessageQueries {
         return await _dbContext.ChatMessages.FindAsync(messageId);
     }
 
-    public async Task<List<ChatMessage>> GetAllAsync(Guid chatItemId) {
-        return await _dbContext.ChatMessages.Where(x => x.ChatItemId == chatItemId).ToListAsync();
+    public async Task<List<ChatMessage>> GetAllAsync(Guid chatItemId , int pageNumber = 1 , int pageSize = 50) {
+        return await _dbContext.ChatMessages
+            .Where(x => x.ChatItemId == chatItemId)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .OrderBy(x=> x.CreatedAt)            
+            .ToListAsync();
     }
 }
