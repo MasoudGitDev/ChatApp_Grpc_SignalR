@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Server.Dtos.Chat;
 using Shared.Server.Dtos.User;
+using Shared.Server.Extensions;
 
 namespace Client.ChatApp.Pages;
 /// <summary>
@@ -23,7 +24,7 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
     private GrpcChannel GrpcChannel { get; set; } = null!;
 
     [Inject]
-    private UserSelectionObserver UserSelectionObserver { get; set; } = null!;
+    private UserSelectionObserver? UserSelectionObserver { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
@@ -53,9 +54,17 @@ public class HomeViewHandler : ComponentBase , IAsyncDisposable {
 
     }
 
-    protected void OnChatItemSelected(ChatItemDto item) {
-        UserSelectionObserver.OnSelectedItem(item);
-        NavManager.NavigateTo("/Chats");
+    protected void OnChatItemSelected(UserBasicInfoDto item) {
+        if(UserSelectionObserver != null) {
+            UserSelectionObserver.SelectedItem(new ChatItemDto() {
+                DisplayName = item.DisplayName,
+                LogoUrl = item.ImageUrl,
+                ReceiverId = item.Id.AsGuid(),
+                Id = Guid.NewGuid(),
+                UnReadMessages = 0
+            } , false , true);
+            NavManager.NavigateTo("/Chats");
+        }
     }
 
     //==================================== private methods
