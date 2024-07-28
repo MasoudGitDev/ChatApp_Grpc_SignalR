@@ -28,11 +28,17 @@ internal sealed class CreateMessageHandler(IChatUOW _unitOfWork) : IRequestHandl
                 item = ChatItem.Create(request.SenderId , request.ReceiverId);
                 await _unitOfWork.CreateAsync(item);
             }
-            var (canSendMessage, isBlockedByRequester) = await item.CreateMessageAsync(request.Adapt<ChatMessage>());
-            if(!canSendMessage) {
-                string msg = isBlockedByRequester ? "You have" : "The Receiver has";
-                return ErrorResults.Canceled($"{msg} been blocked from messaging");
+            
+            if(item.IsBlockedByRequester) {
+                return ErrorResults.Canceled($"You have been blocked from messaging");
             }
+            if(item.IsBlockedByReceiver) {
+                return ErrorResults.Canceled($"The Receiver has been blocked from messaging");
+            }
+
+            var message = ChatMessage.Create(request.ChatItemId,request.SenderId,request.Content,request.FileUrl,request.Id);
+            await _unitOfWork.CreateAsync(message);
+
             await _unitOfWork.SaveChangeAsync();
             return SuccessResults.Ok($"The new message with id : <{request.Id}> has been sent successfully.");
         }
