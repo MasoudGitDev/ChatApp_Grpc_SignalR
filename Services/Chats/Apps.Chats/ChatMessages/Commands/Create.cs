@@ -1,6 +1,5 @@
 ﻿using Domains.Chats.Item.Aggregate;
 using Domains.Chats.Message.Aggregate;
-using Mapster;
 using MediatR;
 using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
@@ -22,22 +21,22 @@ public sealed record class Create : IRequest<ResultStatus> {
 internal sealed class CreateMessageHandler(IChatUOW _unitOfWork) : IRequestHandler<Create , ResultStatus> {
     public async Task<ResultStatus> Handle(Create request , CancellationToken cancellationToken) {
         try {
-            var item = await _unitOfWork.Queries.ChatItems.FindByIdAsync(request.ChatItemId);
+            var chatItem = await _unitOfWork.Queries.ChatItems.GetByIdsAsync(request.SenderId,request.ReceiverId);
             // create chatItem if not exist
-            if(item is null) {
-                item = ChatItem.Create(request.SenderId , request.ReceiverId);
-                await _unitOfWork.CreateAsync(item);
+            if(chatItem is null) {
+                chatItem = ChatItem.Create(request.SenderId , request.ReceiverId);
+                await _unitOfWork.CreateAsync<ChatItem>(chatItem);
             }
-            
-            if(item.IsBlockedByRequester) {
+
+            if(chatItem.IsBlockedByRequester) {
                 return ErrorResults.Canceled($"You have been blocked from messaging");
             }
-            if(item.IsBlockedByReceiver) {
+            if(chatItem.IsBlockedByReceiver) {
                 return ErrorResults.Canceled($"The Receiver has been blocked from messaging");
             }
 
-            var message = ChatMessage.Create(request.ChatItemId,request.SenderId,request.Content,request.FileUrl,request.Id);
-            await _unitOfWork.CreateAsync(message);
+            var message = ChatMessage.Create(chatItem, request.ChatItemId,request.SenderId,request.Content,request.FileUrl,request.Id);
+            await _unitOfWork.CreateAsync<ChatMessage>(message);
 
             await _unitOfWork.SaveChangeAsync();
             return SuccessResults.Ok($"The new message with id : <{request.Id}> has been sent successfully.");
