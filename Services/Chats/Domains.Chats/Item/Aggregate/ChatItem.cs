@@ -16,12 +16,6 @@ public partial class ChatItem {
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     public LinkedList<ChatMessage> Messages { get; private set; } = new();
-
-    //========================relations
-    public AppUser Requester { get; set; } = null!;
-    public AppUser Receiver { get; set; } = null!;
-
-
 }
 
 // Operations

@@ -16,24 +16,27 @@ internal class ChatConfigs :
     public void Configure(EntityTypeBuilder<ChatItem> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => new { x.RequesterId , x.ReceiverId }).IsUnique();
+
         builder.HasMany(x => x.Messages).WithOne(x => x.ChatItem).IsRequired()
-            .HasForeignKey(x => x.ChatItemId).IsRequired()
+            .HasForeignKey(x => x.ChatItemId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.Receiver).WithMany().IsRequired()
-          .HasForeignKey(x => x.ReceiverId).IsRequired()
-          .OnDelete(DeleteBehavior.NoAction);
+        //builder.HasOne(x => x.Receiver).WithMany().IsRequired()
+        //  .HasForeignKey(x => x.ReceiverId).IsRequired()
+        //  .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(x => x.Requester).WithMany().IsRequired()
-        .HasForeignKey(x => x.RequesterId).IsRequired()
-        .OnDelete(DeleteBehavior.NoAction);
+        //builder.HasOne(x => x.Requester).WithMany().IsRequired()
+        //.HasForeignKey(x => x.RequesterId).IsRequired()
+        //.OnDelete(DeleteBehavior.NoAction);
     }
 
     public void Configure(EntityTypeBuilder<ChatMessage> builder) {
         builder.HasKey(x => x.Id);
-        builder.HasIndex(x => x.Id).IsUnique();
         builder.Property(x => x.FileUrl).HasConversion(model => model.Value , value => FileUrl.Create(value));
-        builder.Property(x => x.ChatItemId);
+
+        builder.HasOne(x => x.ChatItem).WithMany(x=> x.Messages).IsRequired()
+          .HasForeignKey(x => x.ChatItemId)
+          .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Sender).WithMany().IsRequired()
            .HasForeignKey(x => x.SenderId).IsRequired()
