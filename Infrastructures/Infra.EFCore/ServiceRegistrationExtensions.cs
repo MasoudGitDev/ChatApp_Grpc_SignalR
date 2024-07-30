@@ -1,5 +1,4 @@
 ﻿using Apps.Auth;
-using Apps.Auth.Constants;
 using Apps.Auth.Services;
 using Domains.Auth.Online.Queries;
 using Domains.Auth.Queries;
@@ -20,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Server.Constants;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
 using System.Text;
