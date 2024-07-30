@@ -1,8 +1,10 @@
-﻿using Apps.Auth.Constants;
-using Apps.Auth.Services;
+﻿using Apps.Auth.Services;
 using Domains.Auth.User.Aggregate;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
+using Shared.Server.Constants;
 using Shared.Server.Dtos;
+using Shared.Server.Dtos.User;
 using Shared.Server.Exceptions;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
@@ -21,7 +23,7 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
         if(isValidUser is false) {
             return AccountResult.Error(MessageDescription.Create("Invalid-User" , "LoginName or Password is wrong."));
         }
-        return await _jwtService.GenerateAsync(user.Id);
+        return await _jwtService.GenerateAsync(user.Adapt<UserTokenDto>());
     }
     public async Task<AccountResult> LoginByTokenAsync(string accessToken) {
         try {
@@ -46,19 +48,33 @@ internal class AccountService(UserManager<AppUser> _userManager , IJwtService _j
         if(!result.Succeeded) {
             throw AccountException.Create(ErrorsToString(result.Errors));
         }
-        return await _jwtService.GenerateAsync(model.Id);
+        return await _jwtService.GenerateAsync(model.Adapt<UserTokenDto>());
     }
 
     //============================
-    private static Task<IEnumerable<Claim>> GetClaimsAsync(string token) { 
+    private static Task<IEnumerable<Claim>> GetClaimsAsync(string token) {
         JwtSecurityTokenHandler handler = new();
         if(!handler.CanReadToken(token)) {
             throw new Exception("Invalid-Token");
         }
-       return Task.FromResult(handler.ReadJwtToken(token).Claims);
+        return Task.FromResult(handler.ReadJwtToken(token).Claims);
     }
-    private static string GetUserIdByClaims(IEnumerable<Claim> claims) {
-        return claims.Where(x=>x.Type == TokenKeys.UserId).FirstOrDefault()?.Value ?? string.Empty;
+    private static UserTokenDto GetUserIdByClaims(IEnumerable<Claim> claims) {
+        var userTokenDto = new UserTokenDto(Guid.Empty);
+        foreach(var item in claims) {
+            switch(item.Type) {
+                case TokenKeys.UserId:
+                    userTokenDto = userTokenDto with { Id = item.Value.AsGuid() };
+                    break;
+                case TokenKeys.UserName:
+                    userTokenDto = userTokenDto with { UserName = item.Value };
+                    break;
+                case TokenKeys.DisplayName:
+                    userTokenDto = userTokenDto with { DisplayName = item.Value };
+                    break;
+            }
+        }
+        return userTokenDto;
     }
     private static string ErrorsToString(IEnumerable<IdentityError> errors) {
         string result = string.Empty;

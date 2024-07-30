@@ -1,7 +1,8 @@
-﻿using Shared.Server.Models.Results;
+﻿using Shared.Server.Dtos.User;
+using Shared.Server.Models.Results;
 
 namespace Apps.Auth.Services;
 public interface IJwtService {
-    Task<AccountResult> GenerateAsync(Guid userId);
-    Task<AccountResult> EvaluateAsync(string accessToken , string userId);
+    Task<AccountResult> GenerateAsync(UserTokenDto model);
+    Task<AccountResult> EvaluateAsync(string accessToken , UserTokenDto model);
 }

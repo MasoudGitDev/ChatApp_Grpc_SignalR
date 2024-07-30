@@ -1,7 +1,7 @@
-﻿using Apps.Auth.Constants;
-using Apps.Auth.Services;
+﻿using Apps.Auth.Services;
 using Microsoft.IdentityModel.Tokens;
-using Shared.Server.Exceptions;
+using Shared.Server.Constants;
+using Shared.Server.Dtos.User;
 using Shared.Server.Models;
 using Shared.Server.Models.Results;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,21 +10,23 @@ using System.Text;
 
 namespace Apps.Auth.Handlers;
 internal class JwtService(JwtSettingsModel model) : IJwtService {
-    public async Task<AccountResult> EvaluateAsync(string accessToken , string userId) {
-       return await ReNewAsync(await GetClaims(accessToken),userId);
+    public async Task<AccountResult> EvaluateAsync(string accessToken , UserTokenDto model) {
+        return await ReNewAsync(await GetClaims(accessToken) , model);
     }
 
-    public async Task<AccountResult> GenerateAsync(Guid userId) {
-        return await WriteToken(userId);
+    public async Task<AccountResult> GenerateAsync(UserTokenDto model) {
+        return await WriteToken(model);
     }
 
     //===========privates
     private const string _alg = SecurityAlgorithms.HmacSha256Signature;
     private SymmetricSecurityKey SymmetricSecurityKey => new(Encoding.UTF8.GetBytes(model.SecureKey));
-    private Task<AccountResult> WriteToken(Guid userId) {
+    private Task<AccountResult> WriteToken(UserTokenDto model) {
         var tokenHandler = new JwtSecurityTokenHandler();
         var claims = new List<Claim> {
-            new(TokenKeys.UserId , userId.ToString())
+            new(TokenKeys.UserId , model.Id.ToString()),
+            new(TokenKeys.UserName , model.UserName) ,
+            new(TokenKeys.DisplayName , model.DisplayName)
         };
         var securityToken = tokenHandler.CreateToken(DescribeToken(claims));
         return Task.FromResult(AccountResult.Create(tokenHandler.WriteToken(securityToken)));
@@ -41,17 +43,17 @@ internal class JwtService(JwtSettingsModel model) : IJwtService {
             Expires = DateTime.UtcNow.AddMinutes(model.ExpireMinuteNumber) ,
         };
 
-    private static Task<List<Claim>> GetClaims(string accessToken) 
+    private static Task<List<Claim>> GetClaims(string accessToken)
         => Task.FromResult(new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims.ToList());
 
-    private async Task<AccountResult> ReNewAsync(List<Claim> claims , string userId) {
+    private async Task<AccountResult> ReNewAsync(List<Claim> claims , UserTokenDto model) {
         var userIdentifier = claims.Where(x=> x.Type == TokenKeys.UserId).FirstOrDefault()?.Value;
         if(userIdentifier is null) {
-            throw JwtException.Create("The <UserIdentifier> is invalid.");
+            return AccountResult.Error(MessageDescription.Create("JWT-Error" , "The <UserIdentifier> is invalid."));
         }
-        if(userIdentifier != userId) {
-            throw JwtException.Create("This Token not belong to you!");
+        if(userIdentifier != model.Id.ToString()) {
+            return AccountResult.Error(MessageDescription.Create("JWT-Error" , "This Token not belong to you!"));
         }
-        return await GenerateAsync(Guid.Parse(userId));
+        return await GenerateAsync(model);
     }
 }
