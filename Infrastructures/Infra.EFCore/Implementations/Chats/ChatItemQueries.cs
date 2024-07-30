@@ -9,7 +9,10 @@ internal class ChatItemQueries(AppDbContext _dbContext) : IChatItemQueries {
         => await _dbContext.ChatItems.FirstOrDefaultAsync(x => x.Id == chatId);
 
     public async Task<ChatItem?> GetByIdsAsync(Guid requesterId , Guid receiverId)
-         => await _dbContext.ChatItems.FirstOrDefaultAsync(x => x.RequesterId == requesterId && x.ReceiverId == receiverId);
+         => await _dbContext.ChatItems.FirstOrDefaultAsync(item =>
+            ( item.RequesterId == requesterId && item.ReceiverId == receiverId ) ||
+            ( item.RequesterId == receiverId && item.ReceiverId == requesterId )
+         );
 
     public async Task<List<ChatItem>> GetByIdAsync(Guid userId , int pageNumber = 1 , int pageSize = 20)
         => await _dbContext.ChatItems
