@@ -1,11 +1,11 @@
-﻿using Apps.Auth.Constants;
-using Apps.Auth.Services;
+﻿using Apps.Auth.Services;
 using Domains.Auth.Queries;
 using Domains.Auth.User.Aggregate;
 using Grpc.Core;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Server.ChatApp.Protos;
+using Shared.Server.Constants;
 using Shared.Server.Dtos;
 using Shared.Server.Exceptions;
 using Shared.Server.Extensions;
