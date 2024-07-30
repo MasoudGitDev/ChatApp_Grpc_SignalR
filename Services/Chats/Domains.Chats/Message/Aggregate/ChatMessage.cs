@@ -9,7 +9,7 @@ public partial class ChatMessage {
     public Guid SenderId { get; private set; }
 
     public FileUrl FileUrl { get; private set; } = FileUrl.Empty;
-    public string Content { get; private set; } = null!;
+    public string Content { get; private set; } = String.Empty;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime? ModifiedAt { get; private set; } = null;
 
@@ -25,16 +25,18 @@ public partial class ChatMessage {
 public partial class ChatMessage {
 
     public static ChatMessage Create(
-    Guid chatItemId ,
-    Guid senderId ,
-    string content ,
-    string fileUrl = "" ,
-    Guid? messageId = null) => new() {
-        Id = messageId ?? Guid.NewGuid() ,
-        ChatItemId = chatItemId ,
-        SenderId = senderId ,        
-        Content = content ,
-        FileUrl = fileUrl
+        ChatItem chatItem ,
+        Guid chatItemId ,
+        Guid senderId ,
+        string content ,
+        string fileUrl = "" ,
+        Guid? messageId = null) => new() {
+            Id = messageId ?? Guid.NewGuid() ,
+            ChatItemId = chatItemId ,
+            SenderId = senderId ,     
+            Content = content ,
+            FileUrl = fileUrl ,
+            ChatItem = chatItem
     };
 
     public void Update(FileUrl fileUrl) {
