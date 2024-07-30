@@ -30,10 +30,10 @@
                 <div class="chat_items">
                     <div class="chat_item @(Cloud == CurrentItem ? "selected" : "" )" @onclick="()=> OnItemClicked(Cloud)">
                         <div class="chat_item_logo">
-                            Img
+                             Img
                             <div class="chat_item_status online"></div>
                         </div>
-                        <div class="chat_item_name"> Cloud</div>
+                        <div class="chat_item_name">@Cloud.DisplayName</div>
                     </div>
                     @foreach(var item in ChatAccounts) {
                         <div class="chat_item @(item == CurrentItem ? "selected" : "" )" @onclick="()=> OnItemClicked(item)">
