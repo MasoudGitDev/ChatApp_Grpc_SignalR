@@ -5,6 +5,7 @@ using Grpc.Net.Client;
 using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Shared.Server.Constants;
 using Shared.Server.Dtos.Chat;
 using Shared.Server.Extensions;
 
@@ -38,6 +39,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
 
     protected bool isChatsMenuSelected = false;
     protected string menuName = "ChatApp";
+    protected string UserNameClaim = string.Empty;
 
     protected void OnItemClicked(ChatItemDto selectedItem) {
         if(isChatsMenuSelected) {
@@ -45,15 +47,19 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
             CurrentItem = selectedItem;
         }
     }
+    private async Task<string> GetUserNameClaimAsync()
+       => ( await AuthState ).User.Claims.Where(x => x.Type == TokenKeys.UserName).FirstOrDefault()?.Value ??
+       Guid.Empty.ToString();
 
     private async Task<string> GetMyIdAsync()
-        => ( await AuthState ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ??
+        => ( await AuthState ).User.Claims.Where(x => x.Type == TokenKeys.UserId).FirstOrDefault()?.Value ??
         Guid.Empty.ToString();
     //=========================== basic blazor methods
     protected override async Task OnInitializedAsync() {
         try {
             var identity = (await AuthState).User.Identity;
             if(identity != null && identity.IsAuthenticated) {
+                UserNameClaim =$"({await GetUserNameClaimAsync()})";
                 Cloud = new() {
                     DisplayName = "Cloud" ,
                     Id = Guid.NewGuid() ,
@@ -79,7 +85,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
         UserSelectionObserver.SelectedItem(CurrentItem , true, false);
     }
     protected void GoToHomePage() {
-        menuName = "ChapApp";
+        menuName = "ChatApp";
         isChatsMenuSelected = false;
         UserSelectionObserver.SelectedItem(null , true , false);
     }
