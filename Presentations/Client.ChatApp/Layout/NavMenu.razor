@@ -27,14 +27,17 @@
         else {
             <div class="chat_items_sidebar">
 
-                <div class="chat_items">
-                    <div class="chat_item @(Cloud == CurrentItem ? "selected" : "" )" @onclick="()=> OnItemClicked(Cloud)">
+                <div class="chat_items p-1">
+                    <div class="chat_item @(Cloud == CurrentItem ? "selected" : "" )" 
+                    style="background-color:rgba(100,5,200,.1);"
+                    @onclick="()=> OnItemClicked(Cloud)">
                         <div class="chat_item_logo">
                              Img
                             <div class="chat_item_status online"></div>
                         </div>
                         <div class="chat_item_name">@Cloud.DisplayName</div>
                     </div>
+                    <div class="item-divider"></div>
                     @foreach(var item in ChatAccounts) {
                         <div class="chat_item @(item == CurrentItem ? "selected" : "" )" @onclick="()=> OnItemClicked(item)">
                             <div class="chat_item_logo">
