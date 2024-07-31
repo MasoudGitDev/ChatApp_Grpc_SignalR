@@ -155,6 +155,7 @@
     width: 100%;
     flex-grow: 1;
     background-color: #f8f8f8;    
+    gap :5px;
 }
 
 .chat_item {
@@ -223,7 +224,15 @@
         visibility:visible;
     }
 
-
+.item-divider{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:2px;
+    background-color:darkgrey;
+}
 
 
 @media (min-width: 641px) {
