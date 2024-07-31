@@ -1,19 +1,24 @@
 ﻿using Client.ChatApp.Pages.Chat;
 using Client.ChatApp.Protos;
 using Client.ChatApp.Services;
+using Domains.Chats.Item.Aggregate;
 using Grpc.Net.Client;
 using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Server.Constants;
 using Shared.Server.Dtos.Chat;
+using Shared.Server.Dtos.User;
 using Shared.Server.Extensions;
 
 namespace Client.ChatApp.Layout;
 
-public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
+public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
 
     //========================================
+    [Inject]
+    private NavigationManager NavManager { get; set; } = null!;
 
     [Inject]
     private GrpcChannel? GrpcChannel { get; set; }
@@ -40,6 +45,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
     protected bool isChatsMenuSelected = false;
     protected string menuName = "ChatApp";
     protected string UserNameClaim = string.Empty;
+    private HubConnection _ChatHubConnection;
 
     protected void OnItemClicked(ChatItemDto selectedItem) {
         if(isChatsMenuSelected) {
@@ -56,15 +62,16 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
         Guid.Empty.ToString();
     //=========================== basic blazor methods
     protected override async Task OnInitializedAsync() {
-        try {            
+        try {
             var identity = (await AuthState).User.Identity;
             if(identity != null && identity.IsAuthenticated) {
                 Cloud = ( await ChatItemQueries.GetCloudItemAsync(new Empty()) ).Items.FirstOrDefault().Adapt<ChatItemDto>();
-                UserNameClaim =$"({await GetUserNameClaimAsync()})";
+                UserNameClaim = $"({await GetUserNameClaimAsync()})";
                 ChatAccounts = ( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
                 //CurrentItem = Cloud;
             }
             UserSelectionObserver.OnChangeSelection += ChangeNavbar;
+            await SetHubConnectionAsync();
         }
         catch(Exception ex) {
             Console.WriteLine("NavMenu:OnInitializedAsync : " + ex.Message);
@@ -77,7 +84,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
         isChatsMenuSelected = true;
         menuName = "Home";
         CurrentItem = Cloud;
-        UserSelectionObserver.SelectedItem(CurrentItem , true, false);
+        UserSelectionObserver.SelectedItem(CurrentItem , true , false);
     }
     protected void GoToHomePage() {
         menuName = "ChatApp";
@@ -86,11 +93,60 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
     }
 
     protected string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+   
+
     protected void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
     }
 
     //==========================
+
+    private async Task SetHubConnectionAsync() {
+        var url = "https://localhost:7001/chatMessageHub";
+        _ChatHubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(url)).Build();
+        _ChatHubConnection.On<UserBasicInfoDto,UserBasicInfoDto,Guid>("ReceiveChatItem" ,
+            async (senderInfo , receiverInfo , chatItemId) => {
+            await CreateChatItemAsync(senderInfo,receiverInfo,chatItemId);
+            await InvokeAsync(StateHasChanged);
+        });
+        await _ChatHubConnection.StartAsync();
+    }  
+
+    private async Task CreateChatItemAsync(UserBasicInfoDto senderInfo , UserBasicInfoDto receiverInfo , Guid chatItemId) {
+        if(senderInfo.Id == receiverInfo.Id) { 
+            return; // means uses cloud item!
+        }
+        string MyId =(await GetMyIdAsync());
+        bool amISender = senderInfo.Id == MyId;
+        var findChatItem = ChatAccounts.FirstOrDefault(x=> x.Id == chatItemId);
+        if(findChatItem is not null) {
+            ChatAccounts.Remove(findChatItem);
+            findChatItem.UnReadMessages += 0;
+            ChatAccounts.AddFirst(findChatItem);
+            if(amISender) {
+                CurrentItem = findChatItem;
+            }
+        }
+        else {
+           
+            var chatItem = new ChatItemDto() {
+                DisplayName = amISender ? receiverInfo.DisplayName : senderInfo.DisplayName ,
+                Id = chatItemId ,
+                LogoUrl = amISender ? receiverInfo.ImageUrl : senderInfo.ImageUrl ,
+                ReceiverId = amISender ? receiverInfo.Id.AsGuid() : senderInfo.Id.AsGuid() ,
+                UnReadMessages = amISender ? 0 : 0
+            };
+            ChatAccounts.AddFirst(chatItem);
+            if(amISender) {
+                CurrentItem = chatItem;
+            }
+           
+        }
+        await Task.CompletedTask;
+    }
+
+
 
     private void ChangeNavbar() {
         if(UserSelectionObserver.IsGoingToHome is false) {
@@ -99,7 +155,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
         }
         if(UserSelectionObserver.WasUserAtHomePage) {
             var findUser = ChatAccounts.FirstOrDefault(x=> x.ReceiverId == UserSelectionObserver.Item?.ReceiverId);
-            CurrentItem = findUser;          
+            CurrentItem = findUser;
         }
         StateHasChanged();
     }
@@ -122,7 +178,7 @@ public class NavMenuViewHandler : ComponentBase , IAsyncDisposable {
         try {
             UserSelectionObserver.OnChangeSelection -= ChangeNavbar;
             CurrentItem = Cloud;
-            UserSelectionObserver.SelectedItem(CurrentItem,true, false);
+            UserSelectionObserver.SelectedItem(CurrentItem , true , false);
             if(GrpcChannel is not null) {
                 await GrpcChannel.ShutdownAsync();
             }
