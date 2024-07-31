@@ -1,11 +1,14 @@
-﻿using Client.ChatApp.Protos.ChatMessages;
+﻿using Client.ChatApp.Protos;
+using Client.ChatApp.Protos.ChatMessages;
 using Client.ChatApp.Services;
 using Grpc.Net.Client;
 using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
+using Shared.Server.Constants;
 using Shared.Server.Dtos.Chat;
+using Shared.Server.Dtos.User;
 using Shared.Server.Extensions;
 
 namespace Client.ChatApp.Pages.Chat;
@@ -30,6 +33,8 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
     //===================================
     private ChatMessageCommandRPCs.ChatMessageCommandRPCsClient Commands => new(GrpcChannel);
     private ChatMessageQueryRPCs.ChatMessageQueryRPCsClient Queries => new(GrpcChannel);
+    private ChatItemQueryRPCs.ChatItemQueryRPCsClient ChatItemQueries => new(GrpcChannel);
+
     private HubConnection _ChatHubConnection;
 
     //===================================
@@ -39,29 +44,21 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
     private async Task<string> GetMyIdAsync()
         => ( await AuthStateAsync ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ??
         Guid.Empty.ToString();
+
+    private async Task<string> GetMyDisplayNameAsync()
+      => ( await AuthStateAsync ).User.Claims.Where(x => x.Type == TokenKeys.DisplayName).FirstOrDefault()?.Value ??
+      Guid.Empty.ToString();
+
     protected ChatItemDto Cloud { get; private set; } = null!;
     //============================= Basic Blazor Methods
     protected override async Task OnInitializedAsync() {
 
-        try {
-            var url = "https://localhost:7001/chatMessageHub";
-            _ChatHubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(url)).Build();
+        try {          
             MyId = ( await GetMyIdAsync() ).AsGuid();
-            Cloud = new() {
-                DisplayName = "Cloud" ,
-                Id = Guid.NewGuid() ,
-                LogoUrl = "" ,
-                ReceiverId = MyId
-            };
             UserSelection.OnChangeSelection += OnChangeSelectedItem;
-            SelectedItem = UserSelection.Item ?? Cloud;
-            await GetMessagesAsync(SelectedItem.Id.ToString());
+            await GetMessagesAsync();
 
-            _ChatHubConnection.On<GetMessageDto>("ReceiveMessage" , async (message) => {
-                Messages.AddLast(message);
-                await InvokeAsync(StateHasChanged);
-            });
-            await _ChatHubConnection.StartAsync();
+            await SetHubConnectionAsync();
 
         }
         catch(Exception ex) {
@@ -98,25 +95,46 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
         var result =  await Commands.SendAsync(MessageItem.Adapt<SendMessageMsg>());
         if(result.IsSuccessful) {
             await _ChatHubConnection.InvokeAsync("SendMessage" , getMessage);
+            var chatItemId = (await GetChatItemAsync(SelectedItem.ReceiverId)).Id;
+            var senderInfo = new UserBasicInfoDto(MyId.ToString() , "" , await GetMyDisplayNameAsync());
+            var receiverInfo = new UserBasicInfoDto(SelectedItem.ReceiverId.ToString() , "" , SelectedItem.DisplayName );
+            await _ChatHubConnection.InvokeAsync("SendChatItem" ,senderInfo, receiverInfo , chatItemId);
             MessageContent = "";
-        }        
+        }     
+        
         Console.WriteLine(result);
     }
 
+    //======================================================
+    private async Task SetHubConnectionAsync() {
+        var url = "https://localhost:7001/chatMessageHub";
+        _ChatHubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(url)).Build();
+        _ChatHubConnection.On<GetMessageDto>("ReceiveMessage" , async (message) => {
+            if(message.ChatItemId == SelectedItem.Id) {
+                Messages.AddLast(message);
+            }          
+            await InvokeAsync(StateHasChanged);
+        });
+        await _ChatHubConnection.StartAsync();
+    }
 
 
-
-    private async Task GetMessagesAsync(string chatItemId) {
+    private async Task GetMessagesAsync() {
         Messages.Clear();
         if(SelectedItem is null) {
-            SelectedItem = UserSelection.Item ?? Cloud;
+            SelectedItem = UserSelection.Item ?? new();
             Console.WriteLine("ChatMessages : GetMessagesAsync : " + SelectedItem);
         }
-        var result = (await Queries.GetMessagesAsync(new() { Id = chatItemId}));
+        var chatItem = await GetChatItemAsync(SelectedItem.ReceiverId);
+        var result = (await Queries.GetMessagesAsync(new() { Id = chatItem.Id.ToString()}));
         foreach(var item in result.Messages) {
             Messages.AddLast(item.Adapt<GetMessageDto>());
         }
     }
+
+    private async Task<ChatItemDto> GetChatItemAsync(Guid receiverId)
+        => ( await ChatItemQueries.GetItemAsync(new() { Id = receiverId.ToString() }) )
+            .Items.FirstOrDefault().Adapt<ChatItemDto>();
 
     private async void OnChangeSelectedItem() {
         try {
@@ -125,7 +143,7 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
                 return;
             }
             SelectedItem = UserSelection.Item;
-            await GetMessagesAsync(SelectedItem.Id.ToString());
+            await GetMessagesAsync();
             await InvokeAsync(StateHasChanged);
         }
         catch(Exception ex) {
