@@ -9,6 +9,7 @@ service ChatItemCommandRPCs{
 }
 
 service ChatItemQueryRPCs{
+	rpc GetItem(Shared.PersonMsg) returns(ChatItemResultMsg);
 	rpc GetCloudItem(Shared.Empty) returns(ChatItemResultMsg);
 	rpc GetAll(Shared.Empty) returns(ChatItemResultMsg);
 }
