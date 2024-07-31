@@ -4,7 +4,7 @@ using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
 
 namespace Apps.Chats.ChatItems.Queries;
-public record GetCloudItem(Guid MyId) : IRequest<ResultStatus<ChatItemDto>> {
+public sealed record GetCloudItem(Guid MyId) : IRequest<ResultStatus<ChatItemDto>> {
     public static GetCloudItem New(Guid myId) => new(myId);
 }
 
@@ -18,7 +18,7 @@ internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork)
                 return ErrorResults.Canceled<ChatItemDto>($"The user with ID : <{request.MyId}> has not been found.");
             }
             ChatItemDto result = new(){
-                DisplayName = "فضای شخصی" ,
+                DisplayName = findUser.DisplayName ,
                 ReceiverId = findUser.Id ,
                 LogoUrl = findUser.ImageUrl ,
                 UnReadMessages = 0 ,
