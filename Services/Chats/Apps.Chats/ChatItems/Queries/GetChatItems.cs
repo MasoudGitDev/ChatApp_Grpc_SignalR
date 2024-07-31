@@ -6,7 +6,7 @@ using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
 
 namespace Apps.Chats.ChatItems.Queries;
-public record GetChatItems(Guid MyId , int PageNumber = 1 , int PageSize = 20) : IRequest<ResultStatus<List<ChatItemDto>>> {
+public sealed record GetChatItems(Guid MyId , int PageNumber = 1 , int PageSize = 20) : IRequest<ResultStatus<List<ChatItemDto>>> {
     public static GetChatItems New(Guid myId , int pageNumber = 1 , int pageSize = 20) => new(myId , pageNumber , pageSize);
 }
 
