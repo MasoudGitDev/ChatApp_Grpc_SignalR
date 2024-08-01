@@ -1,6 +1,7 @@
 ﻿using Domains.Auth.User.Aggregate;
 using Domains.Chats.Item.Aggregate;
 using Domains.Chats.Message.ValueObjects;
+using System.Data;
 
 namespace Domains.Chats.Message.Aggregate;
 public partial class ChatMessage {
@@ -46,5 +47,11 @@ public partial class ChatMessage {
     public void Update(string content) {
         Content = content;
         ModifiedAt = DateTime.UtcNow;
+    }
+    public void MarkAsRead() {
+        IsSeen = true;
+    }
+    public void MarkAsSend() {
+        IsSent = true;
     }
 }
