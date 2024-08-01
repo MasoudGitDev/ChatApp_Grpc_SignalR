@@ -176,8 +176,6 @@ namespace Infra.EFCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
-
                     b.HasIndex("RequesterId", "ReceiverId")
                         .IsUnique();
 
@@ -219,9 +217,6 @@ namespace Infra.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChatItemId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("SenderId");
 
@@ -319,28 +314,9 @@ namespace Infra.EFCore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domains.Chats.Item.Aggregate.ChatItem", b =>
-                {
-                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domains.Auth.User.Aggregate.AppUser", "Requester")
-                        .WithMany()
-                        .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Requester");
-                });
-
             modelBuilder.Entity("Domains.Chats.Message.Aggregate.ChatMessage", b =>
                 {
-                    b.HasOne("Domains.Chats.Item.Aggregate.ChatItem", "Chat")
+                    b.HasOne("Domains.Chats.Item.Aggregate.ChatItem", "ChatItem")
                         .WithMany("Messages")
                         .HasForeignKey("ChatItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -352,7 +328,7 @@ namespace Infra.EFCore.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Chat");
+                    b.Navigation("ChatItem");
 
                     b.Navigation("Sender");
                 });
