@@ -1,5 +1,4 @@
-﻿using Domains.Auth.User.Aggregate;
-using Domains.Chats.Message.Aggregate;
+﻿using Domains.Chats.Message.Aggregate;
 
 namespace Domains.Chats.Item.Aggregate;
 public partial class ChatItem {
