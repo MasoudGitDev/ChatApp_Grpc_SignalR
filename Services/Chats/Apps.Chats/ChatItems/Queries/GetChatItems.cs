@@ -1,6 +1,5 @@
 ﻿using Domains.Chats.Item.Aggregate;
 using MediatR;
-using Microsoft.VisualBasic;
 using Shared.Server.Dtos.Chat;
 using Shared.Server.Models.Results;
 using UnitOfWorks.Abstractions;
@@ -18,7 +17,7 @@ internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandle
             var itemDTOs = new List<ChatItemDto>();
             foreach(var chatItem in chatItems) {
                 // Avoid Displaying Cloud Item
-                if(chatItem.ReceiverId == request.MyId && chatItem.RequesterId == request.MyId) { 
+                if(IsCloudItem(chatItem,request.MyId)) {
                     continue;
                 }
                 var findReceiver = await _unitOfWork.Queries.Users.FindByIdAsync(GetReceiverId(request.MyId,chatItem));
@@ -29,18 +28,26 @@ internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandle
                     Id = chatItem.Id ,
                     DisplayName = findReceiver.DisplayName ,
                     LogoUrl = findReceiver.ImageUrl ,
-                    ReceiverId = chatItem.ReceiverId ,
-                    UnReadMessages = 0
+                    ReceiverId = findReceiver.Id ,
+                    UnReadMessages = await GetUnReadMessagesCountAsync(chatItem.Id),
                 });
             }
             return SuccessResults.Ok(itemDTOs);
         }
-        catch(Exception ex) { 
+        catch(Exception ex) {
             return ErrorResults.Canceled<List<ChatItemDto>>(ex.Message);
         }
     }
 
+    private static bool IsCloudItem(ChatItem item , Guid myId )
+        => item.ReceiverId == myId && item.RequesterId == myId;
+
     private static Guid GetReceiverId(Guid myId , ChatItem item) {
         return myId == item.RequesterId ? item.ReceiverId : item.RequesterId;
+    }
+
+    private async Task<int> GetUnReadMessagesCountAsync(Guid chatItemId) {
+        return ( await _unitOfWork.Queries.ChatMessages.GetAllAsync(chatItemId) )
+            .Where(x => x.IsSeen == false).Count();
     }
 }
