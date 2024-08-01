@@ -36,6 +36,7 @@ internal sealed class CreateMessageHandler(IChatUOW _unitOfWork) : IRequestHandl
             }
 
             var message = ChatMessage.Create(chatItem, request.ChatItemId,request.SenderId,request.Content,request.FileUrl,request.Id);
+            message.MarkAsSend();
             await _unitOfWork.CreateAsync<ChatMessage>(message);
 
             await _unitOfWork.SaveChangeAsync();
