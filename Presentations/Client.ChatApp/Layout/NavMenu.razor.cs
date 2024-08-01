@@ -1,7 +1,6 @@
 ﻿using Client.ChatApp.Pages.Chat;
 using Client.ChatApp.Protos;
 using Client.ChatApp.Services;
-using Domains.Chats.Item.Aggregate;
 using Grpc.Net.Client;
 using Mapster;
 using Microsoft.AspNetCore.Components;
@@ -53,22 +52,28 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
             CurrentItem = selectedItem;
         }
     }
-    private async Task<string> GetUserNameClaimAsync()
-       => ( await AuthState ).User.Claims.Where(x => x.Type == TokenKeys.UserName).FirstOrDefault()?.Value ??
-       Guid.Empty.ToString();
 
-    private async Task<string> GetMyIdAsync()
-        => ( await AuthState ).User.Claims.Where(x => x.Type == TokenKeys.UserId).FirstOrDefault()?.Value ??
-        Guid.Empty.ToString();
+    private async Task<(string UserId, string DisplayName,string UserName)> GetMyInfoAsync() {
+        var userClaims = (await AuthState).User.Claims;
+        if(userClaims is null) {
+            return ("<invalid-id>", "<invalid-displayName>" , "<invalid-userName");
+        }
+        string displayName = userClaims.Where(x=> x.Type == TokenKeys.DisplayName).FirstOrDefault()?.Value ?? "<invalid-displayName>";
+        string userId = userClaims.Where(x=> x.Type == TokenKeys.UserId).FirstOrDefault()?.Value ?? "<invalid-id>";
+        string userName = userClaims.Where(x=> x.Type == TokenKeys.UserName).FirstOrDefault()?.Value ?? "<invalid-userName>";
+        return (userId, displayName , userName);
+    }
+    private string _myId = String.Empty;
+    private string _displayName = String.Empty;
+
     //=========================== basic blazor methods
     protected override async Task OnInitializedAsync() {
         try {
+            (_myId,_displayName,UserNameClaim) = await GetMyInfoAsync();
             var identity = (await AuthState).User.Identity;
             if(identity != null && identity.IsAuthenticated) {
                 Cloud = ( await ChatItemQueries.GetCloudItemAsync(new Empty()) ).Items.FirstOrDefault().Adapt<ChatItemDto>();
-                UserNameClaim = $"({await GetUserNameClaimAsync()})";
                 ChatAccounts = ( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
-                //CurrentItem = Cloud;
             }
             UserSelectionObserver.OnChangeSelection += ChangeNavbar;
             await SetHubConnectionAsync();
@@ -94,7 +99,7 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
 
     protected string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-   
+
 
     protected void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
@@ -105,20 +110,19 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
     private async Task SetHubConnectionAsync() {
         var url = "https://localhost:7001/chatMessageHub";
         _ChatHubConnection = new HubConnectionBuilder().WithUrl(NavManager.ToAbsoluteUri(url)).Build();
-        _ChatHubConnection.On<UserBasicInfoDto,UserBasicInfoDto,Guid>("ReceiveChatItem" ,
+        _ChatHubConnection.On<UserBasicInfoDto , UserBasicInfoDto , Guid>("ReceiveChatItem" ,
             async (senderInfo , receiverInfo , chatItemId) => {
-            await CreateChatItemAsync(senderInfo,receiverInfo,chatItemId);
-            await InvokeAsync(StateHasChanged);
-        });
+                await CreateChatItemAsync(senderInfo , receiverInfo , chatItemId);
+                await InvokeAsync(StateHasChanged);
+            });
         await _ChatHubConnection.StartAsync();
-    }  
+    }
 
     private async Task CreateChatItemAsync(UserBasicInfoDto senderInfo , UserBasicInfoDto receiverInfo , Guid chatItemId) {
-        if(senderInfo.Id == receiverInfo.Id) { 
+        if(senderInfo.Id == receiverInfo.Id) {
             return; // means uses cloud item!
         }
-        string MyId =(await GetMyIdAsync());
-        bool amISender = senderInfo.Id == MyId;
+        bool amISender = senderInfo.Id == _myId;
         var findChatItem = ChatAccounts.FirstOrDefault(x=> x.Id == chatItemId);
         if(findChatItem is not null) {
             ChatAccounts.Remove(findChatItem);
@@ -129,7 +133,7 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
             }
         }
         else {
-           
+
             var chatItem = new ChatItemDto() {
                 DisplayName = amISender ? receiverInfo.DisplayName : senderInfo.DisplayName ,
                 Id = chatItemId ,
@@ -141,7 +145,7 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
             if(amISender) {
                 CurrentItem = chatItem;
             }
-           
+
         }
         await Task.CompletedTask;
     }
