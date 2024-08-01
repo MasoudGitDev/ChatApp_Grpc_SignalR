@@ -17,7 +17,7 @@ internal sealed class GetMessagesHandler(IChatUOW _unitOfWork) : IRequestHandler
             var messages = await _unitOfWork.Queries.ChatMessages.GetAllAsync(request.ChatItemId);
             return SuccessResults.Ok(messages.Adapt<List<GetMessageDto>>());
         }
-        catch(Exception e) { 
+        catch(Exception e) {
             return ErrorResults.Canceled<List<GetMessageDto>>(e.Message);
         }
     }
