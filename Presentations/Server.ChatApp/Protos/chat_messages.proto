@@ -4,6 +4,7 @@ option csharp_namespace = "Server.ChatApp.Protos.ChatMessages";
 package ChatMessagesPkg;
 
 service ChatMessageCommandRPCs{
+	rpc MarkMessagesAsRead(Shared.TableMsg) returns(Shared.ResultMsg);
 	rpc Send(SendMessageMsg) returns(Shared.ResultMsg);
 }
 
