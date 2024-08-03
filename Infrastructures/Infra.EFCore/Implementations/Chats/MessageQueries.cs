@@ -22,4 +22,11 @@ internal class MessageQueries(AppDbContext _dbContext) : IChatMessageQueries {
             .OrderBy(x => x.CreatedAt)
             .ToListAsync();
     }
+
+    public async Task<List<ChatMessage>> GetUnreadMessagesAsync(Guid chatItemId) {
+        return await _dbContext.ChatMessages
+           .Where(x => x.ChatItemId == chatItemId && x.IsSeen == false)
+           .OrderBy(x => x.CreatedAt)
+           .ToListAsync();
+    }
 }
