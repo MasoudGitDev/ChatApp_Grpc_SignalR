@@ -6,7 +6,6 @@ using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;
 using Server.ChatApp.Hubs;
 using Server.ChatApp.Hubs.Chats;
-using ChatRequests = Server.ChatApp.ServiceHandlers.ChatRequests;
 using ChatMessages = Server.ChatApp.ServiceHandlers.ChatMessages;
 using ChatItems = Server.ChatApp.ServiceHandlers.ChatItems;
 using Users = Server.ChatApp.ServiceHandlers.Users;
@@ -103,9 +102,6 @@ app.MapGrpcService<ChatMessages.QueriesHandler>().EnableGrpcWeb();
 
 
 //==============must be remove for simplicity
-app.MapGrpcService<ChatRequests.CommandsHandler>().EnableGrpcWeb();
-app.MapGrpcService<ChatRequests.QueriesHandler>().EnableGrpcWeb();
-app.MapGrpcService<ContactHandler>().EnableGrpcWeb();
 app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 
 //========users

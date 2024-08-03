@@ -61,12 +61,4 @@ public static class GrpcExtensions {
         }
         return resultMsg;
     }
-
-    public static CRQResult AsChatRequestQueriesResult(this ResultStatus<List<ChatRequestItem>> result) {
-        CRQResult grpcResult = new(){ IsSuccessful = result.IsSuccessful };
-        grpcResult.Messages.AddRange(result.Messages.ToRepeatedFields<MessageDescription , MessageInfo>());
-        grpcResult.Items.AddRange(result.Model?.ToRepeatedFields<ChatRequestItem , ChatRequestItemMsg>());
-        return grpcResult;
-    }
-
 }

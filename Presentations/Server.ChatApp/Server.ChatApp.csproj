@@ -33,10 +33,7 @@
 	<ItemGroup>
 		<Protobuf Include="Protos\chat_items.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\shared_messages.proto" GrpcServices="Server" />
-		<Protobuf Include="Protos\ChatRequests\chat_request_commands.proto" GrpcServices="Server" />
-		<protobuf Include="Protos\ChatRequests\chat_request_queries.proto" GrpcService="Server" />
-		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />
-		<Protobuf Include="Protos\contact_controller.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\account_controller.proto" GrpcServices="Server" />		
 		<Protobuf Include="Protos\Users\user_queries.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\Users\online_user_commands.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\chat_messages.proto" GrpcServices="Server" />		
