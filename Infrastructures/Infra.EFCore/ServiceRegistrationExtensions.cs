@@ -4,10 +4,8 @@ using Domains.Auth.Online.Queries;
 using Domains.Auth.Queries;
 using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
-using Domains.Chats.Contacts.Queries;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
-using Domains.Chats.Requests.Queries;
 using Infra.EFCore.Contexts;
 using Infra.EFCore.Implementations;
 using Infra.EFCore.Implementations.Accounts;
@@ -100,8 +98,6 @@ public static class ServiceRegistrationExtensions {
         //================ Chat Services
         services.AddScoped<IChatItemQueries , ChatItemQueries>();
         services.AddScoped<IChatMessageQueries , MessageQueries>();
-        services.AddScoped<IChatRequestQueries , ChatRequestQueries>();
-        services.AddScoped<IContactQueries , ContactQueries>();
         services.AddScoped<IAppQueries , AppQueries>();
         services.AddScoped<IOnlineUserQueries , OnlineUserQueries>();
         services.AddScoped<IChatUOW , ChatUOW>();

@@ -13,10 +13,10 @@ internal sealed class RemoveHandler(IChatUOW _unitOfWork) : IRequestHandler<Remo
         var chatItemId = request.ChatItemId;
         var chatItem = await _unitOfWork.Queries.ChatItems.FindByIdAsync(chatItemId);
         if(chatItem is null) {
-            return ChatItemResult.NotFound($"The {nameof(chatItemId)} : <{chatItemId}> not found.");
+            return ErrorResults.NotFound($"The {nameof(chatItemId)} : <{chatItemId}> not found.");
         }
         await _unitOfWork.DeleteAsync(chatItem);
         await _unitOfWork.SaveChangeAsync();
-        return ChatItemResult.Removed(chatItemId);
+        return SuccessResults.Removed(chatItemId);
     }
 }
