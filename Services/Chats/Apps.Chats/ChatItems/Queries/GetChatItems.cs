@@ -13,7 +13,7 @@ public sealed record GetChatItems(Guid MyId , int PageNumber = 1 , int PageSize 
 internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandler<GetChatItems , ResultStatus<List<ChatItemDto>>> {
     public async Task<ResultStatus<List<ChatItemDto>>> Handle(GetChatItems request , CancellationToken cancellationToken) {
         try {
-            var chatItems = await _unitOfWork.Queries.ChatItems.GetByIdAsync(request.MyId,request.PageNumber,request.PageSize);
+            var chatItems = await _unitOfWork.Queries.ChatItems.GetItemsByUserIdAsync(request.MyId,request.PageNumber,request.PageSize);
             var itemDTOs = new List<ChatItemDto>();
             foreach(var chatItem in chatItems) {
                 // Avoid Displaying Cloud Item

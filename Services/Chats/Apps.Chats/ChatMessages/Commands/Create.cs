@@ -21,7 +21,7 @@ public sealed record class Create : IRequest<ResultStatus> {
 internal sealed class CreateMessageHandler(IChatUOW _unitOfWork) : IRequestHandler<Create , ResultStatus> {
     public async Task<ResultStatus> Handle(Create request , CancellationToken cancellationToken) {
         try {
-            var chatItem = await _unitOfWork.Queries.ChatItems.GetByIdsAsync(request.SenderId,request.ReceiverId);
+            var chatItem = await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.SenderId,request.ReceiverId);
             // create chatItem if not exist
             if(chatItem is null) {
                 chatItem = ChatItem.Create(request.SenderId , request.ReceiverId);

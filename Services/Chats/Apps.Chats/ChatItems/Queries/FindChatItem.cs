@@ -16,7 +16,7 @@ public sealed record FindChatItem(Guid MyId , Guid OtherId):IRequest<ResultStatu
 //========================== handler
 internal sealed class FindChatItemHandler(IChatUOW _unitOfWork) : IRequestHandler<FindChatItem , ResultStatus<ChatItemDto>> {
     public async Task<ResultStatus<ChatItemDto>> Handle(FindChatItem request , CancellationToken cancellationToken) {
-        var chatItemDTO = (await _unitOfWork.Queries.ChatItems.GetByIdsAsync(request.MyId,request.OtherId))
+        var chatItemDTO = (await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.MyId,request.OtherId))
             .Adapt<ChatItemDto>();
         if(chatItemDTO is null) {
             chatItemDTO = new() {

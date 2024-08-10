@@ -24,7 +24,7 @@ internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork)
                 UnReadMessages = 0 ,
                 Id = Guid.NewGuid(),
             };
-            var cloudItem = await _unitOfWork.Queries.ChatItems.GetByIdsAsync(request.MyId , request.MyId);
+            var cloudItem = await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.MyId , request.MyId);
 
             if(cloudItem is not null) {
                 result.Id = cloudItem.Id;
