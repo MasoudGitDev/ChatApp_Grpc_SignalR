@@ -20,10 +20,13 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Server.Constants;
 using Shared.Server.Extensions;
 using Shared.Server.Models;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnitOfWorks.Abstractions;
 
+[assembly: InternalsVisibleTo("UNTests.Domains.Chats")]
 namespace Infra.EFCore;
+
 public static class ServiceRegistrationExtensions {
     public static IServiceCollection AddEFCoreService(this IServiceCollection services) {
         var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
