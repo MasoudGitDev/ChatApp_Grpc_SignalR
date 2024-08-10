@@ -9,8 +9,8 @@ public partial class ChatItem {
     public bool IsHiddenForRequester { get; private set; } = false;
     public bool IsHiddenForReceiver { get; private set; } = false;
 
-    public bool IsBlockedByRequester { get; private set; }
-    public bool IsBlockedByReceiver { get; private set; }
+    public bool IsBlockedByRequester { get; private set; } = false;
+    public bool IsBlockedByReceiver { get; private set; } = false;
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
@@ -20,6 +20,12 @@ public partial class ChatItem {
 // Operations
 public partial class ChatItem {
     public static ChatItem Create(Guid requesterId , Guid receiverId) => new() {
+        RequesterId = requesterId ,
+        ReceiverId = receiverId
+    };
+
+    public static ChatItem Create(Guid Id , Guid requesterId , Guid receiverId) => new() {
+        Id = Id ,
         RequesterId = requesterId ,
         ReceiverId = receiverId
     };
