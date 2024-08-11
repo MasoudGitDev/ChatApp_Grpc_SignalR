@@ -16,17 +16,21 @@ public sealed record FindChatItem(Guid MyId , Guid OtherId):IRequest<ResultStatu
 //========================== handler
 internal sealed class FindChatItemHandler(IChatUOW _unitOfWork) : IRequestHandler<FindChatItem , ResultStatus<ChatItemDto>> {
     public async Task<ResultStatus<ChatItemDto>> Handle(FindChatItem request , CancellationToken cancellationToken) {
-        var chatItemDTO = (await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.MyId,request.OtherId))
-            .Adapt<ChatItemDto>();
-        if(chatItemDTO is null) {
-            chatItemDTO = new() {
-                DisplayName = "Test" ,
-                Id = Guid.NewGuid(),
-                ReceiverId = request.OtherId ,                
-                LogoUrl = "img-test" ,
-                UnReadMessages = 0
-            };
+        var chatItem = (await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.MyId,request.OtherId));
+        if(chatItem is null) {
+            return SuccessResults.Ok(CreateItemDto(request.OtherId));
         }
-        return SuccessResults.Ok(chatItemDTO);
+        return SuccessResults.Ok(chatItem.Adapt<ChatItemDto>());
+    }
+
+    private ChatItemDto CreateItemDto(Guid otherId) {
+        ChatItemDto chatItemDTO = new() {
+            DisplayName = "Test" ,
+            Id = Guid.NewGuid(),
+            ReceiverId = otherId ,
+            LogoUrl = "img-test" ,
+            UnReadMessages = 0
+        };
+        return chatItemDTO;
     }
 }
