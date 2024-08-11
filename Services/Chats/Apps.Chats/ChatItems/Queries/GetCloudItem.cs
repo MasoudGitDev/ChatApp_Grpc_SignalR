@@ -9,7 +9,7 @@ public sealed record GetCloudItem(Guid MyId) : IRequest<ResultStatus<ChatItemDto
 }
 
 //======================= handler
-internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork) 
+internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork)
     : IRequestHandler<GetCloudItem , ResultStatus<ChatItemDto>> {
     public async Task<ResultStatus<ChatItemDto>> Handle(GetCloudItem request , CancellationToken cancellationToken) {
         try {
