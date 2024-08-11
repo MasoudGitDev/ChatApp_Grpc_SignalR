@@ -17,6 +17,6 @@ internal sealed class RemoveHandler(IChatUOW _unitOfWork) : IRequestHandler<Remo
         }
         await _unitOfWork.DeleteAsync(chatItem);
         await _unitOfWork.SaveChangeAsync();
-        return SuccessResults.Removed(chatItemId);
+        return SuccessResults.Ok($"The ChatItem with ID : <{chatItemId} has been removed successfully.");
     }
 }
