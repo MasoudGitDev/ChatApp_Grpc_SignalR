@@ -7,28 +7,31 @@ using UnitOfWorks.Abstractions;
 using Command = Apps.Chats.ChatItems.Commands;
 
 
-namespace UNTests.Apps.Chats.ChatItems;
-public class Create {
+namespace UNTests.Apps.Chats.ChatItems.Commands;
+public class Create
+{
     private readonly Mock<IChatUOW> _mocker;
     private readonly Command.CreateHandler handler;
 
     private readonly CancellationToken cancellationToken = new();
 
-    public Create() {
+    public Create()
+    {
         _mocker = new Mock<IChatUOW>();
         handler = new(_mocker.Object);
     }
 
 
     [Fact]
-    public async Task Handle_Should_Return_CanceledResult_For_SameUserIds() {
+    public async Task Handle_Should_Return_CanceledResult_For_SameUserIds()
+    {
 
         //Arrange
         var sameId = Guid.NewGuid();
-        var createModel = Command.Create.New( sameId, sameId);
+        var createModel = Command.Create.New(sameId, sameId);
 
         //Act
-        var result = await handler.Handle(createModel , cancellationToken);
+        var result = await handler.Handle(createModel, cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -36,7 +39,8 @@ public class Create {
     }
 
     [Fact]
-    public async Task Handle_Should_Return_NotFound_For_Missing_Receiver() {
+    public async Task Handle_Should_Return_NotFound_For_Missing_Receiver()
+    {
         // Arrange
         var requesterId = Guid.NewGuid();
         var receiverId = Guid.NewGuid();
@@ -51,22 +55,23 @@ public class Create {
 
         // Assert
         result.Should().BeEquivalentTo(ErrorResults.NotFound($"The receiver with ID : <{receiverId}> Not Found."));
-        _mocker.Verify(x => x.Queries.Users.FindByIdAsync(receiverId) , Times.Once());
+        _mocker.Verify(x => x.Queries.Users.FindByIdAsync(receiverId), Times.Once());
     }
 
     [Fact]
-    public async Task Handle_Should_Return_Founded_For_Existing_ChatItem() {
+    public async Task Handle_Should_Return_Founded_For_Existing_ChatItem()
+    {
         // Arrange
         var requesterId = Guid.NewGuid();
         var receiverId = Guid.NewGuid();
         var request = Command.Create.New(requesterId, receiverId);
-        var item = ChatItem.Create(requesterId , receiverId);
-        var receiver = AppUser.Create(new(){Id = receiverId});
+        var item = ChatItem.Create(requesterId, receiverId);
+        var receiver = AppUser.Create(new() { Id = receiverId });
 
         _mocker.Setup(x => x.Queries.Users.FindByIdAsync(receiverId))
              .ReturnsAsync(receiver);
 
-        _mocker.Setup(x => x.Queries.ChatItems.FindByIdsAsync(requesterId , receiverId))
+        _mocker.Setup(x => x.Queries.ChatItems.FindByIdsAsync(requesterId, receiverId))
           .ReturnsAsync(item);
 
         // Act
@@ -74,23 +79,24 @@ public class Create {
 
         // Assert
         result.Should().BeEquivalentTo(ErrorResults.Founded($"The <Chat-Item> with ID : <{item.Id}> was found."));
-        _mocker.Verify(x => x.Queries.Users.FindByIdAsync(receiverId) , Times.Once());
-        _mocker.Verify(x => x.Queries.ChatItems.FindByIdsAsync(requesterId , receiverId) , Times.Once());
+        _mocker.Verify(x => x.Queries.Users.FindByIdAsync(receiverId), Times.Once());
+        _mocker.Verify(x => x.Queries.ChatItems.FindByIdsAsync(requesterId, receiverId), Times.Once());
     }
 
     [Fact]
-    public async Task Handle_Should_Create_ChatItem_Successfully() {
+    public async Task Handle_Should_Create_ChatItem_Successfully()
+    {
         // Arrange
         var requesterId = Guid.NewGuid();
         var receiverId = Guid.NewGuid();
         var request = Command.Create.New(requesterId, receiverId);
-        var receiver = AppUser.Create(new(){Id = receiverId});
-        ChatItem? existingItem  = null;
+        var receiver = AppUser.Create(new() { Id = receiverId });
+        ChatItem? existingItem = null;
 
         _mocker.Setup(x => x.Queries.Users.FindByIdAsync(receiverId))
              .ReturnsAsync(receiver);
 
-        _mocker.Setup(x => x.Queries.ChatItems.FindByIdsAsync(requesterId , receiverId))
+        _mocker.Setup(x => x.Queries.ChatItems.FindByIdsAsync(requesterId, receiverId))
           .ReturnsAsync(existingItem);
 
         _mocker.Setup(x => x.CreateAsync(It.IsAny<ChatItem>())).Returns(Task.CompletedTask);
