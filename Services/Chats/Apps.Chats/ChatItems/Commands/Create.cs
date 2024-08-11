@@ -9,29 +9,30 @@ public sealed record Create(Guid RequesterId , Guid ReceiverId) : IRequest<Resul
     public static Create New(Guid RequesterId , Guid ReceiverId) => new(RequesterId , ReceiverId);
 }
 
+//============================== handler
 internal sealed class CreateHandler(IChatUOW _unitOfWork) : IRequestHandler<Create , ResultStatus> {
     public async Task<ResultStatus> Handle(Create request , CancellationToken cancellationToken) {
         var (requesterId, receiverId) = request;
 
-        // same id can not have chat!
+        // Same-Id-Error!
         if(requesterId == receiverId) {
-            return ChatItemResult.SameId;
+            return ErrorResults.Canceled("You can not chat with yourself!");
         }
 
-        //  The Receiver user must exist in the db.
+        //  The Receiver user must exist in the chat database.
         var receiverUser = await _unitOfWork.Queries.Users.FindByIdAsync(receiverId);
         if(receiverUser is null) {
-            return ChatItemResult.NotFound($"The {nameof(receiverId)} : <{receiverId}> is invalid.");
+            return ErrorResults.NotFound($"The receiver with ID : <{receiverId}> Not Found.");
         }
 
-        // ensure each requester-receiver users just have one chatItem row in db that related to each other!
-        var isAnyChat = await _unitOfWork.Queries.ChatItems.HaveAnyChatItem(requesterId, receiverId);
-        if(isAnyChat) {
-            return ChatItemResult.Founded;
+        //Ensure each requester-receiver pair has exactly one ChatItem row in the chat database.
+        var item = await _unitOfWork.Queries.ChatItems.FindByIdsAsync(requesterId, receiverId);
+        if(item is not null) {
+            return ErrorResults.Founded($"The <Chat-Item> with ID : <{item.Id}> was found.");
         }
 
         await _unitOfWork.CreateAsync(ChatItem.Create(requesterId , receiverId));
         await _unitOfWork.SaveChangeAsync();
-        return ChatItemResult.Created;
+        return SuccessResults.Ok("The new Chat-Item has been created successfully.");
     }
 }
