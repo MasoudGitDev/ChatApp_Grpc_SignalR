@@ -20,10 +20,4 @@ internal class ChatItemQueries(AppDbContext _dbContext) : IChatItemQueries {
         .Skip(( pageNumber - 1 ) * pageSize)
         .Take(pageSize)
         .ToListAsync();
-
-    public async Task<bool> HaveAnyChatItem(Guid requesterId , Guid receiverId)
-        => await _dbContext.ChatItems.AnyAsync(item =>
-            ( item.RequesterId == requesterId && item.ReceiverId == receiverId ) ||
-            ( item.RequesterId == receiverId && item.ReceiverId == requesterId )
-        );
 }
