@@ -15,7 +15,7 @@ internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork)
         try {
             var findUser = await _unitOfWork.Queries.Users.FindByIdAsync(request.MyId);
             if(findUser is null) {
-                return ErrorResults.Canceled<ChatItemDto>($"The user with ID : <{request.MyId}> has not been found.");
+                return ErrorResults.NotFound<ChatItemDto>($"The user with ID : <{request.MyId}> has not been found.");
             }
             ChatItemDto result = new(){
                 DisplayName = findUser.DisplayName ,
@@ -25,7 +25,6 @@ internal sealed class GetCloudItemHandler(IChatUOW _unitOfWork)
                 Id = Guid.NewGuid(),
             };
             var cloudItem = await _unitOfWork.Queries.ChatItems.FindByIdsAsync(request.MyId , request.MyId);
-
             if(cloudItem is not null) {
                 result.Id = cloudItem.Id;
             }
