@@ -17,7 +17,7 @@ internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandle
             var itemDTOs = new List<ChatItemDto>();
             foreach(var chatItem in chatItems) {
                 // Avoid Displaying Cloud Item
-                if(IsCloudItem(chatItem,request.MyId)) {
+                if(IsCloudItem(chatItem , request.MyId)) {
                     continue;
                 }
                 var findReceiver = await _unitOfWork.Queries.Users.FindByIdAsync(GetReceiverId(request.MyId,chatItem));
@@ -29,7 +29,7 @@ internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandle
                     DisplayName = findReceiver.DisplayName ,
                     LogoUrl = findReceiver.ImageUrl ,
                     ReceiverId = findReceiver.Id ,
-                    UnReadMessages = await GetUnReadMessagesCountAsync(chatItem.Id),
+                    UnReadMessages = await GetUnReadMessagesCountAsync(chatItem.Id,false,request.PageNumber,request.PageSize) ,
                 });
             }
             return SuccessResults.Ok(itemDTOs);
@@ -39,15 +39,18 @@ internal sealed class GetChatItemsHandler(IChatUOW _unitOfWork) : IRequestHandle
         }
     }
 
-    private static bool IsCloudItem(ChatItem item , Guid myId )
+    private static bool IsCloudItem(ChatItem item , Guid myId)
         => item.ReceiverId == myId && item.RequesterId == myId;
 
     private static Guid GetReceiverId(Guid myId , ChatItem item) {
         return myId == item.RequesterId ? item.ReceiverId : item.RequesterId;
     }
-
-    private async Task<int> GetUnReadMessagesCountAsync(Guid chatItemId) {
-        return ( await _unitOfWork.Queries.ChatMessages.GetAllAsync(chatItemId) )
-            .Where(x => x.IsSeen == false).Count();
+    /// <summary>
+    /// We need to use pagination params (Because of unit testing).
+    /// </summary>
+    private async Task<int> GetUnReadMessagesCountAsync(Guid chatItemId,bool usePagination , int pageNumber, int pageSize) {
+        var messages = await _unitOfWork.Queries.ChatMessages
+            .GetAllAsync(chatItemId,usePagination,pageNumber,pageSize) ?? [];
+        return messages.Where(x => x.IsSeen == false).Count();
     }
 }
