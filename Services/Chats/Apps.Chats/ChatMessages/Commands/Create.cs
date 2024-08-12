@@ -7,12 +7,12 @@ using UnitOfWorks.Abstractions;
 namespace Apps.Chats.ChatMessages.Commands;
 public sealed record class Create : IRequest<ResultStatus> {
 
-    public Guid Id { get; private set; }
-    public Guid ChatItemId { get; private set; }
-    public Guid SenderId { get; private set; }
-    public Guid ReceiverId { get; private set; }
-    public string Content { get; private set; } = string.Empty;
-    public string FileUrl { get; private set; } = string.Empty;
+    public Guid Id { get; set; }
+    public Guid ChatItemId { get; set; }
+    public Guid SenderId { get; set; }
+    public Guid ReceiverId { get; set; }
+    public string Content { get; set; } = string.Empty;
+    public string FileUrl { get; set; } = string.Empty;
 
 }
 
