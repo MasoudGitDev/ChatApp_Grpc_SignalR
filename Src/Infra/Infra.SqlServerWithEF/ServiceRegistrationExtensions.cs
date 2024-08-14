@@ -1,9 +1,9 @@
 ﻿using Apps.Auth;
 using Apps.Auth.Services;
 using Domains.Auth.Online.Queries;
-using Domains.Auth.Queries;
 using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
+using Domains.Auth.User.Queries;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
 using Infra.SqlServerWithEF.Contexts;

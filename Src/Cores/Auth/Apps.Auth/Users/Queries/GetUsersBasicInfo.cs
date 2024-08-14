@@ -1,4 +1,4 @@
-﻿using Domains.Auth.Queries;
+﻿using Domains.Auth.User.Queries;
 using Domains.Auth.User.ValueObjects;
 using Mapster;
 using MediatR;

@@ -1,6 +1,6 @@
 ﻿using Apps.Auth.Services;
-using Domains.Auth.Queries;
 using Domains.Auth.User.Aggregate;
+using Domains.Auth.User.Queries;
 using Grpc.Core;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;

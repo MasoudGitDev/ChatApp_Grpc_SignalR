@@ -1,6 +1,6 @@
 using Apps.Auth.Users.Queries;
 using Apps.Chats;
-using Infra.EFCore;
+using Infra.SqlServerWithEF;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using Server.ChatApp.GRPCHandlers;

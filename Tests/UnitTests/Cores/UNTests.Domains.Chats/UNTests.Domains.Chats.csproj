@@ -20,10 +20,9 @@
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Infrastructures\Infra.EFCore\Infra.EFCore.csproj" />
-    <ProjectReference Include="..\..\..\..\Services\Chats\Domains.Chats\Domains.Chats.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\Src\Cores\Chats\Domains.Chats\Domains.Chats.csproj" />
+	</ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />

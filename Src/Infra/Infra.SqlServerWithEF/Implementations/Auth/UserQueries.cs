@@ -1,5 +1,5 @@
-﻿using Domains.Auth.Queries;
-using Domains.Auth.User.Aggregate;
+﻿using Domains.Auth.User.Aggregate;
+using Domains.Auth.User.Queries;
 using Domains.Auth.User.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

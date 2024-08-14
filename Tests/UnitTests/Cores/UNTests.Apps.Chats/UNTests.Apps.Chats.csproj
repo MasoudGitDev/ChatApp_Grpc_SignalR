@@ -20,10 +20,11 @@
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Services\Chats\Apps.Chats\Apps.Chats.csproj" />
-    <ProjectReference Include="..\..\..\..\Shared.Server\Shared.Server.csproj" />
-  </ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\Src\Cores\Chats\Apps.Chats\Apps.Chats.csproj" />
+	  <ProjectReference Include="..\..\..\..\Src\Shared\Shared.Server\Shared.Server.csproj" />
+	</ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />

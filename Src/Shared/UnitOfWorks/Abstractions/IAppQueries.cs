@@ -1,5 +1,5 @@
 ﻿using Domains.Auth.Online.Queries;
-using Domains.Auth.Queries;
+using Domains.Auth.User.Queries;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
 

@@ -20,15 +20,15 @@
 		</PackageReference>
 		<PackageReference Include="Mapster" Version="7.4.1-pre01" />
 		<PackageReference Include="MediatR" Version="12.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.8.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructures\Infra.EFCore\Infra.EFCore.csproj" />
-    <ProjectReference Include="..\..\Shared.Server\Shared.Server.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Infra\Infra.SqlServerWithEF\Infra.SqlServerWithEF.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared.Server\Shared.Server.csproj" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Protobuf Include="Protos\chat_items.proto" GrpcServices="Server" />
