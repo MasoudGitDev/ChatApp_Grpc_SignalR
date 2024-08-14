@@ -1,9 +1,9 @@
-﻿using Infra.EFCore.Contexts;
-using Infra.EFCore.Exceptions;
+﻿using Infra.SqlServerWithEF.Contexts;
+using Infra.SqlServerWithEF.Exceptions;
 using Shared.Server.Exceptions;
 using UnitOfWorks.Abstractions;
 
-namespace Infra.EFCore.Implementations.Chats;
+namespace Infra.SqlServerWithEF.Implementations.Chats;
 internal class ChatUOW(AppDbContext _dbContext , IAppQueries _queries) : IChatUOW {
 
     public IAppQueries Queries => _queries;

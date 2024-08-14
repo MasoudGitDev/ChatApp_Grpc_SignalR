@@ -1,10 +1,10 @@
 ﻿using Domains.Auth.Online.Aggregate;
 using Domains.Auth.Online.Queries;
 using Domains.Auth.User.Aggregate;
-using Infra.EFCore.Contexts;
+using Infra.SqlServerWithEF.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.EFCore.Implementations.Auth;
+namespace Infra.SqlServerWithEF.Implementations.Auth;
 internal class OnlineUserQueries(AppDbContext _dbContext) : IOnlineUserQueries {
     public async Task<List<OnlineUser>> GetAllAsync() {
         return await _dbContext.OnlineUsers.ToListAsync();
@@ -17,7 +17,7 @@ internal class OnlineUserQueries(AppDbContext _dbContext) : IOnlineUserQueries {
     public async Task<AppUser?> GetInfoByIdAsync(Guid userId) {
         return await _dbContext.OnlineUsers
             .Where(x => x.UserId == userId)
-            .Include(x => x.User)           
+            .Include(x => x.User)
             .Select(x => x.User)
             .FirstOrDefaultAsync();
     }

@@ -4,7 +4,7 @@ using Domains.Auth.User.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infra.EFCore.Configs.Auth;
+namespace Infra.SqlServerWithEF.Configs.Auth;
 //internal class AuthConfigs {}
 
 internal class UserEFConfigs :

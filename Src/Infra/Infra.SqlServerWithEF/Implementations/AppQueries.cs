@@ -4,7 +4,7 @@ using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
 using UnitOfWorks.Abstractions;
 
-namespace Infra.EFCore.Implementations;
+namespace Infra.SqlServerWithEF.Implementations;
 internal sealed class AppQueries(
     IUserQueries _users ,
     IChatItemQueries _chatItems ,

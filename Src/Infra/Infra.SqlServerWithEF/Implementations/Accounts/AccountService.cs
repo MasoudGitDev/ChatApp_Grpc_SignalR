@@ -12,10 +12,10 @@ using Shared.Server.Models.Results;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Infra.EFCore.Implementations.Accounts;
+namespace Infra.SqlServerWithEF.Implementations.Accounts;
 internal class AccountService(UserManager<AppUser> _userManager , IJwtService _jwtService) : IAccountService {
     public async Task<AccountResult> LoginAsync(LoginDto model) {
-        var user = (await FindUserAsync(model.LoginName));
+        var user = await FindUserAsync(model.LoginName);
         if(user is null) {
             return AccountResult.Error(MessageDescription.Create("Invalid-User" , "LoginName or Password is wrong."));
         }

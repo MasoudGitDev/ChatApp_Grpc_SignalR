@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Infra.EFCore.Exceptions;
+namespace Infra.SqlServerWithEF.Exceptions;
 
 [AttributeUsage(AttributeTargets.All)]
 internal class DbChangeExceptionAttribute : Attribute, IExceptionFilter {
@@ -10,10 +10,10 @@ internal class DbChangeExceptionAttribute : Attribute, IExceptionFilter {
             return;
         }
         context.ExceptionHandled = true;
-        context.Result = new JsonResult(new { 
-            code = "OnDBSaveChanges" , 
-            where = context.ActionDescriptor.DisplayName,
-            message = context.Exception.Message 
+        context.Result = new JsonResult(new {
+            code = "OnDBSaveChanges" ,
+            where = context.ActionDescriptor.DisplayName ,
+            message = context.Exception.Message
         });
     }
 }

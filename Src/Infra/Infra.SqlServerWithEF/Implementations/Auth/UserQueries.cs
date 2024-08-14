@@ -4,7 +4,7 @@ using Domains.Auth.User.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.EFCore.Implementations.Auth;
+namespace Infra.SqlServerWithEF.Implementations.Auth;
 
 internal class UserQueries(UserManager<AppUser> _userManager) : IUserQueries {
     public async Task<AppUser?> FindByEmailAsync(string email) {

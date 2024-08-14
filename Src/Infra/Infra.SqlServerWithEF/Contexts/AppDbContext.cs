@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Infra.EFCore.Contexts;
+namespace Infra.SqlServerWithEF.Contexts;
 internal class AppDbContext : IdentityDbContext<AppUser , AppRole , Guid> {
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

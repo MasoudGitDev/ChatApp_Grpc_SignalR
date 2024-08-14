@@ -6,11 +6,11 @@ using Domains.Auth.Role.Aggregate;
 using Domains.Auth.User.Aggregate;
 using Domains.Chats.Item.Queries;
 using Domains.Chats.Message.Queries;
-using Infra.EFCore.Contexts;
-using Infra.EFCore.Implementations;
-using Infra.EFCore.Implementations.Accounts;
-using Infra.EFCore.Implementations.Auth;
-using Infra.EFCore.Implementations.Chats;
+using Infra.SqlServerWithEF.Contexts;
+using Infra.SqlServerWithEF.Implementations;
+using Infra.SqlServerWithEF.Implementations.Accounts;
+using Infra.SqlServerWithEF.Implementations.Auth;
+using Infra.SqlServerWithEF.Implementations.Chats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +25,14 @@ using System.Text;
 using UnitOfWorks.Abstractions;
 
 [assembly: InternalsVisibleTo("UNTests.Domains.Chats")]
-namespace Infra.EFCore;
+namespace Infra.SqlServerWithEF;
 
 public static class ServiceRegistrationExtensions {
     public static IServiceCollection AddEFCoreService(this IServiceCollection services) {
         var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
         // ======================== Apps.Auth services
-        var jwtSettings = (configuration.GetSection("JwtSettingsModel").Get<JwtSettingsModel>())
+        var jwtSettings = configuration.GetSection("JwtSettingsModel").Get<JwtSettingsModel>()
             .ThrowIfNull("JwtSettingsModel can not be null.");
         services.AddScoped(x => new JwtSettingsModel() {
             Audience = jwtSettings.Audience ,

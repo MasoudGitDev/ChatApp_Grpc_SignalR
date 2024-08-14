@@ -4,7 +4,7 @@ using Domains.Chats.Message.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infra.EFCore.Configs.Chat;
+namespace Infra.SqlServerWithEF.Configs.Chat;
 internal class ChatConfigs :
     IEntityTypeConfiguration<ChatItem>,
     IEntityTypeConfiguration<ChatMessage> {
