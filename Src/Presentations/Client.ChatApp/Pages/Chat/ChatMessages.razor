@@ -8,7 +8,7 @@
                 <div class="chat_msg_logo">Img</div>
                 <div class="chat_info">
                     <div>@SelectedItem.DisplayName</div>
-                    <div class="type_status">در حال نوشتن ...</div>
+                    <div class="type_status">@TypeStatus</div>
                 </div>
 
 
@@ -25,7 +25,10 @@
             <div style="width:100%">
                 <div class="chat_controls">
                     <div class="chat_msg_col">
-                        <textarea class="chat_text_box" @bind="MessageContent"></textarea>
+                        <textarea class="chat_text_box" 
+                            @bind="MessageContent"                            
+                            @oninput="OnChangeMessageContent"
+                        ></textarea>
                     </div>
                     <div class="chat_btns_col">
                         <button class="chat_controls_btn_send btn btn-outline-success"

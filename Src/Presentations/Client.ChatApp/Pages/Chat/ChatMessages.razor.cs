@@ -40,6 +40,7 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
     //===================================
     protected ChatItemDto? SelectedItem { get; set; }
     protected Guid MyId { get; private set; }
+    protected string TypeStatus = String.Empty;
 
     private async Task<string> GetMyIdAsync()
         => ( await AuthStateAsync ).User.Claims.Where(x => x.Type == "UserIdentifier").FirstOrDefault()?.Value ??
@@ -115,8 +116,13 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
             }          
             await InvokeAsync(StateHasChanged);
         });
+        _ChatHubConnection.On<bool>("GetTypingStatus" , async (isTyping) => {
+            TypeStatus = isTyping ? "درحال نوشتن..." : "";
+            await InvokeAsync(StateHasChanged);
+        });
         await _ChatHubConnection.StartAsync();
     }
+
 
 
     private async Task GetMessagesAsync() {
@@ -149,6 +155,17 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
         catch(Exception ex) {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    protected async Task OnChangeMessageContent(ChangeEventArgs  changeEventArgs) {
+        // Update MessageContent with the latest value from the event args
+        MessageContent = changeEventArgs.Value?.ToString() ?? String.Empty;
+
+        // Check if the user is typing
+        bool isTyping = !string.IsNullOrWhiteSpace(MessageContent);
+
+        // Invoke the method on the hub
+        await _ChatHubConnection.InvokeAsync("SetTypingStatus" , isTyping);
     }
 
     public async ValueTask DisposeAsync() {
