@@ -101,6 +101,7 @@ public class ChatMessagesViewHandler : ComponentBase, IAsyncDisposable {
             var receiverInfo = new UserBasicInfoDto(SelectedItem.ReceiverId.ToString() , "" , SelectedItem.DisplayName );
             await _ChatHubConnection.InvokeAsync("SendChatItem" ,senderInfo, receiverInfo , chatItemId);
             MessageContent = "";
+            await _ChatHubConnection.InvokeAsync("SetTypingStatus" , false);
         }     
         
         Console.WriteLine(result);
