@@ -8,4 +8,5 @@ service UserQeriesRPCs{
 	rpc GetOnlineUsers(Shared.Empty) returns(stream Shared.OnlineUserMsg);	
 	rpc GetUsersWithOnlineStatus(Shared.Empty) returns(stream Shared.OnlineUserMsg);
 	rpc IsOnline(Shared.PersonMsg) returns (Shared.ResultMsg);
+	rpc GetProfileImage(Shared.Directory) returns(Shared.File);
 }
