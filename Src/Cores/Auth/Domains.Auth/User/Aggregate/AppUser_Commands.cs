@@ -28,4 +28,7 @@ public partial class AppUser {
         ProfileId = profileId;
     }
 
+    public void Update(ImageUrl imageUrl) {
+        ImageUrl = imageUrl;
+    }
 }
