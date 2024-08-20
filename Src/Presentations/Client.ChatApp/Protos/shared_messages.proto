@@ -53,3 +53,8 @@ message OnlineUserMsg{
 	bool IsOnline = 2;
 	bool IsInContacts = 3;
 }
+
+message File{
+	string Name = 1;
+	bytes Data = 2;
+}

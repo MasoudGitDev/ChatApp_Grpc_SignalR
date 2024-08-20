@@ -1,12 +1,15 @@
 syntax = "proto3";
 import "Protos/shared_messages.proto";
-option csharp_namespace = "Client.ChatApp.Protos.Users";
+option csharp_namespace = "Server.ChatApp.Protos.Users";
 package UserCommandsPkg;
-
 
 service OnlineUserCommandsRPCs{
 	rpc CreateOrUpdate(Shared.Empty) returns(OnlineUserResultMsg);
 	rpc Remove(Shared.Empty) returns(OnlineUserResultMsg);
+}
+
+service UserCommandRPCs{
+	rpc UpdateImageUrl(Shared.File) returns (Shared.ResultMsg);
 }
 
 message OnlineUserResultMsg{

@@ -9,7 +9,7 @@ using Server.ChatApp.Protos.Users;
 namespace Server.ChatApp.ServiceHandlers.Users;
 
 [Authorize]
-public class CommandsHandler(IMediator _mediator) : OnlineUserCommandsRPCs.OnlineUserCommandsRPCsBase {
+public class OnlineUserCommandsHandler(IMediator _mediator) : OnlineUserCommandsRPCs.OnlineUserCommandsRPCsBase {
     public override async Task<OnlineUserResultMsg> CreateOrUpdate(Empty request , ServerCallContext context) {
         return ( await _mediator.Send(CreateOrUpdateOnlineUser.New(await SharedMethods.GetMyIdAsync(context , _mediator))) )
             .AsOnlineUserResult();
