@@ -52,10 +52,10 @@ public class NavMenuViewHandler : ComponentBase, IAsyncDisposable {
 
     //=========================== basic blazor methods
     protected override async Task OnInitializedAsync() {
-        try {
-            (_myId,_displayName,UserNameClaim) = await GetMyInfoAsync();
+        try {           
             var identity = (await AuthState).User.Identity;
             if(identity != null && identity.IsAuthenticated) {
+                (_myId, _displayName, UserNameClaim) = await GetMyInfoAsync();
                 Cloud = ( await ChatItemQueries.GetCloudItemAsync(new Empty()) ).Items.FirstOrDefault().Adapt<ChatItemDto>();
                 ChatAccounts = ( await ChatItemQueries.GetAllAsync(new()) ).Items.Adapt<LinkedList<ChatItemDto>>();
             }
