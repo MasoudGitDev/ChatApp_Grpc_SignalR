@@ -58,3 +58,6 @@ message File{
 	string Name = 1;
 	bytes Data = 2;
 }
+message Directory{
+	string Path = 1;
+}
