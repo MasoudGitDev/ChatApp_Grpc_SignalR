@@ -1,0 +1,21 @@
+﻿@page "/Settings"
+
+@inherits SettingsViewHandler;
+<div class="settings_container">
+    <div class="profile-form">
+        <EditForm Model="ImageUrl">
+            <div class="profile-items">
+                <InputFile class="inner center" OnChange="LoadImage"></InputFile>
+                <div class="profile-logo center">
+                    <div class="inner center">
+                        @if (!string.IsNullOrEmpty(ImageUrl))
+                        {
+                            <img src="@ImageUrl" alt="Profile Image" class="profile-image" />
+                        }
+                    </div>
+                </div>
+                <button class="save-img-btn btn btn-primary center" @onclick="SaveImageAsync">Save</button>
+            </div>
+        </EditForm>
+    </div>
+</div>

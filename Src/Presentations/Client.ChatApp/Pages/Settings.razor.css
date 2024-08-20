@@ -1,0 +1,79 @@
+﻿
+
+.settings_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100vh;
+    background-color: dimgrey;
+}
+
+.profile-form {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 350px;
+    background-color: #f8f8f8;
+    gap: 5px;
+}
+
+.profile-logo {
+    position: relative;
+    width: 400px;
+    height: 300px;
+    border: 1px solid rgba(80,80,80,.2);
+    background-color: ghostwhite;
+    border-radius: 10px;
+    overflow: hidden; /* Ensure the image does not overflow the circle */
+}
+
+    .profile-logo > .inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border: none; /* Remove inner border */
+        background-color: transparent; /* Transparent background for inner div */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+       
+    }
+    .profile-logo:hover > .inner {
+        width: 98%;
+        height: 98%;
+    }
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure the entire image is visible without cropping */
+    border-radius: 10px; 
+    background-color: #f8f8f8; 
+}
+
+
+ 
+    .profile-logo:hover {
+        background-color:whitesmoke;
+        cursor:pointer;
+    }
+
+.profile-items{
+    position:relative;
+}
+
+.save-img-btn {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 240px;
+    left: -15px;
+    border: 1px solid rgba(80,80,80,.2);
+    border-radius: 10px;
+}
