@@ -34,6 +34,7 @@ builder.Services.AddScoped(services => new ChatMessageQueryRPCs.ChatMessageQuery
 builder.Services.AddScoped(service => new AccountRPCs.AccountRPCsClient(gRPCChannel));
 builder.Services.AddScoped(service => new SharedRpcs.SharedRpcsClient(gRPCChannel));
 builder.Services.AddScoped(service => new OnlineUserCommandsRPCs.OnlineUserCommandsRPCsClient(gRPCChannel));
+builder.Services.AddScoped(service => new UserCommandRPCs.UserCommandRPCsClient(gRPCChannel));
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();

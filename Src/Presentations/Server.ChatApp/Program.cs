@@ -9,6 +9,8 @@ using Server.ChatApp.Hubs.Chats;
 using ChatMessages = Server.ChatApp.ServiceHandlers.ChatMessages;
 using ChatItems = Server.ChatApp.ServiceHandlers.ChatItems;
 using Users = Server.ChatApp.ServiceHandlers.Users;
+using Server.ChatApp.Services.Abstractions;
+using Server.ChatApp.Services.Upload;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +45,8 @@ builder.Services.AddSwaggerGen(opt => {
     //opt.IncludeXmlComments(filePath);
     //opt.IncludeGrpcXmlComments(filePath , includeControllerXmlComments: true);
 });
+
+builder.Services.AddTransient<IFileUploadService , UploadUserLogo>();
 
 builder.Services.AddResponseCompression(opts => {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -106,8 +110,8 @@ app.MapGrpcService<SharedModelsHandler>().EnableGrpcWeb();
 
 //========users
 app.MapGrpcService<Users.QueriesHandler>().EnableGrpcWeb();
-app.MapGrpcService<Users.CommandsHandler>().EnableGrpcWeb();
-
+app.MapGrpcService<Users.OnlineUserCommandsHandler>().EnableGrpcWeb();
+app.MapGrpcService<Users.UserCommandsHandler>().EnableGrpcWeb();
 
 
 
