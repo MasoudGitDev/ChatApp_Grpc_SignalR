@@ -9,6 +9,7 @@ using Shared.Server.Dtos.User;
 using Shared.Server.Extensions;
 using Shared.Server.Models.Results;
 using Queries = Apps.Auth.Users.Queries;
+using FileDirectory = System.IO.Directory;
 
 namespace Server.ChatApp.ServiceHandlers.Users;
 
@@ -22,6 +23,13 @@ public class QueriesHandler(IMediator _mediator) : UserQeriesRPCs.UserQeriesRPCs
         foreach(var user in result.Model) {
             await responseStream.WriteAsync(user.Adapt<OnlineUserMsg>());
         }
+    }
+
+    public override async Task<Protos.File> GetProfileImage(Protos.Directory request , ServerCallContext context) {
+        Guid userId = await SharedMethods.GetMyIdAsync(context,_mediator);
+        string directory = Path.Combine(FileDirectory.GetCurrentDirectory() , "AccountLogos",userId.ToString());
+        // continue later
+        return new();
     }
 
     public override async Task GetUsers(Empty request , IServerStreamWriter<UserBasicInfoMsg> responseStream , ServerCallContext context) {
